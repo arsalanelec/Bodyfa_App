@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.arsalan.mygym.fragments.TutorialFragment">
+
+
+    <ProgressBar
+        android:id="@+id/pbWaiting"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:indeterminate="true"
+        android:layout_gravity="center"/>
+
+    <GridView
+        android:id="@+id/lstTutorialVideos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:numColumns="2"
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"/>
+
+</LinearLayout>

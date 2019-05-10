@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.amosyuen.videorecorder.test" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="28" />
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:functionalTest="false"
+        android:handleProfiling="false"
+        android:label="Tests for com.amosyuen.videorecorder.test"
+        android:targetPackage="com.amosyuen.videorecorder.test" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <permission
+        android:name="android.permission.FLASHLIGHT"
+        android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
+        android:protectionLevel="normal" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+
+    <application
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:debuggable="true"
+        android:largeHeap="true" >
+        <uses-library android:name="android.test.runner" />
+
+        <activity
+            android:name="com.amosyuen.videorecorder.activity.FFmpegRecorderActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/ActivityTheme" >
+        </activity>
+        <activity
+            android:name="com.amosyuen.videorecorder.activity.FFmpegPreviewActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/ActivityTheme" >
+        </activity>
+    </application>
+
+</manifest>

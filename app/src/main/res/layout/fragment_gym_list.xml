@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.arsalan.mygym.fragments.GymListFragment">
+    <FrameLayout
+        android:id="@+id/flWaiting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"/>
+    </FrameLayout>
+    <Spinner
+        android:id="@+id/spnProvince"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/btnSortByPoints"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/button_rect"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:paddingEnd="32dp"
+            android:paddingStart="32dp"
+            android:textColor="@drawable/text_button_color"
+            android:textOff="@string/most_point"
+            android:checked="true"
+            android:textOn="@string/most_point"/>
+
+        <ToggleButton
+            android:id="@+id/btnSortByCity"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/button_rect"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:paddingEnd="32dp"
+            android:paddingStart="32dp"
+            android:textColor="@drawable/text_button_color"
+            android:textOff="@string/by_city"
+            android:textOn="@string/by_city" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTrainers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>

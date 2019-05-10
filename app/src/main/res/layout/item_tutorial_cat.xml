@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal"
+    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+    <ImageView
+        android:id="@+id/imgThumb"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        />
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:fontFamily="@font/iran_sans_mobile"
+        android:lines="1"
+        android:text="تمرین های جلو بازو"
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/btnShowItems"
+        style="@style/Base.Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:background="@color/green"
+        android:drawableLeft="@drawable/ic_chevron_left_24dp"
+        android:fontFamily="@font/iran_sans_mobile"
+        android:paddingStart="4dp"
+        android:text="@string/show"
+        android:clickable="false"
+        android:textColor="@color/colorAccent" />
+
+</LinearLayout>

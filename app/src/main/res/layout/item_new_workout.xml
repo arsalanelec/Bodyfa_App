@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="workoutRow"
+            type="com.example.arsalan.mygym.models.WorkoutRow" />
+
+        <variable
+            name="eventListener"
+            type="com.example.arsalan.mygym.models.WorkoutRow.OnWorkoutRowEventListener" />
+
+        <variable
+            name="selectable"
+            type="com.example.arsalan.mygym.models.SelectableRow"/>
+
+        <variable
+            name="index"
+            type="Integer" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal"
+        android:background="@{selectable.selected ? @drawable/purple_rect_back : null}"
+        android:textDirection="rtl">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp">
+
+            <ImageButton
+                android:id="@+id/btnShowTutorial"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/purple_rect_back"
+                android:foreground="?attr/selectableItemBackground"
+                android:src="@drawable/ic_edit_24dp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:onClick="@{()->eventListener.onClick(workoutRow,index)}"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtWorkoutName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="3"
+                android:spinnerMode="dialog"
+                android:textColor="@{selectable.selected ? @color/colorAccent : @android:color/black}"
+                android:text="@{workoutRow.workoutName}" />
+
+            <TextView
+                android:id="@+id/etSet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:selectAllOnFocus="true"
+                android:text="@{String.valueOf(workoutRow.set)}" />
+
+            <TextView
+                android:id="@+id/etRep"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:selectAllOnFocus="true"
+                android:text="@{String.valueOf(workoutRow.rep)}" />
+
+            <TextView
+                android:id="@+id/etRest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:maxLength="2"
+                android:selectAllOnFocus="true"
+                android:text="@{String.valueOf(workoutRow.rest)}" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

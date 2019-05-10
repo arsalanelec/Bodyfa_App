@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/menuGroup1">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/main_page"
+            android:orderInCategory="1"
+            />
+        <item
+            android:id="@+id/nav_user_account"
+            android:icon="@drawable/ic_user"
+            android:title="@string/user_account"
+            android:orderInCategory="2"/>
+        <item android:id="@+id/nav_exit_account"
+            android:title="@string/exit_account"
+            android:icon="@drawable/ic_logout"
+            android:orderInCategory="100"/>
+    </group>
+
+    <item android:title=""
+        android:orderInCategory="200">
+        <menu>
+            <item
+                android:id="@+id/nav_change_lang"
+                android:icon="@drawable/ic_language_24dp"
+                android:title="@string/change_lang" />
+            <item
+                android:id="@+id/nav_faq"
+                android:icon="@drawable/ic_lightbulb_24dp"
+                android:title="@string/FAQ" />
+            <item
+                android:id="@+id/nav_eula"
+                android:icon="@drawable/ic_balance"
+                android:title="@string/EULA" />
+            <item
+                android:id="@+id/nav_contact_us"
+                android:icon="@drawable/ic_agenda"
+                android:title="@string/contact_us" />
+        </menu>
+    </item>
+
+</menu>

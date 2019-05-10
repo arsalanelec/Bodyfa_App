@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list"
+    android:name="com.example.arsalan.mygym.fragments.MealPlanListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layoutDirection="rtl"
+    android:orientation="vertical"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp">
+
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary_2"
+        android:textColor="@android:color/white"
+        android:padding="8dp"
+        android:text="لیست برنامه ها"/>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".dialog.MealPlanListDialog"
+        tools:listitem="@layout/item_listview_trainer_plan"
+        android:divider="@color/gray_light"
+        android:dividerHeight="2dp"
+        android:layout_marginBottom="8dp"
+        />
+</LinearLayout>

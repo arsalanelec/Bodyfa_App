@@ -1,0 +1,317 @@
+<resources>
+    <string name="app_name">BODYFA</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Log in</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_to_bodifa">Login to Bodyfa</string>
+    <string name="email_hint">Email</string>
+    <string name="password">Password</string>
+    <string name="not_registered_yet">Here you not registered in Bodyfa yet?</string>
+    <string name="register">Register</string>
+    <string name="user_account">User account</string>
+    <string name="register_in_bodyfa">Register in Bodyfa</string>
+    <string name="agree_licence">I have read the terms and conditions and agreed to all</string>
+    <string name="foodNews">Food News</string>
+    <string name="fitnessNews">Fitness News</string>
+    <string name="demoText">خون را پایین آورده و کلسترول خوب خون را بالا میبرد . گردو باعث محافظت از پوست ، استحکام استخوان ، تنظیم متابولیسم بدن ، تقویت هوش و حافظه ، درمان کننده درد مفاصل ، تقویت کننده سیستم ایمنی بدن</string>
+    <string name="most_point">Most Point</string>
+    <string name="most_awards">Most Awards</string>
+    <string name="by_city">By city</string>
+    <string name="title_activity_athlete_main">AthleteMainActivity</string>
+    <string name="show">Show</string>
+    <string name="vip">Vip</string>
+    <string name="main_page">Home</string>
+    <string name="FAQ">Bodyfa FAQ</string>
+    <string name="EULA">Privacy Policy</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="title_activity_profile_trained">Trainer</string>
+    <string name="gym">Gym</string>
+    <string name="title_activity_news_detail">News Detail</string>
+    <string name="title_activity_edit_profile">Edit Profile</string>
+    <string name="user_comments">User comments (%1d comments)</string>
+    <string name="title_activity_post_content">Send Content</string>
+    <string name="send_content">Send Content</string>
+    <string name="title_activity_post_tutorial">Send tutorial Video</string>
+    <string name="send_tutorial_video">Send tutorial Video</string>
+    <string name="audio_bitrate">Audio Bitrate (bytes/s)</string>
+    <string name="audio_channel_count">Audio Channel Count</string>
+    <string name="audio_codec">Audio Codec</string>
+    <string name="audio_options">Audio Options</string>
+    <string name="audio_sample_rate">Audio Sample Rate</string>
+    <string name="audio_sample_rate_hz">Audio Sample Rate (Hz)</string>
+    <string name="can_crop_video">Can crop video</string>
+    <string name="can_pad_video">Can pad video</string>
+    <string name="can_upscale_video">Can upscale video</string>
+    <string name="delete_all">Delete All</string>
+    <string name="delete_all_video_files">Are you sure you want to delete all video files?</string>
+    <string name="delete_video_file">Are you sure you want to delete the video file?</string>
+    <string name="error">خطا</string>
+    <string name="error_value_is_empty">Value is empty</string>
+    <string name="error_value_is_negative">Value is negative</string>
+    <string name="error_value_is_not_a_number">Value is not a number</string>
+    <string name="error_value_is_zero">Value is zero</string>
+    <string name="launch_video_recorder">Launch Video Recorder</string>
+    <string name="max_file_size">Max file size (MB)</string>
+    <string name="max_recording_time">Max recording (s)</string>
+    <string name="min_recording_time">Min recording (s)</string>
+    <string name="ok">Confirmation</string>
+    <string name="output_format">Output Format</string>
+    <string name="recording">Recording</string>
+    <string name="recording_options">Recording Options</string>
+    <string name="results">Results</string>
+    <string name="success">Success</string>
+    <string name="thumbnail_preview">Thumbnail Preview</string>
+    <string name="video_bitrate">Video Bitrate</string>
+    <string name="video_bitrate_bytes">Video Bitrate (bytes/s)</string>
+    <string name="video_camera_facing">Video Camera Facing</string>
+    <string name="video_codec">Video Codec</string>
+    <string name="video_date">Video Date</string>
+    <string name="video_file_format">Video File Format</string>
+    <string name="video_file_size">Video File Size</string>
+    <string name="video_frames_per_second">Video Frames Per Second</string>
+    <string name="video_frame_rate">Video Frame Rate</string>
+    <string name="video_height">Video Height</string>
+    <string name="video_height_px">Video Height (px)</string>
+    <string name="video_length">Video Length</string>
+    <string name="video_options">Video Options</string>
+    <string name="video_scale_direction">Video Scale Direction</string>
+    <string name="video_scale_fit">Video Scale Fit</string>
+    <string name="video_width">Video Width</string>
+    <string name="video_width_px">Video Width (px)</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="thumbnail_file_size">Thumbnail File Size</string>
+    <string name="unknown">Unknown</string>
+    <string name="title_activity_tutorial_list">TutorialListActivity</string>
+    <string name="enter_mobile">Please enter your phone Number</string>
+    <string name="sendActivationCode">Send activation code</string>
+    <string name="registerInBodyfa">Register in Bodyfa</string>
+    <string name="title_activity_fullscreen_video">Video display</string>
+    <string name="confirmMobileNumber">Confirm your phone number</string>
+    <string name="enterReceivedCode">Enter Received Code</string>
+    <string name="send">Send</string>
+    <string name="edit">Edit</string>
+    <string name="trainerProfile">Trainer Profile</string>
+    <string name="likedCount"> %d Like</string>
+    <string name="gymProfile">Gym Profile</string>
+    <string name="athlete_count">The number of athletes is :%d </string>
+    <string name="getting_user_info">Getting user info...</string>
+    <string name="wrong_username_password">Wrong Password !</string>
+    <string name="error_connect_to_internet">An error occurred. Are you connected to the internet? ( Do you have internet connection ?) please try again </string>
+    <string name="error_accord_try_again">An error occurred ! please try again</string>
+    <string name="error_please_enter_again">An error occurred ! Please enter again</string>
+    <string name="edit_trainer_profile">Edit Trainer Profile</string>
+    <string name="choose_training_licence">Choose training licence</string>
+    <string name="choose_id_card">Choose id card</string>
+    <string name="uploading_picture_wait">Uploading… Please wait</string>
+    <string name="choose_province">Choose province</string>
+    <string name="choose_profile_photo">Choose profile photo</string>
+    <string name="done_successfully">Successfully</string>
+    <string name="sending">Sending...</string>
+    <string name="athlete">Athlete</string>
+    <string name="trainer">Trainer</string>
+    <string name="gym_owner">Gym Owner</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+    <string name="empty_user_name">Empty user name</string>
+    <string name="submit_again">Submit again</string>
+    <string name="submit_again_second">Submit again(%d)</string>
+    <string name="wrong_mobile_number">Wrong mobile number</string>
+    <string name="title_is_empty">Title is empty.</string>
+    <string name="select_medal_pic">Select medal picture</string>
+    <string name="medal_sent_successfully">medal sent successfully and after supervision confirmations it will be added to your medals</string>
+    <string name="world_first_place">World first place </string>
+    <string name="world_second_place">World second place</string>
+    <string name="world_third_place">World third place</string>
+    <string name="national_first_place">National first place</string>
+    <string name="national_second_place">National second place</string>
+    <string name="national_third_place">National third place</string>
+    <string name="province_first_place">Province first place</string>
+    <string name="province_second_place">Province second place</string>
+    <string name="province_third_place">Province third place</string>
+    <string name="breakfest">Breakfast</string>
+    <string name="lunch">Lunch</string>
+    <string name="diner">Diner</string>
+    <string name="snack">Snack</string>
+    <string name="supplements">Supplements</string>
+    <string name="meal_plan_list">Meal plan list</string>
+    <string name="choose_gym_pic">Choose gym picture</string>
+    <string name="workout_plan_list">Workout plan list</string>
+    <string name="remove">Remove</string>
+    <string name="ask_remove_plan">Remove plan ?</string>
+    <string name="receiving_meal_plan_list">Receiving meal plan</string>
+    <string name="receiving_workout_plan_list">Receiving workout plan list...</string>
+    <string name="receiving_meal_plan">Receiving meal plan...</string>
+    <string name="receiving_workout_plan">Receiving workout plan...</string>
+    <string name="removing_meal_plan">Removing meal plan...</string>
+    <string name="removing_workout_plan">Removing workout plan...</string>
+    <string name="sending_plan">Sending plan...</string>
+    <string name="plan_sent_successfully">Plan sent successfully</string>
+    <string name="noting_to_show">Noting to show</string>
+    <string name="plan_name_is_empty">Plan name is empty</string>
+    <string name="medal_list">Medal list</string>
+    <string name="ask_remove_medal">Are you sure you want to remove this medal</string>
+    <string name="removed_successfuly">Removed Successfully</string>
+    <string name="new2">New:</string>
+    <string name="edit2">Edit:</string>
+    <string name="saturday">saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="created">Created</string>
+    <string name="choose_content_pic">Choose content picture</string>
+    <string name="diet_news">Diet News</string>
+    <string name="fitness_news">Fitness News</string>
+    <string name="your_content_sent_successfully">Your content has been sent successfully and it will be published after confirmation</string>
+    <string name="sending_content">Sending Content Please Wait...</string>
+    <string name="choose_longer_title">Choose longer title</string>
+    <string name="text_is_too_short">Text is too short</string>
+    <string name="choose_a_pic">Choose a picture</string>
+    <string name="your_comment_submited">Your comment has been sent successfully</string>
+    <string name="remove_photo">Remove photo</string>
+    <string name="ask_remove_photo">Are you sure you want remove this photo?</string>
+    <string name="gallery_position_from_total">%d of %d</string>
+    <string name="workout_title_is_empty">Workout title is empty</string>
+    <string name="uploading_video_wait">Uploading video Please wait...</string>
+    <string name="video_sent_successfully">Your video has been sent successfully and it will be shown after coordination</string>
+    <string name="trainer_profile">Trainer profile</string>
+    <string name="medals">Medals</string>
+    <string name="gym_profile">Gym profile</string>
+    <string name="general">General</string>
+    <string name="home">Home</string>
+    <string name="news">News</string>
+    <string name="training_tutorial">Training tutorial</string>
+    <string name="trainers">Trainers</string>
+    <string name="gyms">Gyms</string>
+    <string name="my_dashboard">My dashboard</string>
+    <string name="my_gym">My gym</string>
+    <string name="my_trainer">My trainer</string>
+    <string name="meal_plan">Meal plan</string>
+    <string name="workout_plan">Workout plan</string>
+    <string name="messages">messages</string>
+    <string name="dashboard">dashboard</string>
+    <string name="private_label">خصوصی</string>
+    <string name="general_label">عمومی</string>
+    <string name="my_athleths">My athletes</string>
+    <string name="plans">Plans</string>
+    <string name="orders">Orders</string>
+    <string name="transactions">Transactions</string>
+    <string name="workout_list">Workout list</string>
+    <string name="complete_your_profile">Please fill out your profile via the /"setting menu/"</string>
+    <string name="error_in_user_info">Error in user info</string>
+    <string name="cant_access_server">Can\'t access server Please try again</string>
+    <string name="check_internet_connection">Check your internet connection</string>
+    <string name="sending_data">Sending data ...</string>
+    <string name="incomplete_profile">Incomplete profile</string>
+    <string name="trainer_incomplete_profile_dialog">Your profile is not active . Please enter the trainer profile from the menu and complete and send the information , you have been asked and wait for confirmation</string>
+    <string name="completing_profile">Completing profile</string>
+    <string name="gym_incomplete_profile_dialog">Your profile is not active . Please enter the gym profile from the menu and complete and send the information , you have been asked and wait for confirmation</string>
+    <string name="meal_and_workout_news">News</string>
+    <string name="tutorials">Tutorials</string>
+    <string name="BODYFA_EULA">شرایط و ضوابط
+
+در بادیفا هدف ما حمایت از کاربران ما در  تناسب اندام خود و ارائه بهترین تجربه ممکن است. برای رسیدن به این هدف، شرایط و ضوابط  را به روز می کنیم که به وضوح حقوق، مسئولیت ها، سیاست حفظ حریم خصوصی ما و جزئیات بیشتر در مورد خدمات ما را مشخص می کند
+
+آخرین نسخه شرایط و ضوابط از تاریخ   97/05/09  تاکنون - در دسترس شما خواهد بود. لطفا قبل از استفاده از خدمات بادیفا   بخوانید.
+
+
+   محتوا به عنوان مثال متن، تصویر و فیلم، در مورد ورزش، سلامت و تغذیه، توسط طرفداران bodyfa و مربیان حرفه ای ورزشی ارائه شده است.
+
+شرایط و ضوابط کلی برای همه کاربران
+ماده 1 - سیاست حفظ حریم خصوصی
+در بادیفا ، ما به طور مداوم تلاش میکنیم تا بهترین تجربه ممکن را به شما ارائه کنیم و حریم خصوصی شما برای ما مهم است
+اطلاعات شخصی  مانند  شماره تلفن ،گروه خونی ، داده های ضربان قلب یا سایر داده های بهداشتی هرگز با تبلیغ کنندگان یا سازمان های مشابه به اشتراک گذاشته نخواهد شد
+کدام داده ها را جمع آوری و پردازش می کنیم
+به طور کلی بادیفا  اطلاعات شخصی را پردازش می کند که شما به عنوان یک کاربر برای ما در دسترس قرار داده اید
+اطلاعات ثبت نام
+اطلاعات اجباری : برای ثبت نام در بادیفا باید شماره تلفن خود را در اختیار ما قرار دهید
+اطلاعات اختیاری : در هنگام ثبت نام بعضی از اطلاعات اختیاری هستند و همچنین می توانند بعد ها توسط شما اضافه و یا حذف شوند از قبیل :
+ نام و نام خانوادگی ، جنسیت ، تاریخ تولد ، گروه خونی ، هدف از ورزش ، وزن ، سطح ورزشی ، مربی شخصی ، باشگاه شما و برای حساب کاربری با دسترسی دو مانند مربی و مدیریت باشگاه شماره حساب بانکی ، کارت مربی گری ، پروانه کسب باشگاه و کارت ملی  میباشد
+ماده 2 - حفاظت از تقلب
+         شما باید از حساب کاربری خود از استفاده غیر مجاز و جعلی محافظت کنید. از هر گونه استفاده غیرمجاز یا جعلی از حساب خود مطلع شوید یا اگر مشکوک هستید ممکن است حساب تان در معرض خطر باشد.
+ لطفا بلافاصله از طریق نرم افزار به پشتیبانی پیام دهید و یا با ایمیل  bodyfa.ir@gmail.com  در تماس باشید .
+             بادیفا حق دارد در صورت استفاده غیر مجاز و یا جعلی از حساب کاربری، حساب کاربری هر کاربر ثبت شده را بسته و یا لغو کند.
+ماده 3 - تعهدات و رفتار کاربر
+    وظایف کاربر
+3/1 مسئولیت همه ی اقدامات و افعال کاربران به ناشی از عدم رعایت قوانین موضوعه جمهوری اسلامی ایران بر عهده شخص متخلف بوده و شرکت هیچ گونه مسئولیتی در قبال اعمال و افعال فوق نداشته و نخواهد داشت و شرکت میتواند ضمن غیر فعال کردن حساب کاربری متخلف ، از طریق مراجع ذیصلاح ، اقدامات قانونی را علیه نام برده  نسبت به احقاق حقوق قانونی شرکت به عمل آورد.
+
+3/2 در صورتی که کاربر مجاز باشد محتوایی را منتقل کند، مانند ( عکس ها، متن ها و ویدیو ها)، انتشار، انتقال و توزیع چنین محتویات، مثلا (i) اگر کاربر حق انحصاری برای استفاده از چنین محتوایی داشته باشد یا (ii) در صورتی که کاربر مالک این حقوق در رابطه با محتویات ارائه شده توسط آن نیست، اگر کاربر به بادیفا تضمین کند که تمام حقوق مورد نیاز، مجوز ها به درستی به دست آمده است. این موضوع همچنین به محتوا تحت عنوان حقوق مالکیت فکری، مانند نام تجاری و علائم تجاری اعمال می شود. کاربر باید به طور انحصاری برای چنین محتوایی مسئول باشد
+3/3 انتقال ، انتشار و یا توزیع هر محتوایی که نژادپرستانه ، توهین آمیز ، تبعیض آمیز ، انکار ، جنسی و یا خشونت را تحسین میکند غیر قانونی است .
+ماده 4 - موارد فنی
+4/1 -  ارسال یک پیام و یا پیغام های زنجیره ای به بیش از یک گیرنده در هر زمان ، یعنی کاربر نباید هرزنامه و پیام تکراری ارسال کند
+
+4/2 -  هرگونه تداخل اختلال در شبکه بادیفا با استفاده از ابزارهای فنی یا الکترونیکی مانند تلاش های هک، حملات خشونت آمیز، کاشت ویروس ها / کرم ها / تروجان ها و سایر تلاش های خرابکارانه در زمینه نرم افزار یا سخت افزار بادیفا انجام نمی شود
+
+
+4/3 - کپی، توزیع، انتقال یا جمع آوری با استفاده از کمکهای فنی، مانند خزنده ها یا ربات ها، جزئیات قابل دسترسی بدون رضایت صاحب مربوطه غیر قانونی می باشد کاربر  با اطلاع رسانی سریع از طریق پشتیبانی در قسمت پیام ها و یا ارسال ایمیل به bodyfa.ir@gmail.com از هرگونه نقص معیوب تعهدات فوق جلوگیری کند
+
+4/4 -  مراقب جزئیات شخصی خود باشید افرادی به جزئیات شخصی دسترسی پیدا میکند که نزدیک کاربر هستند ، به طور منظم از نرم افزار استفاده کنید ؛  بادیفا برای امنیت بیشتر فقط امکان استفاده از یک کاربر برای هر شخص دارنده شماره تلفن فراهم کرده است ، بادیفا  مسئولیت هر گونه جزئیات گمشده و یا آسیب دیده را ندارد
+ماده 5- هزینه ها و پرداخت ها
+
+5/1 - کاربر سفارش دهنده می پذیرد امکان استرداد هزینه هایی که وی به شرکت می پردازد وجود ندارد .
+5/2 - کاربر سفارش دهنده می پذیرد هزینه ی خدمات از طرف مربی و مدیریت باشگاه مشخص می شود و پس از استفاده از خدمات اعتراضی نسبت به هزینه ی آن نمی تواند داشته باشد . بدیهی است از آنجایی که کاربر سفارش دهنده مجاز به عدم پذیرش هزینه اعلام شده از سوی شرکت می باشد ، در صورت قبول ، متعهد به پرداخت آن می باشد و به همین منظور کاربر مذکور با قبول این شرایط و مقررات به شرکت اختیار دریافت و وصول مبلغ مورد مطالبه ی شرکت را از محل اعتبار کاربر خود ، اعطا می نماید .
+5/3 - پرداخت هزینه ی خدمات فقط از طریق روش هایی که توسط بادیفا  مشخص می شود ، می تواند صورت گیرد . این روش ها عبارتند از : پرداخت از طریق اعتبار موجود در حساب کاربری بادیفا ، پرداخت اینترنتی و یا از طریق ussd  برای افزایش اعتبار و پرداخت به مربی و مدیریت باشگاه
+5/4 - شرکت تلاش خود را در جهت فراهم نمودن امکان استفاده از خدمات نرم افزاری خود توسط دستگاه ها یا همه ی شبکه های ارتباطی ( اینترنت ، شبکه تلفن همراه و غیره ) نخواهد داد .
+5/5 - تمامی اطلاعات کاربران به عنوان اطلاعات محرمانه نزد شرکت محافظت شده و دسترسی به آن توسط اشخاص ثالث ممنوع بوده مگر برابر تصمیم مقام قضایی ، شرکت مکلف به ارائه اطلاعات کاربران مذکور می باشد
+پرداخت به دو صورت انجام میشود
+ 5/6 - خرید برنامه تمرینی و غذایی که شما میتوانید مربی خود را انتخاب کنید و بعد از ارسال مشخصات طی حداکثر 3 روز کاری برنامه خود را دریافت کنید
+در صورت هرگونه بروز مشکل و فرستاده نشدن برنامه طی مدت سه روز کاری از سمت مربی به ورزشکار مبلغ پرداختی به حساب ورزشکار برگشت داده میشود
+5/7 - شهریه ماهانه باشگاه که شما میتوانید باشگاه خود را انتخاب کنید و کارت عضویت به مدت یک ماه دریافت کنید.
+</string>
+    <string name="exit_account">Logout</string>
+    <string name="didnt_receive_sms">Did not Receive the Code? </string>
+    <string name="phone">phone:</string>
+    <string name="gym_photo">Gym Photo:</string>
+    <string name="gym_info_detail">Gym Details:</string>
+    <string name="gym_name">Gym Name:</string>
+    <string name="gym_name_hint">Enter Gym Name...</string>
+    <string name="gym_address">Gym Address:</string>
+    <string name="gym_address_hint">Enter Gym Address...</string>
+    <string name="phone_1">Phone 1</string>
+    <string name="phone_2">phone 2</string>
+    <string name="monthly_fee">Monthly Fee:</string>
+    <string name="in_rial">in Rial</string>
+    <string name="half_month_fee">Half Month Fee:</string>
+    <string name="gym_feature">Gym Features:</string>
+    <string name="extra_desctiption">Extra Description:</string>
+    <string name="extra_description_hint">Gym Description...</string>
+    <string name="choose_address_on_map">Choose the Address on the Map</string>
+    <string name="order_a_plan">Order Plan</string>
+    <string name="meal">Meal</string>
+    <string name="select">Select</string>
+    <string name="send_message">Send Message</string>
+    <string name="add">Add</string>
+    <string name="point">Points</string>
+    <string name="workout">Workout</string>
+    <string name="trainer_name">Trainer Name</string>
+    <string name="register_date">Register Date:</string>
+    <string name="plan_title">Title Of Plan</string>
+    <string name="female">Ms./Mrs.</string>
+    <string name="male">Mr.</string>
+    <string name="change_lang">Change Language</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="add_credit">+افزایش اعتبار</string>
+    <string name="rial">ریال</string>
+    <string name="your_credit">اعتبار شما:</string>
+    <string name="AMOUNT_IS_WRONG">مقدار وارد شده باید بیش از 1000 ریال باشد.</string>
+    <string name="PAYMENT_SUCCESS">پرداخت با موفقیت انجام شد!</string>
+    <string name="PAYMENT_FAIL">پرداخت انجام نشد!</string>
+    <string name="please_wait_a_moment">please wait a moment…</string>
+    <string name="workout_plan_price">هزینه هر برنامه تمرینی بصورت پایه %,d تومان از طرف مربی تعیین شده است.</string>
+    <string name="meal_plan_price">هزینه هر برنامه تغذیه بصورت پایه %,d تومان از طرف مربی تعیین شده است.</string>
+
+
+    <string name="edited_successfully">ویرایش با موفقیت انجام شد.</string>
+    <string name="countinue">Countinue</string>
+    <string name="from">from</string>
+    <string name="please_select_a_workout">یک تمرین انتخاب کنید</string>
+    <string name="add_new_news">افزودن پست جدید</string>
+
+</resources>

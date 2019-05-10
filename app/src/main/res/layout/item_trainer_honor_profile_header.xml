@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/gray_light"
+    android:layoutDirection="rtl">
+
+    <TextView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:text="تصویر"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="عنوان"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/txtDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="تاریخ"
+        android:layout_gravity="center"/>
+</LinearLayout>

@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.arsalan.mygym.fragments.TutorialFragment">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/btnGeneral"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/button_rect"
+            android:checked="true"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:paddingEnd="32dp"
+            android:paddingStart="32dp"
+            android:textColor="@drawable/text_button_color"
+            android:textOff="@string/general"
+            android:textOn="@string/general"
+            />
+
+        <ToggleButton
+            android:id="@+id/btnVip"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/button_rect"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:paddingEnd="32dp"
+            android:paddingStart="32dp"
+            android:textColor="@drawable/text_button_color"
+            android:textOff="@string/vip"
+            android:textOn="@string/vip"
+            />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lstTutorial"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layoutAnimation="@anim/layout_animation_fall_down"/>
+
+</LinearLayout>

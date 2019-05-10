@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="are_you_sure">آیا اطمینان دارید؟</string>
+    <string name="cancel">انصراف</string>
+    <string name="confirm">تایید</string>
+    <string name="discard_video_msg">آیا از تصویر برداری منصرف شده اید؟</string>
+    <string name="done">انجام شد</string>
+    <string name="initializing">آماده سازی اولیه...</string>
+    <string name="next">بعدی</string>
+    <string name="preview_video">Preview Video</string>
+    <string name="preparing">آماده سازی...</string>
+    <string name="encoding_percent">رمز گذاری %d%%</string>
+    <string name="saving_video">ذخیره ویدیو</string>
+    <string name="record_video">ضبط ویدیو</string>
+    <string name="video_saved_path">ویدیو شما در این مسیر ذخبره شده</string>
+
+</resources>
