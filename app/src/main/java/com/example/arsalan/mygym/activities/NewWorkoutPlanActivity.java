@@ -18,11 +18,13 @@ import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.databinding.ActivityNewWorkoutPlanBinding;
 import com.example.arsalan.mygym.fragments.NewWorkoutPlanFragment;
 import com.example.arsalan.mygym.fragments.WorkoutPlanFragment;
+import com.example.arsalan.mygym.models.NextPrev;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.WorkoutPlanDay;
 import com.example.arsalan.mygym.models.WorkoutRow;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
+import com.example.arsalan.mygym.viewModels.NextPrevVm;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -43,6 +45,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -79,7 +83,7 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
     private CountDownTimer countOneItem;
     private CountDownTimer countTotalTime;
     private MutableLiveData<CurrentPlayPauseFragment> mPlayPause = new MutableLiveData<>();
-    private MutableLiveData<ForwardBackward> mGoForwardBackward = new MutableLiveData<>();
+    private int mCurrentStep;
 
     public NewWorkoutPlanActivity() {
         mContext = this;
@@ -106,6 +110,7 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
             }.getType());
         } catch (Exception ex) {
         }
+        NextPrevVm nextPrevVm= ViewModelProviders.of(this).get(NextPrevVm.class);
 
         if (workoutPlanDayList != null && workoutPlanDayList.size() > 0) {
             isNew = false;
@@ -150,11 +155,13 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
                 }
             }
         });
-        bind.btnGoForward.setOnClickListener(b ->
-                mGoForwardBackward.setValue(new ForwardBackward(ForwardBackward.FORWARD, mCurrentDay)));
+         mCurrentStep=0;
+        bind.btnGoForward.setOnClickListener(b -> {
+            nextPrevVm.setNextPrev(new NextPrev(mCurrentDay, ++mCurrentStep));
+        });
 
         bind.btnGoPrev.setOnClickListener(b ->
-                mGoForwardBackward.setValue(new ForwardBackward(ForwardBackward.BACKWARD, mCurrentDay)));
+                nextPrevVm.setNextPrev(new NextPrev(mCurrentDay, --mCurrentStep)));
     }
 
     @Override
@@ -234,11 +241,6 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
     @Override
     public MutableLiveData<CurrentPlayPauseFragment> getPlayPause() {
         return mPlayPause;
-    }
-
-    @Override
-    public MutableLiveData<ForwardBackward> goForwardBackward() {
-        return mGoForwardBackward;
     }
 
 

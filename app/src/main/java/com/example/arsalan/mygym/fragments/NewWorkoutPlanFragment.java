@@ -224,7 +224,7 @@ public class NewWorkoutPlanFragment extends Fragment {
         }
 
         @Override
-        public void onClick(WorkoutRow workoutRow,int index) {
+        public void onClick(int index) {
            // mListener.updateTimesUi(workoutRow);
             Log.d(TAG, "getView: v.setOnClickListener");
         }

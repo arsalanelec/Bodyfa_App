@@ -117,6 +117,6 @@ public class WorkoutRow implements Parcelable {
     }
 
     public interface OnWorkoutRowEventListener {
-        void onClick(WorkoutRow workoutRow, int index);
+        void onClick(int index);
     }
 }

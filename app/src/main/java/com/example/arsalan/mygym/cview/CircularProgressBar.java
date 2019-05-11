@@ -43,7 +43,7 @@ import com.example.arsalan.mygym.MyUtil;
 public class CircularProgressBar extends ProgressBar{
 	private static final String TAG = "CircularProgressBar";
 
-	private final int STROKE_WIDTH = (int) MyUtil.dpToPixel(10,getResources());
+	private final int STROKE_WIDTH = (int) MyUtil.dpToPixel(5,getResources());
 
 	private String mTitle = "";		
 	private String mSubTitle = "";
@@ -126,7 +126,7 @@ public class CircularProgressBar extends ProgressBar{
 		if(t!=null)
 			mSubTitle = t;
 
-		mStrokeWidth = a.getInt(R.styleable.CircularProgressBar_cpb_strokeWidth, STROKE_WIDTH);
+		mStrokeWidth = (int) MyUtil.dpToPixel(a.getInt(R.styleable.CircularProgressBar_cpb_strokeWidth, STROKE_WIDTH),getResources());
 
 		a.recycle();
 

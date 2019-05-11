@@ -19,6 +19,7 @@ import com.example.arsalan.mygym.databinding.ItemNewWorkoutBinding;
 import com.example.arsalan.mygym.dialog.TutorialVideoListDialog;
 import com.example.arsalan.mygym.models.SelectableRow;
 import com.example.arsalan.mygym.models.WorkoutRow;
+import com.example.arsalan.mygym.viewModels.NextPrevVm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 
 public class WorkoutPlanFragment extends Fragment {
@@ -49,6 +51,8 @@ public class WorkoutPlanFragment extends Fragment {
     private MutableLiveData<NewWorkoutPlanActivity.CurrentPlayPauseFragment> mPlayPause;
     private long mSavedTime = 0;
     private boolean isPaused = false;
+    private int mCurrentIndext = 0;
+    private int mCurrentStep = 0;
 
     public WorkoutPlanFragment() {
         // Required empty public constructor
@@ -98,7 +102,19 @@ public class WorkoutPlanFragment extends Fragment {
 
         workoutLV.setAdapter(adapter);
         mPlayPause = new MutableLiveData<>();
+        NextPrevVm nextPrevVm = ViewModelProviders.of(getActivity()).get(NextPrevVm.class);
+        nextPrevVm.getNextPrevLiveData().observe(this, nextPrev -> {
 
+            if(nextPrev.getDay()==mDayOfWeek){
+                if(nextPrev.getStep()>mCurrentStep){
+                    adapter.onClick(++mCurrentIndext);
+
+                }else if(nextPrev.getStep()<mCurrentStep){
+                    adapter.onClick(--mCurrentIndext);
+                }
+            }
+            mCurrentStep=nextPrev.getStep();
+        });
         v.setRotation(180);
         return v;
     }
@@ -133,7 +149,6 @@ public class WorkoutPlanFragment extends Fragment {
 
         MutableLiveData<NewWorkoutPlanActivity.CurrentPlayPauseFragment> getPlayPause();
 
-        MutableLiveData<NewWorkoutPlanActivity.ForwardBackward> goForwardBackward();
 
     }
 
@@ -187,31 +202,20 @@ public class WorkoutPlanFragment extends Fragment {
                 TutorialVideoListDialog dialog = TutorialVideoListDialog.newInstance(getItem(i).getWorkoutId());
                 dialog.show(getFragmentManager(), "");
             });
+
             return v;
         }
 
         public void selectFirstRow() {
             if (workoutRowList.size() > 0)
-                onClick(workoutRowList.get(0), 0);
+                onClick(0);
         }
 
         @Override
-        public void onClick(WorkoutRow workoutRow, int index) {
+        public void onClick(int index) {
             mListener.setCurrentWorkoutDay(mDayOfWeek);
-            mListener.goForwardBackward().removeObservers(WorkoutPlanFragment.this);
-            mListener.goForwardBackward().observe(WorkoutPlanFragment.this, forwardBackward -> {
-                if (forwardBackward.getDay() == mDayOfWeek && forwardBackward.getStat() == NewWorkoutPlanActivity.ForwardBackward.FORWARD) {
-                    if (index < getCount() - 1) {
-                        onClick(workoutRow, index + 1);
-                        return;
-                    }
-                } else if (forwardBackward.getDay() == mDayOfWeek && forwardBackward.getStat() == NewWorkoutPlanActivity.ForwardBackward.BACKWARD) {
-                    if (index > 0) {
-                        onClick(workoutRow, index - 1);
-                        return;
-                    }
-                }
-            });
+
+
             mListener.hasNextPrev(index < workoutRowList.size() - 1, index > 0);
             isPaused = false;
             for (SelectableRow selectableRow : selectableRows) {
@@ -230,6 +234,7 @@ public class WorkoutPlanFragment extends Fragment {
             int finalTotalTime = totalTime;
 
             Log.d(TAG, "onClick: totalTime:" + totalTime);
+            WorkoutRow workoutRow = mWorkoutRowList.get(index);
             int itemTimes = workoutRow.getRep() * workoutRow.getSet() * workoutRow.getSetDuration() + workoutRow.getSet() * (workoutRow.getRest() - 1);
             //mListener.setPlayPause(mPlayPause);
             mPlayPause = mListener.getPlayPause();
@@ -261,7 +266,7 @@ public class WorkoutPlanFragment extends Fragment {
                         @Override
                         public void onFinish() {
                             if (index < workoutRowList.size() - 1) {
-                                onClick(getItem(index + 1), index + 1);
+                                onClick(index + 1);
                             }
                         }
                     }.start();

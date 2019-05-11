@@ -178,7 +178,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:cpb_strokeWidth="40"
+                app:cpb_strokeWidth="5"
                 app:cpb_subtitle="زمان ست"
                 app:cpb_title="00:00:00"
                 app:layout_constraintBottom_toTopOf="@+id/view"
