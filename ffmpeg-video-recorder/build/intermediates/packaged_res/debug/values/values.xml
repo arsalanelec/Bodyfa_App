@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dark_gray">#222222</color>
+    <color name="red">#ff0000</color>
+    <string name="are_you_sure">آیا اطمینان دارید؟</string>
+    <string name="cancel">انصراف</string>
+    <string name="confirm">تایید</string>
+    <string name="discard_video_msg">آیا از تصویر برداری منصرف شده اید؟</string>
+    <string name="done">انجام شد</string>
+    <string name="encoding_percent">رمز گذاری %d%%</string>
+    <string name="initializing">آماده سازی اولیه...</string>
+    <string name="next">بعدی</string>
+    <string name="preparing">آماده سازی...</string>
+    <string name="preview_video">Preview Video</string>
+    <string name="record_video">ضبط ویدیو</string>
+    <string name="saving_video">ذخیره ویدیو</string>
+    <string name="video_saved_path">ویدیو شما در این مسیر ذخبره شده</string>
+    <style name="ActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColorSecondary">@android:color/black</item>
+        <item name="colorPrimary">#3498D6</item>
+        <item name="colorPrimaryDark">#0165A3</item>
+        <item name="colorAccent">#67CBFF</item>
+    </style>
+</resources>
