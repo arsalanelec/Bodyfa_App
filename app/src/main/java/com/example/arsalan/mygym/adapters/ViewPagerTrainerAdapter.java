@@ -13,6 +13,7 @@ import com.example.arsalan.mygym.fragments.HomeFragment;
 import com.example.arsalan.mygym.fragments.InboxFragment;
 import com.example.arsalan.mygym.fragments.MyAthleteListFragment;
 import com.example.arsalan.mygym.fragments.TrainerListFragment;
+import com.example.arsalan.mygym.fragments.TrainerOrderListFragment;
 import com.example.arsalan.mygym.fragments.TrainerPlansTabFragment;
 import com.example.arsalan.mygym.fragments.TutorialFragment;
 import com.example.arsalan.mygym.models.Trainer;
@@ -62,7 +63,7 @@ public class ViewPagerTrainerAdapter extends FragmentStatePagerAdapter {
             case 2:
                 return TrainerPlansTabFragment.newInstance(mCurrentTrainer);
             case 3:
-                return new TutorialFragment();
+                return  TrainerOrderListFragment.newInstance(mCurrentTrainer.getId());
             case 4:
                 return new TrainerListFragment();
             case 5:

@@ -50,6 +50,7 @@ import com.example.arsalan.mygym.fragments.GymListFragment;
 import com.example.arsalan.mygym.fragments.HomeFragment;
 import com.example.arsalan.mygym.fragments.NewsListFragment;
 import com.example.arsalan.mygym.fragments.TrainerListFragment;
+import com.example.arsalan.mygym.fragments.TrainerOrderListFragment;
 import com.example.arsalan.mygym.fragments.TrainerPlansTabFragment;
 import com.example.arsalan.mygym.fragments.TutorialFragment;
 import com.example.arsalan.mygym.models.Gym;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity
         , AthleteMealPlanListFragment.OnFragmentInteractionListener
         , AthleteWorkoutPlanListFragment.OnFragmentInteractionListener
         , RateDialog.OnFragmentInteractionListener
+, TrainerOrderListFragment.OnFragmentInteractionListener
         , Injectable {
     private static final String KEY_THEME_ID = "key theme id";
     private static final String KEY_PIRVATE_VIEW = "key private view";
@@ -697,6 +699,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
         return dispatchingAndroidInjector;
+    }
+
+    @Override
+    public void onWorkoutPlanCancelRequest(int planId) {
+
     }
 
 

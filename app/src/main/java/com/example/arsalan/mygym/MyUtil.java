@@ -1,13 +1,21 @@
 package com.example.arsalan.mygym;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.util.TypedValue;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import saman.zamani.persiandate.PersianDate;
+import saman.zamani.persiandate.PersianDateFormat;
+
 public class MyUtil {
+    private static final String TAG = "MyUtil";
+
     /**
      * get string value of time
+     *
      * @param remainedItemTime
      * @return
      */
@@ -21,13 +29,29 @@ public class MyUtil {
     }
 
     /**
+     * convert time in milisecond to persian date string
+     * @param date
+     * @return
+     */
+    public static String getStringFormatOfDate(long date) {
+
+        PersianDate pdate = new PersianDate(date * 1000L);
+        PersianDateFormat pdformater1 = new PersianDateFormat("H:i:s y/m/d");
+        String out = pdformater1.format(pdate);
+
+        Log.d(TAG, "getStringFormatOfDate: s:" + out+  "date:"+date);
+        return out;
+    }
+
+    /**
      * convert dp value to pixel
+     *
      * @param dpValue value in dp
-     * @param r resources
+     * @param r       resources
      * @return value in pixel
      */
     public static float dpToPixel(int dpValue, Resources r) {
-            return  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    dpValue, r.getDisplayMetrics());
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                dpValue, r.getDisplayMetrics());
     }
 }

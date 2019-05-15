@@ -303,5 +303,7 @@
     <string name="change_lang">تغییر زبان</string>
     <string name="from">از</string>
     <string name="add_new_news">افزودن پست جدید</string>
+    <string name="no_data_to_show">داده ای برای نمایش وجود ندارد!</string>
+    <string name="submit">ارسال</string>
 
 </resources>

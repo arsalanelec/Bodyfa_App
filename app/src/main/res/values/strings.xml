@@ -313,5 +313,7 @@
     <string name="from">from</string>
     <string name="please_select_a_workout">یک تمرین انتخاب کنید</string>
     <string name="add_new_news">افزودن پست جدید</string>
+    <string name="no_data_to_show">No Data To Show!</string>
+    <string name="submit">submit</string>
 
 </resources>

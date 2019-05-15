@@ -17,6 +17,7 @@ import com.example.arsalan.mygym.models.RetNewsList;
 import com.example.arsalan.mygym.models.RetPMList;
 import com.example.arsalan.mygym.models.RetTrainer;
 import com.example.arsalan.mygym.models.RetTrainerList;
+import com.example.arsalan.mygym.models.RetTrainerWorkoutPlanReqList;
 import com.example.arsalan.mygym.models.RetTransactionList;
 import com.example.arsalan.mygym.models.RetTutorialList;
 import com.example.arsalan.mygym.models.RetTutorialVideoList;
@@ -224,6 +225,25 @@ public interface ApiInterface {
     @POST("/api/Trainer/GetTrainerAthletes")
     Call<RetUserList> getMyAthleteList(@Header("Authorization") String token, @Part("TrainerId") long trainerId);
 
+    @Multipart
+    @POST("api/Trainer/EditHonors")
+    Call<RetroResult> addEditHonor(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part image, @Part MultipartBody.Part thumb);
+
+    @Multipart
+    @POST("api/Trainer/GetHonors")
+    Call<RetHonorList> getHonorList(@Header("Authorization") String token, @Part("UserId") long userId);
+
+    @Multipart
+    @POST("api/Trainer/RemoveHonor")
+    Call<RetroResult> removeHonor(@Header("Authorization") String token, @Part("HonorId") long honorId);
+
+    @Multipart
+    @POST("api/Trainer/GetMyAthleteWorkoutPlanRequests")
+    Call<RetTrainerWorkoutPlanReqList> getTrainerWorkoutPlanRequests(@Header("Authorization") String token, @Part("UserId") long userId);
+
+    @Multipart
+    @POST("api/Trainer/CancelAthleteWorkoutPlanRequest")
+    Call<RetroResult> trainerCancelWorkoutPlanRequest(@Header("Authorization") String token, @Part("AthleteWorkoutPlanRequestId") long requestId);
 
     //////////////
     //باشگاه
@@ -281,16 +301,4 @@ public interface ApiInterface {
     @GET
     Call<ResponseBody> downloadFileWithDynamicUrlAsync(@Url String fileUrl);
 
-    @Multipart
-    @POST("api/Trainer/EditHonors")
-    Call<RetroResult> addEditHonor(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part image, @Part MultipartBody.Part thumb);
-
-    @Multipart
-    @POST("api/Trainer/GetHonors")
-    Call<RetHonorList> getHonorList(@Header("Authorization") String token, @Part("UserId") long userId);
-
-    @Multipart
-    @POST("api/Trainer/RemoveHonor")
-    Call<RetroResult> removeHonor(@Header("Authorization") String token, @Part("HonorId") long honorId);
-
-}
+   }
