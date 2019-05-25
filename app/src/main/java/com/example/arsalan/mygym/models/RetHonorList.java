@@ -7,7 +7,7 @@ import java.util.List;
 public class RetHonorList {
     @SerializedName("Records")
     List<Honor> records;
-    @SerializedName("RecordCount")
+    @SerializedName("RecordsCount")
     int recordsCount;
     public RetHonorList() {
     }

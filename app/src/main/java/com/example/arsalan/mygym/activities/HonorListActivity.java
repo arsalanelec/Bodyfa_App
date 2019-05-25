@@ -10,6 +10,9 @@ import com.example.arsalan.mygym.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,13 +37,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HonorListActivity extends AppCompatActivity {
-    private View waitingView;
+public class HonorListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private User mUser;
     private Context mContext;
     private List<Honor> mHonorList;
     private AdapterHonors mAdapter;
     private TextView errorTv;
+    private static final String TAG = "HonorListActivity";
+    private SwipeRefreshLayout mRefreshLayout;
 
     public HonorListActivity() {
         mContext = this;
@@ -53,6 +57,8 @@ public class HonorListActivity extends AppCompatActivity {
         setTitle(getString(R.string.medal_list));
         if (getIntent().getExtras() != null) {
             mUser = getIntent().getParcelableExtra(MyKeys.EXTRA_OBJ_USER);
+        }else {
+            new RuntimeException(this.toString()+" should receive a USER in intent");
         }
 
         FloatingActionButton addHonorBtn = findViewById(R.id.btnAddMedal);
@@ -63,16 +69,21 @@ public class HonorListActivity extends AppCompatActivity {
                 dialog.show(getSupportFragmentManager(), "add honor dialog");
             }
         });
-        waitingView = findViewById(R.id.flWaiting);
-
         ListView honorLV = findViewById(R.id.listView);
         mHonorList = new ArrayList<>();
         mAdapter = new AdapterHonors(mHonorList);
         errorTv = findViewById(R.id.txtError);
-
+         mRefreshLayout = findViewById(R.id.refreshLay);
+        mRefreshLayout.setOnRefreshListener(this);
         honorLV.setAdapter(mAdapter);
+        mRefreshLayout.setRefreshing(true);
         getHonorsWeb(mUser.getId());
 
+    }
+
+    @Override
+    public void onRefresh() {
+        getHonorsWeb(mUser.getId());
     }
 
     private class AdapterHonors extends BaseAdapter {
@@ -177,8 +188,10 @@ public class HonorListActivity extends AppCompatActivity {
         call.enqueue(new Callback<RetHonorList>() {
             @Override
             public void onResponse(Call<RetHonorList> call, Response<RetHonorList> response) {
-                waitingView.setVisibility(View.GONE);
+                mRefreshLayout.setRefreshing(false);
                 if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: success! cnt:"+response.body().getRecordsCount()+" id"+userId);
+
                     if (response.body().getRecordsCount() > 0) {
                         mHonorList.removeAll(mHonorList);
                         mHonorList.addAll(response.body().getRecords());
@@ -188,13 +201,16 @@ public class HonorListActivity extends AppCompatActivity {
                     }
                 } else {
                     errorTv.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "onResponse: error!");
+
                 }
             }
 
             @Override
             public void onFailure(Call<RetHonorList> call, Throwable t) {
-                waitingView.setVisibility(View.GONE);
+                mRefreshLayout.setRefreshing(false);
                 errorTv.setVisibility(View.VISIBLE);
+                Log.d(TAG, "onResponse: throws:"+t.getCause());
 
 
             }
