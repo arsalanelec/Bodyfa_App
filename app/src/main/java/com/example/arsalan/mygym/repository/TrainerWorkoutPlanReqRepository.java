@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.arsalan.mygym.models.RetGymList;
 import com.example.arsalan.mygym.models.RetTrainerWorkoutPlanReqList;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.Token;
@@ -43,7 +42,7 @@ public class TrainerWorkoutPlanReqRepository {
     public LiveData<List<WorkoutPlanReq>> getListLive( long  parentId) {
         refreshList(mToken.getToken(),parentId);
         // return a LiveData directly from the database.
-        return planRequestDao.loadAllList();
+        return planRequestDao.loadAllWaitingList();
     }
 
     public LiveData<Integer> cancelWorkoutRequest(int planId){
@@ -90,8 +89,8 @@ public class TrainerWorkoutPlanReqRepository {
                     Response<RetroResult> response = call.execute();
                     if (response.isSuccessful()) {
                         cancelStatus.postValue(1);
-                        planRequestDao.deleteById(planId);
-                        Log.d(TAG, "cancelWorkoutRequest: response.isSuccessful");
+
+                        Log.d(TAG, "cancelWorkoutRequest: response.isSuccessful:"+planRequestDao.deleteById(planId));
                     } else {
                         Log.d(TAG, "cancelWorkoutRequest: response.error:"+response.raw().toString());
                         cancelStatus.postValue(-1);

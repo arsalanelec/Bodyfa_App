@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.example.arsalan.mygym.dialog.SelectTrainerJoinTimeDialog;
 import com.example.arsalan.mygym.models.MealRow;
 import com.example.arsalan.mygym.R;
 
@@ -81,7 +82,6 @@ public class NewMealPlanFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_new_meal_plan, container, false);
-
 
         ListView mealLV = v.findViewById(R.id.lstMeals);
         final AdapterMealLV adapterMeal = new AdapterMealLV(mMealRowList);

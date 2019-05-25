@@ -33,7 +33,7 @@ import com.example.arsalan.mygym.models.WorkoutPlanReq;
         WorkoutPlanReq.class
 
 }, exportSchema = false
-        , version = 3)
+        , version = 5)
 public abstract class MyDatabase extends RoomDatabase {
 
     abstract public NewsDao newsDao();

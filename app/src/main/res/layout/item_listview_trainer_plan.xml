@@ -1,34 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.example.arsalan.mygym.fragments.MealPlanListFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_height="wrap_content"
     android:layoutDirection="rtl"
-    android:orientation="vertical"
-    android:layout_marginBottom="8dp"
-    android:layout_marginTop="8dp">
+   >
 
     <TextView
-
-        android:layout_width="match_parent"
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary_2"
-        android:textColor="@android:color/white"
-        android:padding="8dp"
-        android:text="لیست برنامه ها"/>
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
+        app:layout_constraintEnd_toStartOf="@+id/btnShowTutorial"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="برنامه غذایی عنوان" />
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".dialog.MealPlanListDialog"
-        tools:listitem="@layout/item_listview_trainer_plan"
-        android:divider="@color/gray_light"
-        android:dividerHeight="2dp"
-        android:layout_marginBottom="8dp"
-        />
-</LinearLayout>
+    <TextView
+        android:id="@+id/txtDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="97/دی/1"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/pink"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:drawableStart="@drawable/ic_close_12dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="8dp"
+        android:paddingTop="0dp"
+        android:text="حذف برنامه"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/btnShowTutorial"
+        app:layout_constraintStart_toStartOf="@+id/btnShowTutorial"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnShowTutorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/colorPrimary"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:drawableStart="@drawable/ic_edit_12dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="8dp"
+        android:paddingTop="0dp"
+        android:text="اصلاح برنامه"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnDelete" />
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/green"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:drawableStart="@drawable/ic_send_12dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="8dp"
+        android:paddingTop="0dp"
+        android:text="ارسال برنامه"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnShowTutorial"
+        app:layout_constraintStart_toStartOf="@+id/btnShowTutorial"
+        app:layout_constraintTop_toBottomOf="@+id/btnShowTutorial" />
+</androidx.constraintlayout.widget.ConstraintLayout>

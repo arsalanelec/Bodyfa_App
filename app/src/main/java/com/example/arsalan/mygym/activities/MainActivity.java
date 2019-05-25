@@ -28,6 +28,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -43,6 +45,8 @@ import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.dialog.AddCreditDialog;
 import com.example.arsalan.mygym.dialog.NewPlanDialog;
 import com.example.arsalan.mygym.dialog.RateDialog;
+import com.example.arsalan.mygym.dialog.RequestWorkoutPlanDialog;
+import com.example.arsalan.mygym.dialog.SelectTrainerJoinTimeDialog;
 import com.example.arsalan.mygym.fragments.AthleteMealPlanListFragment;
 import com.example.arsalan.mygym.fragments.AthleteWorkoutPlanListFragment;
 import com.example.arsalan.mygym.fragments.DashBoardAthleteFragment;
@@ -55,13 +59,16 @@ import com.example.arsalan.mygym.fragments.TrainerPlansTabFragment;
 import com.example.arsalan.mygym.fragments.TutorialFragment;
 import com.example.arsalan.mygym.models.Gym;
 import com.example.arsalan.mygym.models.MyConst;
+import com.example.arsalan.mygym.models.RetResponseStatus;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.User;
+import com.example.arsalan.mygym.models.UserCredit;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
+import com.example.arsalan.mygym.webservice.MyWebService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -94,6 +101,7 @@ import static com.example.arsalan.mygym.MyKeys.KEY_PLAN_NAME;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_ATHLETE;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_GYM;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_TRAINER;
+import static com.example.arsalan.mygym.webservice.MyWebService.STATUS_FAIL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -105,7 +113,9 @@ public class MainActivity extends AppCompatActivity
         , AthleteMealPlanListFragment.OnFragmentInteractionListener
         , AthleteWorkoutPlanListFragment.OnFragmentInteractionListener
         , RateDialog.OnFragmentInteractionListener
+, RequestWorkoutPlanDialog.OnFragmentInteractionListener
 , TrainerOrderListFragment.OnFragmentInteractionListener
+, SelectTrainerJoinTimeDialog.OnFragmentInteractionListener
         , Injectable {
     private static final String KEY_THEME_ID = "key theme id";
     private static final String KEY_PIRVATE_VIEW = "key private view";
@@ -129,6 +139,7 @@ public class MainActivity extends AppCompatActivity
     private PagerAdapter mPrivateVpa;
     private Bundle eBundle;
     private UserCreditViewModel mUserCreditViewModel;
+    private UserCredit mCredit;
 
     public MainActivity() {
         mContext = this;
@@ -168,15 +179,15 @@ public class MainActivity extends AppCompatActivity
 
         if (((MyApplication) getApplication()).getCurrentUser().getRoleId() == 2) { //مربی
             MenuItem item1 = menu.add(R.id.menuGroup1, nav_trainer_account, 3, getString(R.string.trainer_profile));
-            item1.setIcon(R.drawable.ic_person); // add icon with drawable resource
+            item1.setIcon(R.drawable.ic_person_add_black_24dp); // add icon with drawable resource
 
             MenuItem item2 = menu.add(R.id.menuGroup1, nav_trainer_honors, 4, getString(R.string.medals));
-            item2.setIcon(R.drawable.ic_person); // add icon with drawable resource
+            item2.setIcon(R.drawable.ic_person_add_black_24dp); // add icon with drawable resource
 
 
         } else if (((MyApplication) getApplication()).getCurrentUser().getRoleId() == 1) {
             MenuItem item1 = menu.add(R.id.menuGroup1, nav_gym_account, 3, getString(R.string.gym_profile));
-            item1.setIcon(R.drawable.ic_person); // add icon with drawable resource
+            item1.setIcon(R.drawable.ic_person_add_black_24dp); // add icon with drawable resource
         }
 
         final ViewPager viewPager = findViewById(R.id.viewpager);
@@ -188,28 +199,8 @@ public class MainActivity extends AppCompatActivity
             mCurrentGym = eBundle.getParcelable(EXTRA_OBJ_GYM);
         }
 
-/*        if (!Pushe.isPusheInitialized(this)) {
-            Pushe.initialize(this, true);
-            if (Pushe.isPusheInitialized(this)) {
-                String pushehId = Pushe.getPusheId(this);
-                addEditPushehId(pushehId);
-                Toast.makeText(this, "Pusheh Id: " + pushehId, Toast.LENGTH_LONG).show();
-                Log.d(getClass().getSimpleName(), "onCreate: pushe initialized!:" + pushehId);
-                Pushe.subscribe(this, "Trainer");
-                Pushe.subscribe(this, "Gym");
-                Pushe.sendSimpleNotifToUser(this, Pushe.getPusheId(this), "Hi", "It is a notification from app to itself");
-                try {
-                    Pushe.sendCustomJsonToUser(this, Pushe.getPusheId(this), "{\"key\": \"It is a json from app to itself\"}");
-                } catch (co.ronash.pushe.j.c c) {
-                    Log.e("Pushe-AS-Sample", c.getMessage());
-                    c.printStackTrace();
-                }
-            }
-
-        }else*/
         Pushe.initialize(this, true);
         if (Pushe.isPusheInitialized(this)) {
-
             String pushehId = Pushe.getPusheId(this);
             addEditPushehId(pushehId);
             Toast.makeText(MainActivity.this, "Pusheh Id: " + pushehId, Toast.LENGTH_LONG).show();
@@ -436,6 +427,7 @@ public class MainActivity extends AppCompatActivity
         mUserCreditViewModel.init(mCurrentUser.getId());
         mUserCreditViewModel.getCredit().observe(this, credit -> {
             if (credit != null) {
+                mCredit=credit;
                 TextView creditTv = navigationView.getHeaderView(0).findViewById(R.id.txtUserCredit);
                 creditTv.setText(credit.getCreditFromatted());
             }
@@ -443,7 +435,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.getHeaderView(0).findViewById(R.id.btnAddCredit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), "");
+                AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), mCredit.getCredit());
                 dialog.show(getSupportFragmentManager(), "");
             }
         });
@@ -691,8 +683,8 @@ public class MainActivity extends AppCompatActivity
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
         Intent refresh = new Intent(this, LoginActivity.class);
-        refresh.putExtra(EXTRA_CURRENT_LANG, localeName);
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString(KEY_CURRENT_LANG, localeName).commit();
+        refresh.putExtra(EXTRA_CURRENT_LANG, localeName);
         startActivity(refresh);
     }
 
@@ -704,6 +696,31 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onWorkoutPlanCancelRequest(int planId) {
 
+    }
+
+    @Override
+    public LiveData<Integer> requestWorkoutPlanFromWeb(long trainedId, String title, String description,int amount) {
+        //check for enough balance
+        if(mCredit!=null && mCredit.getCredit()<amount){
+            AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), mCredit.getCredit());
+            dialog.show(getSupportFragmentManager(), "");
+            MutableLiveData<Integer> status=new MutableLiveData<>(-1);
+            return status;
+        }
+        return MyWebService.requestWorkoutPlanFromWeb(this,mCurrentUser.getId(),trainedId,title,description);
+    }
+
+    @Override
+    public LiveData<RetResponseStatus>  requestTrainerJoinPlanFromWeb(long athleteId, long trainerGymId, String selectedDuration, int amount) {
+        //check for enough balance
+        if(mCredit!=null && mCredit.getCredit()<amount){
+            AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), mCredit.getCredit());
+            dialog.show(getSupportFragmentManager(), "");
+            MutableLiveData<RetResponseStatus> status=new MutableLiveData<>();
+            status.setValue(new RetResponseStatus(STATUS_FAIL,""));
+            return status;
+        }
+        return MyWebService.athleteMembershipRequestFromWeb(this,athleteId,trainerGymId,selectedDuration);
     }
 
 

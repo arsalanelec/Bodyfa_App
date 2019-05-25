@@ -23,7 +23,7 @@ import com.example.arsalan.mygym.models.Honor;
 import com.example.arsalan.mygym.models.RetHonorList;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.User;
-import com.example.arsalan.mygym.fragments.AddMedalDialog;
+import com.example.arsalan.mygym.dialog.AddMedalDialog;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 

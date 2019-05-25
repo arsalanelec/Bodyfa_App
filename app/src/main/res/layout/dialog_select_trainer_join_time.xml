@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".dialog.SelectTrainerJoinTimeDialog">
+
+    <data>
+
+        <variable
+            name="trainer"
+            type="com.example.arsalan.mygym.models.Trainer" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/lay1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:clipToPadding="false"
+                android:elevation="2dp">
+                <ImageButton
+                    android:id="@+id/btnCancel"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_close"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView21"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/order_join"
+                    android:textColor="@color/gray_dark"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btnCancel"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView21"
+                    app:placeholderImage="@drawable/avatar"
+                    app:roundAsCircle="true"
+                    app:roundingBorderColor="@color/colorAccent"
+                    app:roundingBorderWidth="2dp" />
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@{trainer.name}"
+                    android:textColor="@color/colorAccent"
+                    app:layout_constraintBottom_toBottomOf="@+id/imgAvatar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imgAvatar"
+                    app:layout_constraintTop_toTopOf="@+id/imgAvatar" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/white"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lay1">
+
+                <RadioButton
+                    android:id="@+id/rbOrderOneDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{String.format(@string/oneDayOrder, trainer.oneDayFee)}" />
+
+                <RadioButton
+                    android:id="@+id/rbOrderOneWeek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{String.format(@string/orderOneWeek, trainer.weeklyFee)}" />
+
+                <RadioButton
+                    android:id="@+id/rbOrderTwelveDays"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{String.format(@string/orderTweolveDays, trainer.twelveDaysFee)}" />
+
+                <RadioButton
+                    android:id="@+id/rbOrderHalfMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{String.format(@string/orderHalfMonth, trainer.halfMonthFee)}" />
+
+                <RadioButton
+                    android:id="@+id/rbOrderMonthly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{String.format(@string/orderMonthly, trainer.monthlyFee)}" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btnSubmit"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:enabled="false"
+                android:text="@string/order"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</layout>

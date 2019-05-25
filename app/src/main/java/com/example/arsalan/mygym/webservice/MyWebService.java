@@ -8,29 +8,39 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.arsalan.interfaces.OnGetPlanFromWeb;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.GalleryItem;
+import com.example.arsalan.mygym.models.MealPlanDay;
 import com.example.arsalan.mygym.models.News;
 import com.example.arsalan.mygym.models.RetGalleryList;
 import com.example.arsalan.mygym.models.RetGym;
 import com.example.arsalan.mygym.models.RetNewsList;
+import com.example.arsalan.mygym.models.RetResponseStatus;
 import com.example.arsalan.mygym.models.RetTrainer;
 import com.example.arsalan.mygym.models.RetUserProfile;
+import com.example.arsalan.mygym.models.RetWorkoutPlan;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -46,6 +56,10 @@ import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_NA;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_TRAINER;
 
 public class MyWebService {
+    public static final int STATUS_WAITING = 0;
+    public static final int STATUS_SUCCESS = 1;
+    public static final int STATUS_FAIL = -1;
+    public static final int STATUS_ERROR = -2;
 
     public static void getNewsWeb(long publisherId, int typeId, final List<News> newsList, final RecyclerView.Adapter adapter, Context context, final RecyclerView recyclerView, final WebServiceResultImplementation WebServiceResultImplementation) {
         ApiInterface apiService =
@@ -146,8 +160,8 @@ public class MyWebService {
 
     public static void getProfileDetail(final String userName, String token, final AppCompatActivity activity, final WebServiceResultImplementation WebServiceResultImplementation) {
         final String TAG = "getProfileDetail";
-        Log.d(TAG, "getProfileDetail: username:"+userName);
-        Log.d(TAG, "getProfileDetail: token:"+token);
+        Log.d(TAG, "getProfileDetail: username:" + userName);
+        Log.d(TAG, "getProfileDetail: token:" + token);
         final ProgressDialog waitingDialog = new ProgressDialog(activity);
         waitingDialog.setMessage(activity.getString(R.string.getting_user_info));
         waitingDialog.show();
@@ -159,7 +173,7 @@ public class MyWebService {
                 waitingDialog.dismiss();
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        Log.d("getProfileD", "onResponse: name:" + response.body().getRecord().getName() + " phone:"+response.body().getRecord().getUserName()+" id:" + response.body().getRecord().getId());
+                        Log.d("getProfileD", "onResponse: name:" + response.body().getRecord().getName() + " phone:" + response.body().getRecord().getUserName() + " id:" + response.body().getRecord().getId());
 
                         ((MyApplication) activity.getApplication()).setCurrentUser(response.body().getRecord());
 
@@ -409,6 +423,178 @@ public class MyWebService {
             }
         });
     }
+
+    public static LiveData<Integer> sendWokroutPlanToAthleteWeb(Activity activity, long athleteId, long planId, String title, String body) {
+        return sendWokroutPlanToAthleteWeb(activity, athleteId, planId, title, body, 0);
+
+    }
+
+    /**
+     * ارسال برنامه تمرینی به ورزشکار
+     *
+     * @param activity
+     * @param athleteId
+     * @param planId
+     * @param title
+     * @param body
+     * @param requestId
+     * @return
+     */
+    public static LiveData<Integer> sendWokroutPlanToAthleteWeb(Activity activity, long athleteId, long planId, String title, String body, int requestId) {
+        final String TAG = "sendWokroutPlanToAthlet";
+        MutableLiveData<Integer> status = new MutableLiveData<>();
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+        status.setValue(STATUS_WAITING);
+        Call<RetroResult> call = apiService.sendTrainerWorkoutPlan("Bearer " + ((MyApplication) activity.getApplication()).getCurrentToken().getToken()
+                , planId
+                , athleteId
+                , RequestBody.create(MediaType.parse("text/plain"), title)
+                , RequestBody.create(MediaType.parse("text/plain"), body)
+                , requestId);
+
+        call.enqueue(new Callback<RetroResult>() {
+            @Override
+            public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
+                status.postValue(STATUS_SUCCESS);
+                Log.d(TAG, "onResponse: sent OK! reqId:" + requestId + " athleteId:" + athleteId);
+            }
+
+            @Override
+            public void onFailure(Call<RetroResult> call, Throwable t) {
+                status.postValue(STATUS_FAIL);
+                Log.d(TAG, "onResponse: send failed!");
+
+            }
+        });
+        return status;
+    }
+
+    public static LiveData<Integer> getTrainerWorkoutPlanWeb(Activity activity, final long planId, final OnGetPlanFromWeb OnGetPlanFromWeb) {
+        MutableLiveData<Integer> status = new MutableLiveData<>();
+        status.setValue(STATUS_WAITING);
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<RetWorkoutPlan> call = apiService.getTrainerWorkoutPlan("Bearer " + ((MyApplication) activity.getApplication()).getCurrentToken().getToken(), planId);
+        call.enqueue(new Callback<RetWorkoutPlan>() {
+            @Override
+            public void onResponse(Call<RetWorkoutPlan> call, Response<RetWorkoutPlan> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("getTrainerMealPlanWeb", "onResponse: desc:" + response.body().getRecord().getDescription());
+                    status.postValue(STATUS_SUCCESS);
+                    try {
+                        Gson gson = new Gson();
+                        List<MealPlanDay> mealPlanList = gson.fromJson(response.body().getRecord().getDescription(), new TypeToken<List<MealPlanDay>>() {
+                        }.getType());
+                        Log.d("getTrainerMealPlanWeb", "onResponse: " + mealPlanList);
+
+                    } catch (Exception e) {
+                    }
+                    Log.d("getTrainerMealPlanWeb", "onResponse: planId:" + planId);
+                    //ویرایش برنامه
+                    OnGetPlanFromWeb.onGetPlan(planId, response.body().getRecord().getTitle(), response.body().getRecord().getDescription());
+                } else {
+                    status.postValue(STATUS_FAIL);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RetWorkoutPlan> call, Throwable t) {
+                status.postValue(STATUS_FAIL);
+            }
+        });
+        return status;
+    }
+
+    /**
+     * send request from athlete to trainer
+     *
+     * @param activity
+     * @param athleteId
+     * @param trainerId
+     * @param title
+     * @param description
+     * @return
+     */
+    public static LiveData<Integer> requestWorkoutPlanFromWeb(Activity activity, long athleteId, long trainerId, String title, String description) {
+        MutableLiveData<Integer> status = new MutableLiveData<>();
+        status.setValue(STATUS_WAITING);
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+
+        Map<String, RequestBody> requestBodyMap = new HashMap<>();
+        requestBodyMap.put("AthleteUserId", RequestBody.create(MediaType.parse("text/plain"), String.valueOf(athleteId)));
+        requestBodyMap.put("ParentUserId", RequestBody.create(MediaType.parse("text/plain"), String.valueOf(trainerId)));
+        requestBodyMap.put("Title", RequestBody.create(MediaType.parse("text/plain"), title));
+        requestBodyMap.put("Descriptions", RequestBody.create(MediaType.parse("text/plain"), description));
+        Call<RetroResult> call = apiService.requestWorkoutPlan("Bearer " + ((MyApplication) activity.getApplication()).getCurrentToken().getToken(), requestBodyMap);
+        call.enqueue(new Callback<RetroResult>() {
+            @Override
+            public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("requestWorkoutPlan", "onResponse: success!");
+                    status.postValue(STATUS_SUCCESS);
+                } else {
+                    status.postValue(STATUS_FAIL);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RetroResult> call, Throwable t) {
+                status.postValue(STATUS_FAIL);
+            }
+        });
+        return status;
+    }
+
+
+    public static LiveData<RetResponseStatus> athleteMembershipRequestFromWeb(Activity activity, long athleteId, long trainerGymId, String membershipType) {
+        MutableLiveData<RetResponseStatus> status = new MutableLiveData<>();
+        RetResponseStatus responseStatus = new RetResponseStatus();
+        responseStatus.setStatus(STATUS_WAITING);
+        status.setValue(responseStatus);
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+
+        Map<String, RequestBody> requestBodyMap = new HashMap<>();
+        requestBodyMap.put("AthleteId", RequestBody.create(MediaType.parse("text/plain"), String.valueOf(athleteId)));
+        requestBodyMap.put("ParentId", RequestBody.create(MediaType.parse("text/plain"), String.valueOf(trainerGymId)));
+        requestBodyMap.put("MembershipType", RequestBody.create(MediaType.parse("text/plain"), membershipType));
+        Call<RetroResult> call = apiService.athleteMembershipRequest("Bearer " + ((MyApplication) activity.getApplication()).getCurrentToken().getToken(), requestBodyMap);
+        call.enqueue(new Callback<RetroResult>() {
+            @Override
+            public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
+
+                if (response.isSuccessful()) {
+                    if (response.body().getResult().equalsIgnoreCase("ok")) {
+                        Log.d("requestWorkoutPlan", "onResponse: success!");
+                        responseStatus.setStatus(STATUS_SUCCESS);
+
+                    } else {
+                        responseStatus.setStatus(STATUS_FAIL);
+                        responseStatus.setMessage(response.body().getMessage());
+                    }
+                    status.postValue(responseStatus);
+                } else {
+                    responseStatus.setStatus(STATUS_FAIL);
+                    status.postValue(responseStatus);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RetroResult> call, Throwable t) {
+                responseStatus.setStatus(STATUS_FAIL);
+                status.postValue(responseStatus);
+            }
+        });
+        return status;
+    }
+
 
     public interface OnGalleryLoadListener {
         void onGalleryLoad(ArrayList<GalleryItem> galleryItems);

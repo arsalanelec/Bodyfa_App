@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.AddMedalDialog"
+    tools:context=".dialog.AddMedalDialog"
     android:layoutDirection="rtl">
     <TextView
         android:layout_width="match_parent"
@@ -68,6 +68,7 @@
         android:paddingBottom="8dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:gravity="bottom|end"/>
+        android:gravity="center"
+        android:layout_gravity="end"/>
 </LinearLayout>
 </LinearLayout>

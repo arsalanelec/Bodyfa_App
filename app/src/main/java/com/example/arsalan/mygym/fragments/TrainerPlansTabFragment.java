@@ -2,13 +2,18 @@ package com.example.arsalan.mygym.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.arsalan.interfaces.OnGetPlanFromWeb;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.models.MealPlan;
@@ -46,6 +52,7 @@ import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerMealPlanListViewModel;
 import com.example.arsalan.mygym.viewModels.TrainerWorkoutListViewModel;
+import com.example.arsalan.mygym.webservice.MyWebService;
 import com.example.arsalan.room.MealPlanDao;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -69,6 +76,8 @@ import static com.example.arsalan.mygym.MyKeys.EXTRA_ATHLETE_ID;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_BODY;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_ID;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_TITLE;
+import static com.example.arsalan.mygym.webservice.MyWebService.getTrainerWorkoutPlanWeb;
+import static com.example.arsalan.mygym.webservice.MyWebService.sendWokroutPlanToAthleteWeb;
 
 
 public class TrainerPlansTabFragment extends Fragment implements Injectable {
@@ -233,7 +242,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         adapterWorkoutLVLimited = new AdapterTrainerWorkoutPlanList(getContext(), workoutPlanListLimited, new AdapterTrainerWorkoutPlanList.OnItemClickListener() {
             @Override
             public void onItemEditClick(WorkoutPlan workoutPlan, int position) {
-                getTrainerWorkoutPlanWeb(workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
+                getTrainerWorkoutPlanWeb(getActivity(), workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
                     @Override
                     public void onGetPlan(long id, String title, String body) {
                         mListener.addEditWorkoutPlan(id, title, body, true);
@@ -263,7 +272,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
 
             @Override
             public void onItemShowClick(WorkoutPlan workoutPlan, int position) {
-                getTrainerWorkoutPlanWeb(workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
+                getTrainerWorkoutPlanWeb(getActivity(),workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
                     @Override
                     public void onGetPlan(long id, String title, String body) {
                         mListener.addEditWorkoutPlan(id, title, body, false);
@@ -275,7 +284,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
 
             @Override
             public void onItemSendClick(WorkoutPlan workoutPlan, int position) {
-                getTrainerWorkoutPlanWeb(workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
+                getTrainerWorkoutPlanWeb(getActivity(),workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
                     @Override
                     public void onGetPlan(long id, String title, String body) {
                         MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
@@ -409,7 +418,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getTrainerWorkoutPlanWeb(getItemId(i), new OnGetPlanFromWeb() {
+                    getTrainerWorkoutPlanWeb(getActivity(),getItemId(i), new OnGetPlanFromWeb() {
                         @Override
                         public void onGetPlan(long id, String title, String body) {
                             mListener.addEditWorkoutPlan(id, title, body, false);
@@ -541,10 +550,10 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
                         }.getType());*/
                         OnGetPlanFromWeb.onGetPlan(planId, response.body().getRecord().getTitle(), response.body().getRecord().getDescription());
                         mealPlanDao.updateMealPlan(response.body().getRecord());
-                    }else {
+                    } else {
                         MealPlan mealPlan = mealPlanDao.getMealPlanById(planId);
 
-                        OnGetPlanFromWeb.onGetPlan(planId, mealPlan.getTitle(),mealPlan.getDescription());
+                        OnGetPlanFromWeb.onGetPlan(planId, mealPlan.getTitle(), mealPlan.getDescription());
                     }
 
 
@@ -552,8 +561,8 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
                     e.printStackTrace();
                     MealPlan mealPlan = mealPlanDao.getMealPlanById(planId);
 
-                    OnGetPlanFromWeb.onGetPlan(planId, mealPlan.getTitle(),mealPlan.getDescription());
-                }finally {
+                    OnGetPlanFromWeb.onGetPlan(planId, mealPlan.getTitle(), mealPlan.getDescription());
+                } finally {
                     if (waitingDialog.isShowing())
                         waitingDialog.dismiss();
                 }
@@ -590,45 +599,6 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
 
     }
 
-    private void getTrainerWorkoutPlanWeb(final long planId, final OnGetPlanFromWeb OnGetPlanFromWeb) {
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-        final ProgressDialog waitingDialog = new ProgressDialog(getContext());
-        Log.d("getView", "onClick: id:" + planId);
-        waitingDialog.setMessage(getString(R.string.receiving_workout_plan));
-        waitingDialog.show();
-        Call<RetWorkoutPlan> call = apiService.getTrainerWorkoutPlan("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), planId);
-        call.enqueue(new Callback<RetWorkoutPlan>() {
-            @Override
-            public void onResponse(Call<RetWorkoutPlan> call, Response<RetWorkoutPlan> response) {
-                if (waitingDialog.isShowing())
-                    waitingDialog.dismiss();
-                if (response.isSuccessful()) {
-                    Log.d("getTrainerMealPlanWeb", "onResponse: desc:" + response.body().getRecord().getDescription());
-
-                    try {
-                        Gson gson = new Gson();
-                        List<MealPlanDay> mealPlanList = gson.fromJson(response.body().getRecord().getDescription(), new TypeToken<List<MealPlanDay>>() {
-                        }.getType());
-                        Log.d("getTrainerMealPlanWeb", "onResponse: " + mealPlanList);
-
-                    } catch (Exception e) {
-                    }
-                    Log.d("getTrainerMealPlanWeb", "onResponse: planId:" + planId);
-                    //ویرایش برنامه
-                    OnGetPlanFromWeb.onGetPlan(planId, response.body().getRecord().getTitle(), response.body().getRecord().getDescription());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RetWorkoutPlan> call, Throwable t) {
-                if (waitingDialog.isShowing())
-                    waitingDialog.dismiss();
-
-            }
-        });
-
-    }
 
     private void removeTrainerMealPlanWeb(long planId) {
         ApiInterface apiService =
@@ -734,7 +704,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         } else if (requestCode == REQ_WORKOUT_PLAN_LIST_DIALOG) {
             long planId = data.getLongExtra(EXTRA_PLAN_ID, 0);
             if (resultCode == MyKeys.RESULT_EDIT) {
-                getTrainerWorkoutPlanWeb(planId, new OnGetPlanFromWeb() {
+                getTrainerWorkoutPlanWeb(getActivity(),planId, new OnGetPlanFromWeb() {
                     @Override
                     public void onGetPlan(long id, String title, String body) {
                         mListener.addEditWorkoutPlan(id, title, body, true);
@@ -744,7 +714,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
             } else if (resultCode == MyKeys.RESULT_DELETE) {
                 removeTrainerWorkoutPlanWeb(planId);
             } else if (resultCode == MyKeys.RESULT_SHOW) {
-                getTrainerWorkoutPlanWeb(planId, new OnGetPlanFromWeb() {
+                getTrainerWorkoutPlanWeb(getActivity(),planId, new OnGetPlanFromWeb() {
                     @Override
                     public void onGetPlan(long id, String title, String body) {
                         mListener.addEditWorkoutPlan(id, title, body, false);
@@ -752,7 +722,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
                 });
 
             } else if (resultCode == MyKeys.RESULT_SEND) {
-                getTrainerWorkoutPlanWeb(planId, new OnGetPlanFromWeb() {
+                getTrainerWorkoutPlanWeb(getActivity(),planId, new OnGetPlanFromWeb() {
                     @Override
                     public void onGetPlan(long id, String title, String body) {
                         MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
@@ -768,7 +738,13 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
             }
         } else if (requestCode == REQ_SELECT_USER_WORKOUT_PLAN) {
             if (resultCode == RESULT_OK) {
-                sendWokroutPlanToAthleteWeb(data.getLongExtra(EXTRA_ATHLETE_ID, 0), data.getLongExtra(EXTRA_PLAN_ID, 0), data.getStringExtra(EXTRA_PLAN_TITLE), data.getStringExtra(EXTRA_PLAN_BODY));
+                LiveData<Integer> status = sendWokroutPlanToAthleteWeb(getActivity(), data.getLongExtra(EXTRA_ATHLETE_ID, 0), data.getLongExtra(EXTRA_PLAN_ID, 0), data.getStringExtra(EXTRA_PLAN_TITLE), data.getStringExtra(EXTRA_PLAN_BODY));
+                final ProgressDialog waitingDialog = new ProgressDialog(getContext());
+                waitingDialog.setMessage(getString(R.string.sending_plan));
+                waitingDialog.show();
+                status.observe(TrainerPlansTabFragment.this, resultStatus -> {
+                    waitingDialog.dismiss();
+                });
             }
         }
     }
@@ -804,37 +780,5 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         });
     }
 
-    //ارسال برنامه تمرینی به ورزشکار
-    private void sendWokroutPlanToAthleteWeb(long athleteId, long planId, String title, String body) {
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-        final ProgressDialog waitingDialog = new ProgressDialog(getContext());
-        waitingDialog.setMessage(getString(R.string.sending_plan));
-        waitingDialog.show();
-        Call<RetroResult> call = apiService.sendTrainerWorkoutPlan("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken()
-                , planId
-                , athleteId
-                , RequestBody.create(MediaType.parse("text/plain"), title)
-                , RequestBody.create(MediaType.parse("text/plain"), body));
 
-        call.enqueue(new Callback<RetroResult>() {
-            @Override
-            public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
-                waitingDialog.dismiss();
-                Log.d(getClass().getSimpleName(), "onResponse: sent OK!");
-                Toast.makeText(getContext(), getString(R.string.plan_sent_successfully), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Call<RetroResult> call, Throwable t) {
-                waitingDialog.dismiss();
-                Log.d(getClass().getSimpleName(), "onResponse: send failed!");
-
-            }
-        });
-    }
-
-    private interface OnGetPlanFromWeb {
-        void onGetPlan(long id, String title, String body);
-    }
 }

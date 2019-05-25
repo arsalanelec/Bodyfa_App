@@ -55,7 +55,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final String TAG = "TrainerOrderListFragmen";
     @Inject
     MyViewModelFactory mFactory;
 
@@ -78,7 +78,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
      * @param trainerId Parameter 1.
      * @return A new instance of fragment TrainerOrderListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static TrainerOrderListFragment newInstance(long trainerId) {
         TrainerOrderListFragment fragment = new TrainerOrderListFragment();
         Bundle args = new Bundle();
@@ -117,6 +116,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
          viewModel = ViewModelProviders.of(this, mFactory).get(TrainerWorkoutPlanReqVm.class);
         viewModel.init(mTrainerId);
         viewModel.getWorkoutPlanListLv().observe(this, workoutPlanReqs -> {
+            Log.d(TAG, "onActivityCreated: workoutPlanReqs Changed listSize:"+workoutPlanReqs.size());
             mRequestList.removeAll(mRequestList);
             if (workoutPlanReqs != null && workoutPlanReqs.size() > 0) {
                 mRequestList.addAll(workoutPlanReqs);
@@ -126,7 +126,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
             bind.exListView.expandGroup(0);
             bind.swipeLay.setRefreshing(false);
         });
-
     }
 
     @Override
@@ -158,16 +157,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         public ExtendViewAdapter(List<WorkoutPlanReq> workoutPlanReqList) {
             this.workoutPlanReqList = workoutPlanReqList;
-        }
-
-        @Override
-        public void registerDataSetObserver(DataSetObserver observer) {
-
-        }
-
-        @Override
-        public void unregisterDataSetObserver(DataSetObserver observer) {
-
         }
 
         @Override
@@ -260,15 +249,8 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
             return false;
         }
 
-        @Override
-        public boolean areAllItemsEnabled() {
-            return false;
-        }
 
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
+
 
         @Override
         public void onGroupExpanded(int groupPosition) {
@@ -278,16 +260,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         @Override
         public void onGroupCollapsed(int groupPosition) {
 
-        }
-
-        @Override
-        public long getCombinedChildId(long groupId, long childId) {
-            return 0;
-        }
-
-        @Override
-        public long getCombinedGroupId(long groupId) {
-            return 0;
         }
 
         @Override
@@ -302,7 +274,13 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         @Override
         public void onSubmitClick(int requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl) {
-            TrainerWorkoutPlanListToSendDialog dialog=TrainerWorkoutPlanListToSendDialog.newInstance(requestId,trainerId,athleteId,athleteName,athleteThumbUrl);
+            TrainerWorkoutPlanListToSendDialog dialog=TrainerWorkoutPlanListToSendDialog.newInstance(
+                    requestId,
+                    trainerId,
+                    athleteId,
+                    athleteName,
+                    athleteThumbUrl);
+            Log.d(TAG, "onSubmitClick: athleteId:"+athleteId);
             dialog.show(getFragmentManager(),"");
         }
 

@@ -1,56 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layoutDirection="rtl"
-    android:orientation="vertical"
     tools:context=".dialog.RateDialog">
 
-    <TextView
-        android:id="@+id/txtTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary_2"
-        android:gravity="right"
-        android:paddingBottom="16dp"
-        android:paddingStart="8dp"
-        android:paddingTop="16dp"
-        android:text="چه امتیازی می دهید؟"
-        android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:orientation="vertical"
+        >
 
-    <RatingBar
-        android:id="@+id/rateBar"
-        style="@style/CustomRatingBarBig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="32dp"
-        android:clickable="true"
-        android:numStars="5"
-        android:rating="0"
-        android:stepSize="1" />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="32dp"
-    android:paddingEnd="32dp">
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="10sp"
-        android:text="ضعیف"
-        android:gravity="start|bottom"/>
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="10sp"
-        android:text="عالی"
-        android:gravity="end|bottom"
-        />
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary_2"
+            android:gravity="right"
+            android:paddingBottom="16dp"
+            android:paddingStart="8dp"
+            android:text="@string/what_rate"
+            android:paddingTop="16dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
-</LinearLayout>
-</LinearLayout>
+        <RatingBar
+            android:id="@+id/rateBar"
+            style="@style/CustomRatingBarBig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="32dp"
+            android:clickable="true"
+            android:numStars="5"
+            android:rating="0"
+            android:stepSize="1"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="10sp"
+                android:text="ضعیف"
+                android:gravity="start|bottom" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="10sp"
+                android:text="عالی"
+                android:gravity="end|bottom" />
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

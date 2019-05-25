@@ -106,19 +106,20 @@
     <string name="likedCount"> %d پسند شده</string>
     <string name="gymProfile">پروفایل باشگاه</string>
     <string name="athlete_count">تعداد ورزشکاران: %d نفر</string>
-    <string name="getting_user_info">دریافت مشخصات کاربری لطفا چند لحظه منتظر بمانید...</string>
+    <string name="getting_user_info">دریافت مشخصات کاربری لطفا چند لحظه منتظر بمانید…</string>
     <string name="wrong_username_password">نام کاربری و یا رمز ورود اشتباه است!</string>
     <string name="error_connect_to_internet">خطایی رویداده است. آبا به اینترنت متصل هستید؟ لطفا مجددا تلاش کنید!</string>
     <string name="error_accord_try_again">خطایی رویداده است. لطفا مجددا تلاش کنید!</string>
     <string name="error_please_enter_again">مشکلی پیش آمده. لطفا مجددا وارد شوید!</string>
+    <string name="please_wait_a_moment">لطفا چند لحظه منتظر بمانید…</string>
     <string name="edit_trainer_profile">ویرایش مشخصات مربی</string>
     <string name="choose_training_licence">انتخاب عکس مدرک مربیگیری</string>
     <string name="choose_id_card">انتخاب عکس کارت ملی</string>
-    <string name="uploading_picture_wait">درحال ارسال عکس لطفا چند لحظه منتظر بمانید...</string>
+    <string name="uploading_picture_wait">درحال ارسال عکس لطفا چند لحظه منتظر بمانید…</string>
     <string name="choose_province">استان خود را انتخاب نمایید</string>
     <string name="choose_profile_photo">انتخاب عکس نمایه</string>
     <string name="done_successfully">با موفقیت انجام شد</string>
-    <string name="sending">در حال ارسال...</string>
+    <string name="sending">در حال ارسال…</string>
     <string name="athlete">ورزشکار</string>
     <string name="trainer">مربی</string>
     <string name="gym_owner">مدیر باشگاه</string>
@@ -305,5 +306,27 @@
     <string name="add_new_news">افزودن پست جدید</string>
     <string name="no_data_to_show">داده ای برای نمایش وجود ندارد!</string>
     <string name="submit">ارسال</string>
+    <string name="send_to">ارسال به…</string>
+    <string name="done">انجام</string>
+    <string name="price1">قیمت:</string>
+    <string name="rial">ریال</string>
+    <string name="order">سفارش</string>
+    <string name="join">عضویت</string>
+    <string name="order_join">سفارش عضویت…</string>
+    <string name="priceInRial">%,d ریال</string>
+
+    <string name="oneDayOrder">یک روز %,d ریال</string>
+    <string name="orderOneWeek">یک هفته %,d ریال</string>
+    <string name="orderTweolveDays">دوازده روز %,d ریال</string>
+    <string name="orderHalfMonth">پانزده روز %,d ریال</string>
+    <string name="orderMonthly">یک ماه %,d ریال</string>
+    <string name="request_workout_plan">درخواست برنامه حرکتی</string>
+    <string name="field_cant_empty">این جایگاه نمی تواند خالی باشد.</string>
+    <string name="balance_not_enough">موجودی کافی نیست</string>
+    <string name="please_add_balance">لطفا اعتبار حساب خود را افزایش دهید.</string>
+    <string name="your_balance_is">موجودی شما: %,d ریال</string>
+    <string name="increading_amount">مبلغ افزایش:</string>
+    <string name="pay">پرداخت</string>
+    <string name="what_rate">چه امتیازی می دهید؟</string>
 
 </resources>

@@ -1,33 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list"
     android:name="com.example.arsalan.mygym.fragments.MealPlanListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layoutDirection="rtl"
-    android:orientation="vertical"
-    android:layout_marginBottom="8dp"
-    android:layout_marginTop="8dp">
-
-    <TextView
+    android:layout_gravity="top"
+    android:background="@android:color/white"
+android:layoutDirection="rtl"
+    android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary_2"
-        android:textColor="@android:color/white"
-        android:padding="8dp"
-        android:text="لیست برنامه ها"/>
+        android:background="@color/colorPrimary_2">
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:padding="8dp"
+            android:text="@string/send_to"
+            android:textColor="@android:color/white"
+            app:layout_constraintStart_toEndOf="@+id/btnCancel"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnCancel"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:onClick="@{()->onDeleteClick.onDeleteClick(workoutReq.id)}"
+            android:src="@drawable/ic_close"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/imgAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView20"
+            app:placeholderImage="@drawable/avatar"
+            app:roundAsCircle="true"
+            app:roundingBorderColor="@color/colorAccent"
+            app:roundingBorderWidth="2dp" />
+
+        <TextView
+            android:id="@+id/txtAthleteName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imgAvatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgAvatar"
+            app:layout_constraintTop_toTopOf="@+id/imgAvatar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".dialog.MealPlanListDialog"
-        tools:listitem="@layout/item_trainer_simple_workout_plan_list"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="8dp"
         android:divider="@color/gray_light"
         android:dividerHeight="2dp"
-        android:layout_marginBottom="8dp"
-        />
+        tools:context=".dialog.MealPlanListDialog"
+        tools:listitem="@layout/item_trainer_simple_workout_plan_list" />
+
+    <Button
+        android:id="@+id/btnSubmit"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:enabled="false"
+        android:text="@string/done" />
 </LinearLayout>

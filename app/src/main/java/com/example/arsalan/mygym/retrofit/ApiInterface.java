@@ -209,7 +209,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("/api/trainer/SendTrainerWorkoutPlanToAthlete")
-    Call<RetroResult> sendTrainerWorkoutPlan(@Header("Authorization") String token, @Part("TrainerWorkoutPlanId") long planId, @Part("AthleteUserId") long athleteId, @Part("Title") RequestBody planTitle, @Part("Description") RequestBody planBody);
+    Call<RetroResult> sendTrainerWorkoutPlan(@Header("Authorization") String token, @Part("TrainerWorkoutPlanId") long planId, @Part("AthleteUserId") long athleteId, @Part("Title") RequestBody planTitle, @Part("Description") RequestBody planBody,@Part("AthleteWorkoutPlanRequestId")int requestId );
 
 
     @Multipart
@@ -296,6 +296,11 @@ public interface ApiInterface {
     @Multipart
     @POST("api/Athletes/AthleteWorkoutPlanRequest")
     Call<RetroResult> requestWorkoutPlan(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params);
+
+    @Multipart
+    @POST("api/Athletes/AthleteMembershipRequest")
+    Call<RetroResult> athleteMembershipRequest(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params);
+
 
     @Streaming
     @GET

@@ -18,6 +18,7 @@ import android.widget.EditText;
 
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
+import com.example.arsalan.mygym.databinding.FragmentTrainerProfileEditBinding;
 import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.ProgressRequestBody;
 import com.example.arsalan.mygym.models.Trainer;
@@ -35,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -52,8 +55,7 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
     private static final String ARG_PARAM1 = "param1";
     private final static String TAG = "EditProfileFragment";
     private OnFragmentInteractionListener mListener;
-    private SimpleDraweeView docImg;
-    private SimpleDraweeView natCardImg;
+
 
     private Uri resultDocUri;
     private Uri resultNatCardUri;
@@ -61,6 +63,7 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
     private ProgressDialog waitingDialog;
 
     private Trainer mTrainer;
+    private FragmentTrainerProfileEditBinding bind;
 
     public TrainerEditProfileFragment() {
         // Required empty public constructor
@@ -90,24 +93,22 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        final View v = inflater.inflate(R.layout.fragment_trainer_profile_edit, container, false);
+         bind= DataBindingUtil.inflate(getLayoutInflater(),R.layout.fragment_trainer_profile_edit,container,false);
         getActivity().setTitle(getString(R.string.edit_trainer_profile));
-        final EditText mealPriceTV = v.findViewById(R.id.etMealPrice);
-        final EditText workoutPriceTV = v.findViewById(R.id.etWorkoutPrice);
-        natCardImg = v.findViewById(R.id.imgNatCard);
-        docImg = v.findViewById(R.id.imgDoc);
+
+
 
         if (mTrainer != null) {
-            mealPriceTV.setText("" + mTrainer.getMealPlanPrice());
-            workoutPriceTV.setText("" + mTrainer.getWorkoutPlanPrice());
+            bind.setTrainer(mTrainer);
+           /* bind.etMealPrice.setText("" + mTrainer.getMealPlanPrice());
+            bind.etWorkoutPrice.setText("" + mTrainer.getWorkoutPlanPrice());
 
-            docImg.setImageURI(MyConst.BASE_CONTENT_URL + mTrainer.getDocThumbUrl());
+            */
+            bind.imgDoc.setImageURI(MyConst.BASE_CONTENT_URL + mTrainer.getDocThumbUrl());
 
-            natCardImg.setImageURI(MyConst.BASE_CONTENT_URL + mTrainer.getNationalCardThumbUrl());
+            bind.imgNatCard.setImageURI(MyConst.BASE_CONTENT_URL + mTrainer.getNationalCardThumbUrl());
         }
-        Button editProfileBtn = v.findViewById(R.id.btnEditProfilePic);
-        editProfileBtn.setOnClickListener(new View.OnClickListener() {
+        bind.btnEditProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = CropImage.activity()
@@ -127,8 +128,7 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
             }
         });
 
-        Button sendNatCardBtn = v.findViewById(R.id.btnEditNatCard);
-        sendNatCardBtn.setOnClickListener(new View.OnClickListener() {
+        bind.btnEditNatCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = CropImage.activity()
@@ -141,15 +141,11 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
                         .setAspectRatio(3, 2)
                         .setFixAspectRatio(true)
                         .getIntent(getContext());
-                // .start(getContext(), TrainerEditProfileFragment.this);
-                /*Intent intent = CropImage.activity()
-                        .getIntent(getContext());*/
                 startActivityForResult(intent, ACTIVITY_REQUEST_NATIONAL_CARD);
             }
         });
 
-        Button submitBtn = v.findViewById(R.id.btnSubmit);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
+        bind.btnSubmit.setOnClickListener(new View.OnClickListener() {
 
             public MultipartBody.Part thumbDocBody;
             public MultipartBody.Part docImageBody;
@@ -164,14 +160,24 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
 
                 RequestBody userIdReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(((MyApplication) getActivity().getApplication()).getCurrentUser().getId()));
 
-                RequestBody mealPriceReq = RequestBody.create(MediaType.parse("text/plain"), mealPriceTV.getText().toString());
-                RequestBody workoutPriceReq = RequestBody.create(MediaType.parse("text/plain"), workoutPriceTV.getText().toString());
+                RequestBody mealPriceReq = RequestBody.create(MediaType.parse("text/plain"), bind.etMealPrice.getText().toString());
+                RequestBody workoutPriceReq = RequestBody.create(MediaType.parse("text/plain"), bind.etWorkoutPrice.getText().toString());
+                RequestBody oneDatReq = RequestBody.create(MediaType.parse("text/plain"), bind.etRegisterDailyFee.getText().toString());
+                RequestBody weeklyReq = RequestBody.create(MediaType.parse("text/plain"), bind.etRegisterWeeklyFee.getText().toString());
+                RequestBody twelveDayReq = RequestBody.create(MediaType.parse("text/plain"), bind.etRegisterTwelveFee.getText().toString());
+                RequestBody halfMonthReq = RequestBody.create(MediaType.parse("text/plain"), bind.etRegister1HalfMonthFee.getText().toString());
+                RequestBody monthlyReq = RequestBody.create(MediaType.parse("text/plain"), bind.etRegisterMonthlyFee.getText().toString());
 
                 Map<String, RequestBody> requestBodyMap = new HashMap<>();
                 requestBodyMap.put("userId", userIdReq);
 
                 requestBodyMap.put("MealPlanPrice", mealPriceReq);
                 requestBodyMap.put("WorkoutPlanPrice", workoutPriceReq);
+                requestBodyMap.put("OneDayFee", oneDatReq);
+                requestBodyMap.put("WeeklyFee", weeklyReq);
+                requestBodyMap.put("TwelveDaysFee", twelveDayReq);
+                requestBodyMap.put("HalfMonthFee", halfMonthReq);
+                requestBodyMap.put("MonthlyFee", monthlyReq);
 
 
                 try {
@@ -312,29 +318,30 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
 
             }
         });
-        View waitingview = v.findViewById(R.id.flWaiting);
         MyWebService.getTrainerProfileDetail((AppCompatActivity) getActivity(), ((MyApplication) getActivity().getApplication()).getCurrentUser().getId(), new WebServiceResultImplementation() {
                     @Override
                     public void webServiceOnSuccess(Bundle bundle) {
 
                         Trainer trainer = bundle.getParcelable(KEY_BUNDLE_OBJ);
                         if (trainer == null) return;
-                        mealPriceTV.setText("" + trainer.getMealPlanPrice());
+                        bind.setTrainer(trainer);
+                        /*bind.etMealPrice.setText("" + trainer.getMealPlanPrice());
                         workoutPriceTV.setText("" + trainer.getWorkoutPlanPrice());
-                        docImg.setImageURI(MyConst.BASE_CONTENT_URL + trainer.getDocThumbUrl());
-                        natCardImg.setImageURI(MyConst.BASE_CONTENT_URL + trainer.getNationalCardThumbUrl());
-                        waitingview.setVisibility(View.GONE);
+                        */
+                        bind.imgDoc.setImageURI(MyConst.BASE_CONTENT_URL + trainer.getDocThumbUrl());
+                        bind.imgNatCard.setImageURI(MyConst.BASE_CONTENT_URL + trainer.getNationalCardThumbUrl());
+                        bind.flWaiting.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void webServiceOnFail() {
-                        waitingview.setVisibility(View.GONE);
+                        bind.flWaiting.setVisibility(View.GONE);
 
                     }
                 }
         );
 
-        return v;
+        return bind.getRoot();
     }
 
     @Override
@@ -344,7 +351,8 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
             if (resultCode == RESULT_OK) {
                 resultDocUri = result.getUri();
                 Log.d("EDITPROFILEACTIVITY", "onActivityResult: Doc:" + resultDocUri);
-                docImg.setImageURI(resultDocUri);
+                bind.imgDoc.setImageURI(resultDocUri);
+
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
@@ -353,7 +361,7 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
             if (resultCode == RESULT_OK) {
                 resultNatCardUri = result.getUri();
                 Log.d("EDITPROFILEACTIVITY", "onActivityResult: natCar:" + resultNatCardUri);
-                natCardImg.setImageURI(resultNatCardUri);
+                bind.imgNatCard.setImageURI(resultNatCardUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }

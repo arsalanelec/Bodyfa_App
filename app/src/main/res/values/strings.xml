@@ -298,7 +298,7 @@
     <string name="change_lang">Change Language</string>
     <string name="title_activity_maps">Map</string>
     <string name="add_credit">+افزایش اعتبار</string>
-    <string name="rial">ریال</string>
+    <string name="rial">Rial</string>
     <string name="your_credit">اعتبار شما:</string>
     <string name="AMOUNT_IS_WRONG">مقدار وارد شده باید بیش از 1000 ریال باشد.</string>
     <string name="PAYMENT_SUCCESS">پرداخت با موفقیت انجام شد!</string>
@@ -315,5 +315,27 @@
     <string name="add_new_news">افزودن پست جدید</string>
     <string name="no_data_to_show">No Data To Show!</string>
     <string name="submit">submit</string>
+    <string name="send_to">Send to…</string>
+    <string name="done">Done</string>
+    <string name="price1">Price:</string>
+    <string name="order">Order</string>
+    <string name="join">Join</string>
+    <string name="priceInRial">%,d Rial</string>
+
+    <string name="order_join">Order Join…</string>
+    <string name="oneDayOrder">One day %,d Rial</string>
+    <string name="orderOneWeek">One Week %,d Rial</string>
+    <string name="orderTweolveDays">Twelve Days %,d Rial</string>
+    <string name="orderMonthly">One Month %,d Rial</string>
+    <string name="orderHalfMonth">Half Month %,d Rial</string>
+    <string name="request_workout_plan">Order Workout Plan</string>
+    <string name="field_cant_empty">this field can\'t be empty</string>
+    <string name="balance_not_enough">Balance not enough</string>
+    <string name="please_add_balance">Please increase your balance</string>
+    <string name="your_balance_is">Your balance: %,d Rial</string>
+    <string name="increading_amount">Amount to increas:</string>
+    <string name="pay">Pay</string>
+    <string name="what_rate">What rate do you bring?</string>
+    <string name="medal_photo_is_empty">تصویر مقام رسمی فدراسیون خالی میباشد. لطفا تصویر مدرک خود را بارگذاری نمایید.</string>
 
 </resources>

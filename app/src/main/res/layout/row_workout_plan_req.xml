@@ -25,14 +25,17 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="ارسال"
+           android:text="@string/submit"
             android:background="@drawable/purple_rect_back"
             android:foreground="?attr/selectableItemBackground"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btnCancel"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{()->onDeleteClick.onSubmitClick(workoutReq.parentUserId)}"/>
+
+            android:onClick="@{()->onDeleteClick.onSubmitClick(workoutReq.id,workoutReq.parentUserId,workoutReq.athleteUserId,workoutReq.athleteName,workoutReq.athleteThumbUrl)}"/>
+            <!--( int requestId,long trainerId,long athleteId,String athleteName,String athleteThumbUrl)-->
+
 
 
         <ImageButton

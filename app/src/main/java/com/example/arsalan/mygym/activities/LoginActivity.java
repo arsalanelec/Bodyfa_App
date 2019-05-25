@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements
                     users.add(user);
                 }
                 userDao.saveList(users);
-                Log.d(TAG, "run: save:" + userDao.loadAllList().getValue() + " usename:" + user1.getName());
+                Log.d(TAG, "run: save:" + userDao.loadAllWaitingList().getValue() + " usename:" + user1.getName());
             }
         });*/
         // Here, thisActivity is the current activity
@@ -821,8 +821,6 @@ public class LoginActivity extends AppCompatActivity implements
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
         if (!currentLanguage.equals(localeName)) {
-
-
             Intent refresh = new Intent(this, LoginActivity.class);
             refresh.putExtra(EXTRA_CURRENT_LANG, localeName);
             spf.edit().putString(KEY_CURRENT_LANG, localeName).commit();

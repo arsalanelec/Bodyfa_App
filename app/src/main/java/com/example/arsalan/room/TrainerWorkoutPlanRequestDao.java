@@ -22,8 +22,8 @@ public interface TrainerWorkoutPlanRequestDao {
     long saveHonor(WorkoutPlanReq workoutPlanReq);
 
 
-    @Query("SELECT * FROM WorkoutPlanReq")
-    LiveData<List<WorkoutPlanReq>> loadAllList();
+    @Query("SELECT * FROM WorkoutPlanReq WHERE status='waiting'")
+    LiveData<List<WorkoutPlanReq>> loadAllWaitingList();
 
     @Query("SELECT * FROM WorkoutPlanReq WHERE id = :id")
     LiveData<WorkoutPlanReq> getWorkoutPlanReqById(long id);
@@ -36,5 +36,8 @@ public interface TrainerWorkoutPlanRequestDao {
     void deleteAll();
 
     @Query("DELETE FROM WorkoutPlanReq WHERE id=:planId")
-    void deleteById(int planId);
+    int deleteById(int planId);
+
+    @Query("UPDATE WorkoutPlanReq SET status=:status WHERE id=:mRequestId")
+    void updateStatus(int mRequestId, String status);
 }

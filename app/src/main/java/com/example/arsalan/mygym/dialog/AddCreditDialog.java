@@ -1,5 +1,6 @@
 package com.example.arsalan.mygym.dialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,16 +11,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.arsalan.mygym.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -39,7 +43,7 @@ public class AddCreditDialog extends DialogFragment {
     private String current;
     // TODO: Rename and change types of parameters
     private long mUserId;
-    private String mParam2;
+    private int mCreditSt;
     private static final String TAG = "AddCreditDialog";
     private OnFragmentInteractionListener mListener;
 
@@ -56,11 +60,11 @@ public class AddCreditDialog extends DialogFragment {
      * @return A new instance of fragment AddCreditDialog.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddCreditDialog newInstance(long userId, String param2) {
+    public static AddCreditDialog newInstance(long userId, int param2) {
         AddCreditDialog fragment = new AddCreditDialog();
         Bundle args = new Bundle();
         args.putLong(ARG_PARAM1, userId);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,7 +74,7 @@ public class AddCreditDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUserId = getArguments().getLong(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mCreditSt = getArguments().getInt(ARG_PARAM2);
         }
     }
 
@@ -110,6 +114,8 @@ public class AddCreditDialog extends DialogFragment {
                 }
             }
         });
+        TextView currentBalanceTv=v.findViewById(R.id.txtCurrentBalance);
+        currentBalanceTv.setText(getString(R.string.your_balance_is,mCreditSt));
         TextInputLayout tl=v.findViewById(R.id.tlAmount);
         Button submitBtn=v.findViewById(R.id.btnSubmit);
         submitBtn.setOnClickListener(b->{
@@ -144,11 +150,19 @@ public class AddCreditDialog extends DialogFragment {
     public void onStart() {
 
         super.onStart();
-        getDialog().getWindow()
-                .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+       /* getDialog().getWindow()
+                .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);*/
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
 
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog= super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 
     @Override

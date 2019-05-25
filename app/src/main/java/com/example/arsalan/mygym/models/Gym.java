@@ -46,12 +46,15 @@ public class Gym implements Parcelable {
     private int point;
     private String status;
     private int cityId;
+
+    @SerializedName("Lat")
     private double lat;
 
     @SerializedName("ThumbUrl")
     private String thumbUrl;
     @SerializedName("PictureUrl")
     private String pictureUrl;
+
     @SerializedName("Long")
     private double lon;
 
@@ -61,6 +64,7 @@ public class Gym implements Parcelable {
     @SerializedName("Phone2")
     private String phone2;
 
+    @SerializedName("Description")
     private String description;
 
     private String features;

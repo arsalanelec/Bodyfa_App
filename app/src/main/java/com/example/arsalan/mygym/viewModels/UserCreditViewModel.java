@@ -14,17 +14,17 @@ public class UserCreditViewModel extends ViewModel {
     private CreditRepository repository;
     private LiveData<UserCredit> userCreditLiveData;
 
-    private MutableLiveData<Long> trainerIdLD = new MutableLiveData<>();
+    private MutableLiveData<Long> userIdLive = new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public UserCreditViewModel(CreditRepository repository) {
         this.repository = repository;
-        userCreditLiveData = Transformations.switchMap(trainerIdLD, id -> this.repository.getUserCredit(id));
+        userCreditLiveData = Transformations.switchMap(userIdLive, id -> this.repository.getUserCredit(id));
     }
 
-    public void init(long trainerId) {
+    public void init(long userId) {
         //if (this.userCreditLiveData!=null)return;
-        this.trainerIdLD.setValue(trainerId);
+        this.userIdLive.setValue(userId);
     }
 
     public LiveData<UserCredit> getCredit() {

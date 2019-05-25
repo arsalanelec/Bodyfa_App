@@ -35,12 +35,11 @@ public class InboxItemListRepository {
         refreshInboxItemList(token, userId);
         // return a LiveData directly from the database.
         // return inboxItemDao.getInboxItemListByCity(cityId);
-        return inboxItemDao.loadAllList();
+        return inboxItemDao.loadAllListByUserId(userId);
     }
 
     private void refreshInboxItemList(String token, long userId) {
-        boolean inboxItemExist = (inboxItemDao.loadAllList().getValue() != null && inboxItemDao.loadAllList().getValue().size() > 0);
-        if (!inboxItemExist) {
+
             Log.d("refreshInboxItemList", "!inboxItemExist");
 
             executor.execute(new Runnable() {
@@ -55,7 +54,7 @@ public class InboxItemListRepository {
                         Response<RetInboxList> response = call.execute();
                         if (response.isSuccessful()) {
                             Log.d("refreshInboxItemList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
-
+                            inboxItemDao.deleteAll();
                             Log.d("refreshInboxItemList", "run: newDao save:" + inboxItemDao.saveList(response.body().getRecords()).length);
 
                         } else {
@@ -72,5 +71,5 @@ public class InboxItemListRepository {
         }
 
 
-    }
+
 }

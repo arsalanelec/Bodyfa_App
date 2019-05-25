@@ -19,4 +19,12 @@ public interface InboxItemDao {
     @Query("SELECT * FROM InboxItem")
     LiveData<List<InboxItem>> loadAllList();
 
+    @Query("DELETE FROM InboxItem WHERE userId=:userID")
+    int deleteByUserId(long userID  );
+
+    @Query("DELETE FROM InboxItem")
+    int deleteAll();
+
+    @Query("SELECT * FROM InboxItem WHERE userId=:uerId")
+    LiveData<List<InboxItem>> loadAllListByUserId(long uerId);
 }

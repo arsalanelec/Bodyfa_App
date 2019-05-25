@@ -1,36 +1,51 @@
 package com.example.arsalan.mygym.dialog;
 
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.arsalan.interfaces.OnGetPlanFromWeb;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
-import com.example.arsalan.mygym.adapters.AdapterTrainerWorkoutPlanList;
+import com.example.arsalan.mygym.adapters.AdapterTrainerWorkoutPlanListSimple;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.WorkoutPlan;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerWorkoutListViewModel;
+import com.example.arsalan.mygym.webservice.MyWebService;
+import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.example.arsalan.mygym.MyKeys.EXTRA_ATHLETE_ID;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_BODY;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_ID;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_TITLE;
+import static com.example.arsalan.mygym.models.MyConst.BASE_API_URL;
+import static com.example.arsalan.mygym.webservice.MyWebService.getTrainerWorkoutPlanWeb;
+import static com.example.arsalan.mygym.webservice.MyWebService.sendWokroutPlanToAthleteWeb;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,22 +59,24 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_REQUEST_ID = "requestId";
-    private static final String ARG_TRAINER_ID="trainerid";
-    private static final String ARG_ATHLETE_ID ="athleteid";
-    private static final String ARG_ATHLETE_NAME="athletename";
-    private static final String ARG_ATHLETE_THUMB="Athletethumb";
+    private static final String ARG_TRAINER_ID = "trainerid";
+    private static final String ARG_ATHLETE_ID = "athleteid";
+    private static final String ARG_ATHLETE_NAME = "athletename";
+    private static final String ARG_ATHLETE_THUMB = "Athletethumb";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
     private TrainerWorkoutListViewModel workoutListViewModel;
+
     @Inject
     MyViewModelFactory factory;
+    @Inject
+    TrainerWorkoutPlanRequestDao mPlanRequestDao;
     private long mTrainerId;
     private int mRequestId;
     private long mAthleteId;
     private String mAthleteName;
     private String mAthleteThumb;
+    private WorkoutPlan mSelectedPlan;
 
     public TrainerWorkoutPlanListToSendDialog() {
         // Required empty public constructor
@@ -81,9 +98,18 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
         return fragment;
     }
 
-    private ArrayList<WorkoutPlan> mWorkoutPlanList=new ArrayList<>();
-    private AdapterTrainerWorkoutPlanList adapter;
+    private ArrayList<WorkoutPlan> mWorkoutPlanList = new ArrayList<>();
+    private AdapterTrainerWorkoutPlanListSimple mAdapter;
 
+    /**
+     *
+     * @param requestId
+     * @param trainerId
+     * @param athleteId
+     * @param athleteName
+     * @param athleteThumbUrl
+     * @return
+     */
     public static TrainerWorkoutPlanListToSendDialog newInstance(int requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl) {
         TrainerWorkoutPlanListToSendDialog fragment = new TrainerWorkoutPlanListToSendDialog();
         Bundle args = new Bundle();
@@ -113,58 +139,57 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_mealplan_list, container, false);
+        View v = inflater.inflate(R.layout.dialog_trainer_workout_plan_list_to_send, container, false);
+        TextView athleteTv = v.findViewById(R.id.txtAthleteName);
+        athleteTv.setText(mAthleteName);
+        SimpleDraweeView thumbView=v.findViewById(R.id.imgAvatar);
+        thumbView.setImageURI(BASE_API_URL + mAthleteThumb);
+        /*Glide.with(getContext())
+                .load(BASE_API_URL + mAthleteThumb)
+                .apply(new RequestOptions().placeholder(R.drawable.avatar).centerCrop())
+                .into(thumbView);*/
+        //cancel when cross button clicked
+        ImageButton cancelBtn=v.findViewById(R.id.btnCancel);
+        cancelBtn.setOnClickListener(b->dismiss());
+        Button submitBtn=v.findViewById(R.id.btnSubmit);
         if (mWorkoutPlanList != null) {
-
-            adapter = new AdapterTrainerWorkoutPlanList(getDialog().getContext(), mWorkoutPlanList, new AdapterTrainerWorkoutPlanList.OnItemClickListener() {
-                @Override
-                public void onItemEditClick(WorkoutPlan workoutPlan, int position) {
-                    Intent intent = new Intent();
-                    intent.putExtra(MyKeys.EXTRA_PLAN_ID, workoutPlan.getTrainerWorkoutPlanId());
-                    intent.putExtra(MyKeys.EXTRA_EDIT_MODE, true);
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_EDIT, intent);
-                }
-
-                @Override
-                public void onItemDeleteClick(final WorkoutPlan workoutPlan, final int position) {
-                    new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom).setMessage(getString(R.string.ask_remove_plan))
-                            .setPositiveButton(getString(R.string.remove), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int ii) {
-                                    dialogInterface.dismiss();
-                                    Intent intent = new Intent();
-                                    intent.putExtra(MyKeys.EXTRA_PLAN_ID, workoutPlan.getTrainerWorkoutPlanId());
-                                    getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_DELETE, intent);
-                                    adapter.removeItem(position);
-                                }
-                            })
-                            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.cancel();
-                                }
-                            }).show();
-                }
-
-                @Override
-                public void onItemShowClick(WorkoutPlan workoutPlan, int position) {
-                    Intent intent = new Intent();
-                    intent.putExtra(MyKeys.EXTRA_PLAN_ID, workoutPlan.getTrainerWorkoutPlanId());
-                    intent.putExtra(MyKeys.EXTRA_EDIT_MODE, false);
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_SHOW, intent);
-                }
-
-                @Override
-                public void onItemSendClick(WorkoutPlan workoutPlan, int position) {
-                    Intent intent = new Intent();
-                    intent.putExtra(MyKeys.EXTRA_PLAN_ID, workoutPlan.getTrainerWorkoutPlanId());
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_SEND, intent);
-                }
+            mAdapter = new AdapterTrainerWorkoutPlanListSimple(getDialog().getContext(), mWorkoutPlanList, (workoutPlan, position) -> {
+                /*Intent intent = new Intent();
+                intent.putExtra(MyKeys.EXTRA_PLAN_ID, workoutPlan.getTrainerWorkoutPlanId());
+                getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_SEND, intent);*/
+                submitBtn.setEnabled(true);
+                mSelectedPlan=workoutPlan;
             });
             ListView planLV = v.findViewById(R.id.listView);
-            planLV.setAdapter(adapter);
+            planLV.setAdapter(mAdapter);
         }
 
+        submitBtn.setOnClickListener(b->{
+            LiveData<Integer> status = getTrainerWorkoutPlanWeb(getActivity(), mSelectedPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
+                @Override
+                public void onGetPlan(long id, String title, String body) {
+
+                    LiveData<Integer> status = sendWokroutPlanToAthleteWeb(getActivity(), mAthleteId, mSelectedPlan.getAthleteWorkoutPlanId(),title, body,mRequestId);
+                    final ProgressDialog waitingDialog = new ProgressDialog(getActivity());
+                    waitingDialog.setMessage(getString(R.string.sending_plan));
+                    waitingDialog.show();
+                    status.observe(TrainerWorkoutPlanListToSendDialog.this, resultStatus -> {
+                        if(resultStatus!= MyWebService.STATUS_WAITING) {
+                            waitingDialog.dismiss();
+
+                        }
+                        if(resultStatus==MyWebService.STATUS_SUCCESS) {
+                            mPlanRequestDao.updateStatus(mRequestId,"sent");
+                            dismiss();
+                            Toast.makeText(getContext(), getString(R.string.done_successfully), Toast.LENGTH_LONG).show();
+
+                        }else if(resultStatus==MyWebService.STATUS_FAIL){
+                            Toast.makeText(getContext(), getString(R.string.error_accord_try_again), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+        });
         return v;
     }
 
@@ -176,16 +201,24 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
         workoutListViewModel.getWorkoutPlanItemList().observe(this, newWorkoutPlans -> {
             mWorkoutPlanList.removeAll(mWorkoutPlanList);
             mWorkoutPlanList.addAll(newWorkoutPlans);
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         });
     }
 
     @Override
     public void onStart() {
-
         super.onStart();
         getDialog().getWindow()
                 .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+    }
 
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+        // request a window without the title
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 }
