@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.MyConst;
+import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.models.User;
 
 import java.util.List;
@@ -24,9 +25,9 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 public class AdapterAthletesDialog extends Adapter<AdapterAthletesDialog.VH> {
     private final OnItemClickListener mListener;
-    List<User> mUserList;
+    List<TrainerAthlete> mUserList;
 
-    public AdapterAthletesDialog(List<User> userList, OnItemClickListener listener) {
+    public AdapterAthletesDialog(List<TrainerAthlete> userList, OnItemClickListener listener) {
         this.mUserList = userList;
         mListener = listener;
 
@@ -51,7 +52,7 @@ public class AdapterAthletesDialog extends Adapter<AdapterAthletesDialog.VH> {
 
 
     public interface OnItemClickListener {
-        void onItemClick(User user, View view);
+        void onItemClick(TrainerAthlete athlete, View view);
     }
 
     class VH extends RecyclerView.ViewHolder {
@@ -69,14 +70,14 @@ public class AdapterAthletesDialog extends Adapter<AdapterAthletesDialog.VH> {
 
         }
 
-        public void bind(final User user, final OnItemClickListener listener) {
+        public void bind(final TrainerAthlete user, final OnItemClickListener listener) {
             Glide.with(itemView.getContext())
-                    .load(MyConst.BASE_CONTENT_URL + user.getThumbUrl())
+                    .load(MyConst.BASE_CONTENT_URL + user.getAthleteThumbPicture())
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder))
                     .apply(RequestOptions.circleCropTransform())
                     .into(thumbImg);
 
-            nameTV.setText(user.getName());
+            nameTV.setText(user.getAthleteName());
             registerDateTV.setText(user.getRegisterDate());
             //  h.honorTV.setText(t.getTitle());
 /*

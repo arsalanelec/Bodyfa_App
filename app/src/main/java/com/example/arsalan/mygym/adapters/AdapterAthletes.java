@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.MyConst;
+import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.models.User;
 
 import java.util.List;
@@ -24,9 +25,9 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
     private final OnItemClickListener mListener;
-    List<User> mUserList;
+    List<TrainerAthlete> mUserList;
 
-    public AdapterAthletes(List<User> userList, OnItemClickListener listener) {
+    public AdapterAthletes(List<TrainerAthlete> userList, OnItemClickListener listener) {
         this.mUserList = userList;
         mListener = listener;
 
@@ -51,9 +52,9 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
 
 
     public interface OnItemClickListener {
-        void onItemClick(User user, View view);
+        void onItemClick(TrainerAthlete athlete, View view);
 
-        void onSendMessageClicked(User user);
+        void onSendMessageClicked(TrainerAthlete athlete);
     }
 
     class VH extends RecyclerView.ViewHolder {
@@ -71,15 +72,15 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
 
         }
 
-        public void bind(final User user, final OnItemClickListener listener) {
+        public void bind(final TrainerAthlete trainerAthlete, final OnItemClickListener listener) {
             Glide.with(itemView.getContext())
-                    .load(MyConst.BASE_CONTENT_URL + user.getThumbUrl())
+                    .load(MyConst.BASE_CONTENT_URL + trainerAthlete.getAthleteThumbPicture())
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder))
                     .apply(RequestOptions.circleCropTransform())
                     .into(thumbImg);
 
-            nameTV.setText(user.getName());
-            registerDateTV.setText(user.getRegisterDate());
+            nameTV.setText(trainerAthlete.getAthleteName());
+            registerDateTV.setText(trainerAthlete.getRegisterDate());
             //  h.honorTV.setText(t.getTitle());
 /*
             ViewCompat.setTransitionName(thumbImg, user.getName());
@@ -87,13 +88,13 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(user, thumbImg);
+                    listener.onItemClick(trainerAthlete, thumbImg);
                 }
             });
             sendMessageBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onSendMessageClicked(user);
+                    listener.onSendMessageClicked(trainerAthlete);
                 }
             });
         }

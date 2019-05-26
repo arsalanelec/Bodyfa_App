@@ -26,6 +26,7 @@ import com.example.arsalan.room.InboxItemDao;
 import com.example.arsalan.room.MealPlanDao;
 import com.example.arsalan.room.MyDatabase;
 import com.example.arsalan.room.NewsDao;
+import com.example.arsalan.room.TrainerAthleteDao;
 import com.example.arsalan.room.TrainerDao;
 import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
 import com.example.arsalan.room.TransactionDao;
@@ -131,6 +132,12 @@ class AppModule {
     @Provides
     TrainerWorkoutPlanRequestDao provideTrainerWorkoutPlanRequestDao(MyDatabase db) {
         return db.trainerWorkoutPlanRequestDao();
+    }
+
+    @Singleton
+    @Provides
+    TrainerAthleteDao provideTrainerAthleteDao(MyDatabase db) {
+        return db.trainerAthleteDao();
     }
 
 

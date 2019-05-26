@@ -1,24 +1,18 @@
 package com.example.arsalan.mygym.fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -26,16 +20,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.databinding.FragmentTrainerOrderListBinding;
+import com.example.arsalan.mygym.databinding.RowTrainerMembershipReqBinding;
 import com.example.arsalan.mygym.databinding.RowWorkoutPlanReqBinding;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.dialog.TrainerWorkoutPlanListToSendDialog;
 import com.example.arsalan.mygym.models.MyConst;
-import com.example.arsalan.mygym.models.WorkoutPlan;
+import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.models.WorkoutPlanReq;
+import com.example.arsalan.mygym.viewModels.AthleteListViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerWorkoutPlanReqVm;
-
-import org.bytedeco.javacpp.presets.opencv_core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,12 +57,16 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
     private OnFragmentInteractionListener mListener;
     private List<WorkoutPlanReq> mRequestList;
+    private List<TrainerAthlete> mAthletes;
     private ExtendViewAdapter mAdapter;
     private FragmentTrainerOrderListBinding bind;
-    private TrainerWorkoutPlanReqVm viewModel;
+    private TrainerWorkoutPlanReqVm workoutPlanReqVm;
+    private AthleteListViewModel athletesViewModel;
 
     public TrainerOrderListFragment() {
         // Required empty public constructor
+        mRequestList = new ArrayList<>();
+        mAthletes=new ArrayList<>();
     }
 
     /**
@@ -99,9 +97,9 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_trainer_order_list, container, false);
-        mRequestList = new ArrayList<>();
 
-        mAdapter = new ExtendViewAdapter(mRequestList);
+
+        mAdapter = new ExtendViewAdapter(mRequestList,mAthletes);
         bind.exListView.setAdapter(mAdapter);
         bind.swipeLay.setOnRefreshListener(this);
         bind.swipeLay.setRefreshing(true);
@@ -113,10 +111,10 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-         viewModel = ViewModelProviders.of(this, mFactory).get(TrainerWorkoutPlanReqVm.class);
-        viewModel.init(mTrainerId);
-        viewModel.getWorkoutPlanListLv().observe(this, workoutPlanReqs -> {
-            Log.d(TAG, "onActivityCreated: workoutPlanReqs Changed listSize:"+workoutPlanReqs.size());
+        workoutPlanReqVm = ViewModelProviders.of(this, mFactory).get(TrainerWorkoutPlanReqVm.class);
+        workoutPlanReqVm.init(mTrainerId);
+        workoutPlanReqVm.getWorkoutPlanListLv().observe(this, workoutPlanReqs -> {
+            Log.d(TAG, "onActivityCreated: workoutPlanReqs Changed listSize:" + workoutPlanReqs.size());
             mRequestList.removeAll(mRequestList);
             if (workoutPlanReqs != null && workoutPlanReqs.size() > 0) {
                 mRequestList.addAll(workoutPlanReqs);
@@ -126,6 +124,21 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
             bind.exListView.expandGroup(0);
             bind.swipeLay.setRefreshing(false);
         });
+
+        athletesViewModel = ViewModelProviders.of(this, mFactory).get(AthleteListViewModel.class);
+        athletesViewModel.init(mTrainerId,false);
+        athletesViewModel.getAthleteList().observe(this, athletes -> {
+            Log.d(TAG, "onActivityCreated: athletesViewModel Changed listSize:" + athletes.size());
+            mAthletes.removeAll(mAthletes);
+            if (athletes != null && athletes.size() > 0) {
+                mAthletes.addAll(athletes);
+            }
+            mAdapter.notifyDataSetChanged();
+
+            bind.exListView.expandGroup(2);
+            bind.swipeLay.setRefreshing(false);
+        });
+
     }
 
     @Override
@@ -147,16 +160,41 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
     @Override
     public void onRefresh() {
-        viewModel.init(mTrainerId);
+        workoutPlanReqVm.init(mTrainerId);
+    }
+
+    public interface OnRequestRowClickListener {
+        void onCancelClick(long requestId, int type);
+
+        void onSubmitClick(long requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl, int type);
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void onWorkoutPlanCancelRequest(long planId);
     }
 
     private class ExtendViewAdapter extends BaseExpandableListAdapter implements OnRequestRowClickListener {
-        List<WorkoutPlanReq> workoutPlanReqList;
-        final String[] groupTitles = {"سفارشات برنامه ورزشی", "سفارشات برنامه تغذیه", "سفارشات اشتراک"};
+        private static final int TYPE_WORKOUT = 0;
+        private static final int TYPE_MEAL = 1;
+        private static final int TYPE_MEMBERSHIP = 2;
         private static final String TAG = "ExtendViewAdapter";
+        final String[] groupTitles = {"سفارشات برنامه ورزشی", "سفارشات برنامه تغذیه", "سفارشات اشتراک"};
+        List<WorkoutPlanReq> workoutPlanReqList;
+        List<TrainerAthlete> athletes;
 
-        public ExtendViewAdapter(List<WorkoutPlanReq> workoutPlanReqList) {
+        public ExtendViewAdapter(List<WorkoutPlanReq> workoutPlanReqList, List<TrainerAthlete> athleteList) {
             this.workoutPlanReqList = workoutPlanReqList;
+            athletes=athleteList;
         }
 
         @Override
@@ -166,8 +204,11 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            if (groupPosition == 0) {
+           switch (groupPosition) {
+               case 0:    //workout
                 return workoutPlanReqList.size();
+               case 2:    //membership
+                   return athletes.size();
             }
             return 0;
         }
@@ -178,9 +219,13 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         }
 
         @Override
-        public WorkoutPlanReq getChild(int groupPosition, int childPosition) {
-            if (groupPosition == 0) {
+        public Object getChild(int groupPosition, int childPosition) {
+           switch (groupPosition) {
+               case 0:    //workout plan
                 return workoutPlanReqList.get(childPosition);
+               case 2:    //membership
+                   return athletes.get(childPosition);
+
             }
             return null;
         }
@@ -192,8 +237,11 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-            if (groupPosition == 0) {
-                return workoutPlanReqList.get(childPosition).getId();
+           switch (groupPosition ) {
+               case 0:    //workout
+                   return workoutPlanReqList.get(childPosition).getId();
+               case 2:    //membership
+                   return athletes.get(childPosition).getId();
             }
             return 0;
         }
@@ -219,27 +267,57 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                 convertView = getLayoutInflater().inflate(R.layout.no_data_view, parent, false);
                 return convertView;
             }
-            if (groupPosition == 0) {
-                RowWorkoutPlanReqBinding bind;
-                if (convertView == null) {
-                    bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.row_workout_plan_req, parent, false);
-                    convertView = bind.getRoot();
-                } else {
-                    bind = ((RowWorkoutPlanReqBinding) convertView.getTag());
-                }
-                WorkoutPlanReq temp = getChild(groupPosition, childPosition);
-                Log.d(TAG, "getChildView: id:" + temp.getId() + " date" + temp.getRequestDateEnTs());
-                //bind data
-                bind.setWorkoutReq(temp);
-                bind.setOnDeleteClick(this);
-                //Load Thumbnails
-                Glide.with(getContext())
-                        .load(MyConst.BASE_CONTENT_URL + temp.getAthleteThumbUrl())
-                        .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(bind.imgAvatar);
+            switch (groupPosition) {
+                case 0:    //WorkoutPlan
+                {
+                    RowWorkoutPlanReqBinding bind;
+                    if (convertView == null) {
+                        bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.row_workout_plan_req, parent, false);
+                        convertView = bind.getRoot();
+                    } else {
+                        bind = ((RowWorkoutPlanReqBinding) convertView.getTag());
+                    }
+                    WorkoutPlanReq temp = (WorkoutPlanReq) getChild(groupPosition, childPosition);
+                    Log.d(TAG, "getChildView: id:" + temp.getId() + " date" + temp.getRequestDateEnTs());
+                    //bind data
+                    bind.setWorkoutReq(temp);
+                    bind.setOnDeleteClick(this);
+                    bind.setTypeOfRequest(TYPE_WORKOUT);
 
-                convertView.setTag(bind);
+                    //Load Thumbnails
+                    Glide.with(getContext())
+                            .load(MyConst.BASE_CONTENT_URL + temp.getAthleteThumbUrl())
+                            .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(bind.imgAvatar);
+
+                    convertView.setTag(bind);
+                }
+                break;
+                case 2:    //Membership Request
+                {
+                    RowTrainerMembershipReqBinding bind;
+                    if (convertView == null) {
+                        bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.row_trainer_membership_req, parent, false);
+                        convertView = bind.getRoot();
+                    } else {
+                        bind = ((RowTrainerMembershipReqBinding) convertView.getTag());
+                    }
+                    TrainerAthlete athlete = (TrainerAthlete) getChild(groupPosition, childPosition);
+                    //bind data
+                    bind.setAthlete(athlete);
+                    bind.setOnDeleteClick(this);
+                    bind.setTypeOfRequest(TYPE_MEMBERSHIP);
+                    //Load Thumbnails
+                    Glide.with(getContext())
+                            .load(MyConst.BASE_CONTENT_URL + athlete.getAthleteThumbPicture())
+                            .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(bind.imgAvatar);
+
+                    convertView.setTag(bind);
+                }
+                break;
             }
             return convertView;
         }
@@ -248,8 +326,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         public boolean isChildSelectable(int groupPosition, int childPosition) {
             return false;
         }
-
-
 
 
         @Override
@@ -263,44 +339,47 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         }
 
         @Override
-        public void onDeleteClick(int requestId) {
-            viewModel.cancelRequest(requestId).observe(TrainerOrderListFragment.this, status -> {
-                if(status==1){
-                    Toast.makeText(getContext(), "حذف انجام شد!", Toast.LENGTH_LONG).show();
-                }
-            });
-            mListener.onWorkoutPlanCancelRequest(requestId);
+        public void onCancelClick(long requestId, int type) {
+            switch (type) {
+                case TYPE_WORKOUT:
+                    workoutPlanReqVm.cancelRequest(requestId).observe(TrainerOrderListFragment.this, status -> {
+                        if (status == 1) {
+                            Toast.makeText(getContext(), "حذف انجام شد!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    mListener.onWorkoutPlanCancelRequest(requestId);
+                    break;
+                case TYPE_MEMBERSHIP:
+                    athletesViewModel.cancelRequest(requestId).observe(TrainerOrderListFragment.this,status->{
+                        if (status == 1) {
+                            Toast.makeText(getContext(), "حذف انجام شد!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    break;
+            }
+
         }
 
         @Override
-        public void onSubmitClick(int requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl) {
-            TrainerWorkoutPlanListToSendDialog dialog=TrainerWorkoutPlanListToSendDialog.newInstance(
-                    requestId,
-                    trainerId,
-                    athleteId,
-                    athleteName,
-                    athleteThumbUrl);
-            Log.d(TAG, "onSubmitClick: athleteId:"+athleteId);
-            dialog.show(getFragmentManager(),"");
+        public void onSubmitClick(long requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl, int type) {
+            switch (type) {
+                case TYPE_WORKOUT:
+                    TrainerWorkoutPlanListToSendDialog dialog = TrainerWorkoutPlanListToSendDialog.newInstance(
+                            requestId,
+                            trainerId,
+                            athleteId,
+                            athleteName,
+                            athleteThumbUrl);
+                    Log.d(TAG, "onSubmitClick: athleteId:" + athleteId);
+                    dialog.show(getFragmentManager(), "");
+                    break;
+                case TYPE_MEMBERSHIP:
+                    athletesViewModel.acceptRequest(requestId);
+                    Toast.makeText(getContext(), R.string.trainer_athlete_membership_accepted, Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
 
-    }
-    public interface    OnRequestRowClickListener{
-        void onDeleteClick(int requestId);
-        void onSubmitClick( int requestId,long trainerId,long athleteId,String athleteName,String athleteThumbUrl);
-    }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onWorkoutPlanCancelRequest(int planId);
     }
 }

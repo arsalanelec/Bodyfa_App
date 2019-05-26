@@ -10,6 +10,7 @@ import com.example.arsalan.mygym.models.InboxItem;
 import com.example.arsalan.mygym.models.MealPlan;
 import com.example.arsalan.mygym.models.News;
 import com.example.arsalan.mygym.models.Trainer;
+import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.models.Transaction;
 import com.example.arsalan.mygym.models.TutorialVideo;
 import com.example.arsalan.mygym.models.User;
@@ -30,10 +31,11 @@ import com.example.arsalan.mygym.models.WorkoutPlanReq;
         Honor.class,
         UserCredit.class,
         Transaction.class,
-        WorkoutPlanReq.class
+        WorkoutPlanReq.class,
+        TrainerAthlete.class
 
 }, exportSchema = false
-        , version = 5)
+        , version = 7)
 public abstract class MyDatabase extends RoomDatabase {
 
     abstract public NewsDao newsDao();
@@ -61,6 +63,8 @@ public abstract class MyDatabase extends RoomDatabase {
     abstract public TransactionDao transactionDao();
 
     abstract public TrainerWorkoutPlanRequestDao trainerWorkoutPlanRequestDao();
+
+    abstract public TrainerAthleteDao trainerAthleteDao();
 
 }
 

@@ -2,7 +2,6 @@ package com.example.arsalan.mygym.dialog;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 
 import com.example.arsalan.interfaces.OnGetPlanFromWeb;
 import com.example.arsalan.mygym.MyApplication;
-import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterTrainerWorkoutPlanListSimple;
 import com.example.arsalan.mygym.di.Injectable;
@@ -39,10 +37,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import static com.example.arsalan.mygym.MyKeys.EXTRA_ATHLETE_ID;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_BODY;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_ID;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_PLAN_TITLE;
 import static com.example.arsalan.mygym.models.MyConst.BASE_API_URL;
 import static com.example.arsalan.mygym.webservice.MyWebService.getTrainerWorkoutPlanWeb;
 import static com.example.arsalan.mygym.webservice.MyWebService.sendWokroutPlanToAthleteWeb;
@@ -72,7 +66,7 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
     @Inject
     TrainerWorkoutPlanRequestDao mPlanRequestDao;
     private long mTrainerId;
-    private int mRequestId;
+    private long mRequestId;
     private long mAthleteId;
     private String mAthleteName;
     private String mAthleteThumb;
@@ -110,10 +104,10 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
      * @param athleteThumbUrl
      * @return
      */
-    public static TrainerWorkoutPlanListToSendDialog newInstance(int requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl) {
+    public static TrainerWorkoutPlanListToSendDialog newInstance(long requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl) {
         TrainerWorkoutPlanListToSendDialog fragment = new TrainerWorkoutPlanListToSendDialog();
         Bundle args = new Bundle();
-        args.putInt(ARG_REQUEST_ID, requestId);
+        args.putLong(ARG_REQUEST_ID, requestId);
         args.putLong(ARG_TRAINER_ID, trainerId);
         args.putLong(ARG_ATHLETE_ID, athleteId);
         args.putString(ARG_ATHLETE_NAME, athleteName);
@@ -129,7 +123,7 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
 
         if (getArguments() != null) {
             mTrainerId = getArguments().getLong(ARG_TRAINER_ID);
-            mRequestId = getArguments().getInt(ARG_REQUEST_ID);
+            mRequestId = getArguments().getLong(ARG_REQUEST_ID);
             mAthleteId = getArguments().getLong(ARG_ATHLETE_ID);
             mAthleteName = getArguments().getString(ARG_ATHLETE_NAME);
             mAthleteThumb = getArguments().getString(ARG_ATHLETE_THUMB);

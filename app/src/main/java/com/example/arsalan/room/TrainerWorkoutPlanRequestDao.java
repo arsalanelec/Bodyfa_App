@@ -5,7 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.example.arsalan.mygym.models.Honor;
 import com.example.arsalan.mygym.models.WorkoutPlanReq;
 
 import java.util.List;
@@ -36,8 +35,8 @@ public interface TrainerWorkoutPlanRequestDao {
     void deleteAll();
 
     @Query("DELETE FROM WorkoutPlanReq WHERE id=:planId")
-    int deleteById(int planId);
+    int deleteById(long planId);
 
     @Query("UPDATE WorkoutPlanReq SET status=:status WHERE id=:mRequestId")
-    void updateStatus(int mRequestId, String status);
+    void updateStatus(long mRequestId, String status);
 }

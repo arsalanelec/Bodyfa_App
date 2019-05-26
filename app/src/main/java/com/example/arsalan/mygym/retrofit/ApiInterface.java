@@ -16,6 +16,7 @@ import com.example.arsalan.mygym.models.RetNewsDetail;
 import com.example.arsalan.mygym.models.RetNewsList;
 import com.example.arsalan.mygym.models.RetPMList;
 import com.example.arsalan.mygym.models.RetTrainer;
+import com.example.arsalan.mygym.models.RetTrainerAthleteList;
 import com.example.arsalan.mygym.models.RetTrainerList;
 import com.example.arsalan.mygym.models.RetTrainerWorkoutPlanReqList;
 import com.example.arsalan.mygym.models.RetTransactionList;
@@ -209,7 +210,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("/api/trainer/SendTrainerWorkoutPlanToAthlete")
-    Call<RetroResult> sendTrainerWorkoutPlan(@Header("Authorization") String token, @Part("TrainerWorkoutPlanId") long planId, @Part("AthleteUserId") long athleteId, @Part("Title") RequestBody planTitle, @Part("Description") RequestBody planBody,@Part("AthleteWorkoutPlanRequestId")int requestId );
+    Call<RetroResult> sendTrainerWorkoutPlan(@Header("Authorization") String token, @Part("TrainerWorkoutPlanId") long planId, @Part("AthleteUserId") long athleteId, @Part("Title") RequestBody planTitle, @Part("Description") RequestBody planBody,@Part("AthleteWorkoutPlanRequestId")long requestId );
 
 
     @Multipart
@@ -223,7 +224,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("/api/Trainer/GetTrainerAthletes")
-    Call<RetUserList> getMyAthleteList(@Header("Authorization") String token, @Part("TrainerId") long trainerId);
+    Call<RetTrainerAthleteList> getMyAthleteList(@Header("Authorization") String token, @Part("TrainerId") long trainerId);
 
     @Multipart
     @POST("api/Trainer/EditHonors")
@@ -244,6 +245,14 @@ public interface ApiInterface {
     @Multipart
     @POST("api/Trainer/CancelAthleteWorkoutPlanRequest")
     Call<RetroResult> trainerCancelWorkoutPlanRequest(@Header("Authorization") String token, @Part("AthleteWorkoutPlanRequestId") long requestId);
+
+    @Multipart
+    @POST("api/Trainer/CancelAthleteMembershipRequest")
+    Call<RetroResult> trainerCancelMembershipRequest(@Header("Authorization") String token, @Part("TrainerAthletsId") long requestId);
+
+    @Multipart
+    @POST("api/Trainer/ConfirmTrainerAthleteMembershipRequest")
+    Call<RetroResult> trainerAcceptMembershipRequest(@Header("Authorization") String token, @Part("TrainerAthletsId") long requestId);
 
     //////////////
     //باشگاه

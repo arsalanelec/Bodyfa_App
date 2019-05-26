@@ -235,6 +235,7 @@ public class MainActivity extends AppCompatActivity
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
+                switchBtn.setEnabled(false);
                 //swap view flag for private/general
                 if (!mPrivateView) {
                     mPrivateView = true;
@@ -694,7 +695,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onWorkoutPlanCancelRequest(int planId) {
+    public void onWorkoutPlanCancelRequest(long planId) {
 
     }
 

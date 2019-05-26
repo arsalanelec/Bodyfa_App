@@ -1,10 +1,9 @@
 package com.example.arsalan.mygym.viewModels;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.arsalan.mygym.models.User;
+import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.repository.AthleteListRepository;
 
 import java.util.List;
@@ -13,21 +12,37 @@ import javax.inject.Inject;
 
 public class AthleteListViewModel extends ViewModel {
     private AthleteListRepository userRepo;
-    private LiveData<List<User>> userList;
-
-    private MutableLiveData<Integer> userTypeLD = new MutableLiveData<>();
+    private LiveData<List<TrainerAthlete>> athleteList;
 
     @Inject //  parameter is provided by Dagger 2
     public AthleteListViewModel(AthleteListRepository userRepo) {
         this.userRepo = userRepo;
     }
 
-    public void init(String token, long trainerId) {
-        if (this.userList != null) return;
-        userList=userRepo.getUserListByTrainerId(token, trainerId);
+    public void init(long trainerId, boolean isAccepted) {
+        if (this.athleteList != null) return;
+        athleteList = userRepo.getUserListByTrainerId(trainerId, isAccepted);
     }
 
-    public LiveData<List<User>> getUserList() {
-        return this.userList;
+    /**
+     * cancel the request for membership
+     * @param requestId
+     * @return
+     */
+    public LiveData<Integer> cancelRequest(long requestId){
+        return userRepo.cancelMembershipRequest(requestId);
+    }
+
+    /**
+     * accept membership request
+     * @param requestId
+     * @return
+     */
+    public LiveData<Integer> acceptRequest(long requestId){
+        return userRepo.acceptMembershipRequest(requestId);
+    }
+
+    public LiveData<List<TrainerAthlete>> getAthleteList() {
+        return this.athleteList;
     }
 }

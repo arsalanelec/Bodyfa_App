@@ -12,6 +12,7 @@ import com.example.arsalan.mygym.viewModels.HonorViewModel;
 import com.example.arsalan.mygym.viewModels.InboxItemListViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.NewsListViewModel;
+import com.example.arsalan.mygym.viewModels.TrainerAthleteViewModel;
 import com.example.arsalan.mygym.viewModels.TrainerListViewModel;
 import com.example.arsalan.mygym.viewModels.TrainerMealPlanListViewModel;
 import com.example.arsalan.mygym.viewModels.TrainerViewModel;
@@ -108,6 +109,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TrainerWorkoutPlanReqVm.class)
     abstract ViewModel bindTrainerWorkoutPlanReqVm(TrainerWorkoutPlanReqVm trainerWorkoutPlanReqVm);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TrainerAthleteViewModel.class)
+    abstract ViewModel bindTrainerAthleteViewModel(TrainerAthleteViewModel trainerAthleteViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(MyViewModelFactory factory);

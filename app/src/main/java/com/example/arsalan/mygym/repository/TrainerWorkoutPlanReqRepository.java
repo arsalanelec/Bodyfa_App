@@ -45,7 +45,7 @@ public class TrainerWorkoutPlanReqRepository {
         return planRequestDao.loadAllWaitingList();
     }
 
-    public LiveData<Integer> cancelWorkoutRequest(int planId){
+    public LiveData<Integer> cancelWorkoutRequest(long planId){
         cancelWorkoutRequest(mToken.getToken(),planId);
         return cancelStatus;
     }
@@ -77,7 +77,7 @@ public class TrainerWorkoutPlanReqRepository {
             });
     }
 
-    private void cancelWorkoutRequest(String token,int planId){
+    private void cancelWorkoutRequest(String token, long planId){
         executor.execute(new Runnable() {
             @Override
             public void run() {

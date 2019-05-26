@@ -14,10 +14,10 @@ public class WorkoutPlanReq {
     @SerializedName("AthleteWorkoutPlanRequestId")
     @Expose
     @PrimaryKey
-    private int id;
+    private long id;
     @SerializedName("AthleteUserId")
     @Expose
-    private int athleteUserId;
+    private int athleteId;
 
     @SerializedName("AthleteThumbPicture")
     @Expose
@@ -87,20 +87,20 @@ public class WorkoutPlanReq {
     @Expose
     private String status;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getAthleteUserId() {
-        return athleteUserId;
+    public int getAthleteId() {
+        return athleteId;
     }
 
-    public void setAthleteUserId(int athleteUserId) {
-        this.athleteUserId = athleteUserId;
+    public void setAthleteId(int athleteId) {
+        this.athleteId = athleteId;
     }
 
     public String getAthleteThumbUrl() {

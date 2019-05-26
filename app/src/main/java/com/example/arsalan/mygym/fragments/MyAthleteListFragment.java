@@ -1,6 +1,8 @@
 package com.example.arsalan.mygym.fragments;
 
 import androidx.lifecycle.ViewModelProviders;
+
+import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,9 +18,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.arsalan.mygym.activities.MessageRoomActivity;
-import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.models.Trainer;
+import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterAthletes;
@@ -40,7 +42,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
     private static final String ARG_USER = "param1";
 
 
-    private List<User> mUserList;
+    private List<TrainerAthlete> mAthleteList;
     private OnFragmentInteractionListener mListener;
     private AdapterAthletes mAdapter;
 
@@ -48,13 +50,14 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
     private User mCurrentUser;
     private TextView athleteCnt;
 
-    private AthleteListViewModel athleteListViewModel;
+    private AthleteListViewModel acceptedAthleteListViewModel;
 
     @Inject
     MyViewModelFactory factory;
 
     @Inject
     UserDao userDao;
+    private View waitingFL;
 
     public MyAthleteListFragment() {
         // Required empty public constructor
@@ -89,31 +92,20 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         athleteCnt.setVisibility(View.INVISIBLE);
 
         RecyclerView rv = v.findViewById(R.id.rvTrainers);
-        mUserList = new ArrayList<>();
-        mAdapter = new AdapterAthletes(mUserList, new AdapterAthletes.OnItemClickListener() {
+        mAthleteList = new ArrayList<>();
+        mAdapter = new AdapterAthletes(mAthleteList, new AdapterAthletes.OnItemClickListener() {
             @Override
-            public void onItemClick(User user, View view) {
-                /*Intent i = new Intent();
-                i.setClass(getActivity(), ProfileTrainerActivity.class);
-                i.putExtra(EXTRA_PARCLABLE_OBJ, trainer);
-                i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(view));
-
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        view,
-                        ViewCompat.getTransitionName(view));
-
-                startVideoRecorderActivity(i, options.toBundle());*/
+            public void onItemClick(TrainerAthlete athlete, View view) {
             }
 
             @Override
-            public void onSendMessageClicked(User user) {
+            public void onSendMessageClicked(TrainerAthlete trainerAthlete) {
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MessageRoomActivity.class);
                 intent.putExtra(MyKeys.EXTRA_USER_ID, mCurrentUser.getId());
-                intent.putExtra(MyKeys.EXTRA_PARTY_ID, user.getId());
-                intent.putExtra(MyKeys.EXTRA_PARTY_NAME, user.getName());
-                intent.putExtra(MyKeys.EXTRA_PARTY_THUMB, user.getThumbUrl());
+                intent.putExtra(MyKeys.EXTRA_PARTY_ID, trainerAthlete.getAthleteId());
+                intent.putExtra(MyKeys.EXTRA_PARTY_NAME, trainerAthlete.getAthleteName());
+                intent.putExtra(MyKeys.EXTRA_PARTY_THUMB, trainerAthlete.getAthleteThumbPicture());
 
                 startActivity(intent);
 
@@ -121,9 +113,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         });
         rv.setAdapter(mAdapter);
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-
-
-       // getMyAthleteList(mCurrentTrainer.getId());
+        waitingFL = v.findViewById(R.id.flWaiting);
         v.setRotation(180);
         return v;
     }
@@ -131,16 +121,16 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        athleteListViewModel = ViewModelProviders.of(this, factory).get(AthleteListViewModel.class);
-        athleteListViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentUser.getId());
-        athleteListViewModel.getUserList().observe(this, userList -> {
+        acceptedAthleteListViewModel = ViewModelProviders.of(this, factory).get(AthleteListViewModel.class);
+        acceptedAthleteListViewModel.init( mCurrentUser.getId(),true);
+        acceptedAthleteListViewModel.getAthleteList().observe(this, userList -> {
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: mealPlans cnt:" + userList.size());
-            mUserList.removeAll(mUserList);
-            mUserList.addAll(userList);
+            mAthleteList.removeAll(mAthleteList);
+            mAthleteList.addAll(userList);
             athleteCnt.setText(getString(R.string.athlete_count, userList.size()));
             athleteCnt.setVisibility(View.VISIBLE);
             mAdapter.notifyDataSetChanged();
-            // waitingFL.setVisibility(View.GONE);
+        waitingFL.setVisibility(View.GONE);
         });
 
     }
@@ -166,38 +156,5 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-/*    private void getMyAthleteList(long trainerId) {
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-        final ProgressDialog waitingDialog = new ProgressDialog(getContext());
-        waitingDialog.setMessage(getString(R.string.please_wait_a_moment));
-        waitingDialog.show();
-        Call<RetUserList> call = apiService.getMyAthleteList("Bearer " + ((MyApplication2) getActivity().getApplication()).getCurrentToken().getToken(), trainerId);
-        call.enqueue(new Callback<RetUserList>() {
-            @Override
-            public void onResponse(Call<RetUserList> call, Response<RetUserList> response) {
-                waitingDialog.dismiss();
-                if (response.isSuccessful())
-                    Log.d("getNewsWeb", "onResponse: records:" + response.body().getRecordsCount());
-                if (response.body() != null && response.body().getRecordsCount() > 0) {
-                    athleteCnt.setText(getString(R.string.athlete_count, response.body().getRecordsCount()));
-                    athleteCnt.setVisibility(View.VISIBLE);
-
-                    mUserList.removeAll(mUserList);
-                    mUserList.addAll(response.body().getRecords());
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RetUserList> call, Throwable t) {
-                waitingDialog.dismiss();
-
-            }
-        });
-
-    }*/
-
 
 }

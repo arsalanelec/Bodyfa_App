@@ -328,5 +328,7 @@
     <string name="increading_amount">مبلغ افزایش:</string>
     <string name="pay">پرداخت</string>
     <string name="what_rate">چه امتیازی می دهید؟</string>
+    <string name="accept">تایید</string>
+    <string name="trainer_athlete_membership_accepted">ورزشکار به عضویت شما در آمد.</string>
 
 </resources>

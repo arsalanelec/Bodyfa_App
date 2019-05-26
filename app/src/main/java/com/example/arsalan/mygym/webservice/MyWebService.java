@@ -440,7 +440,7 @@ public class MyWebService {
      * @param requestId
      * @return
      */
-    public static LiveData<Integer> sendWokroutPlanToAthleteWeb(Activity activity, long athleteId, long planId, String title, String body, int requestId) {
+    public static LiveData<Integer> sendWokroutPlanToAthleteWeb(Activity activity, long athleteId, long planId, String title, String body, long requestId) {
         final String TAG = "sendWokroutPlanToAthlet";
         MutableLiveData<Integer> status = new MutableLiveData<>();
         ApiInterface apiService =
