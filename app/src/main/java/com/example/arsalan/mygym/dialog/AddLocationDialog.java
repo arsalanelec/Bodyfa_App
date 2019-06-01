@@ -1,6 +1,7 @@
 package com.example.arsalan.mygym.dialog;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,12 +9,14 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 
 import com.example.arsalan.mygym.MyKeys;
@@ -248,6 +251,15 @@ public class AddLocationDialog extends DialogFragment implements OnMapReadyCallb
         return p1;
     }
 
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setDimAmount(0.0f);
+        return dialog;
+    }
 
     public interface OnFragmentInteractionListener {
         void setLatLng(LatLng latLng);

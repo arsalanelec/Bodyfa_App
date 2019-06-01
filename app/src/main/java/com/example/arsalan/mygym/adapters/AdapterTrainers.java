@@ -7,6 +7,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.R;
@@ -15,9 +18,6 @@ import com.example.arsalan.mygym.models.Trainer;
 
 import java.util.List;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.Adapter;
-
 /**
  * Created by Arsalan on 10-02-2018.
  */
@@ -25,11 +25,12 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
     private final OnItemClickListener mListener;
     List<Trainer> trainerList;
+    long mMyTrainerId;
 
-    public AdapterTrainers(List<Trainer> trainerList, OnItemClickListener listener) {
+    public AdapterTrainers(List<Trainer> trainerList, long myTrainerId, OnItemClickListener listener) {
         this.trainerList = trainerList;
         mListener = listener;
-
+        mMyTrainerId = myTrainerId;
     }
 
     @Override
@@ -60,6 +61,7 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
 
     class VH extends RecyclerView.ViewHolder {
         ImageView thumbImg;
+        ImageView checkImg;
         TextView nameTV;
         TextView honorTV;
         TextView pointsTV;
@@ -73,7 +75,7 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
             ratingBar = iv.findViewById(R.id.ratingBar);
             pointsTV = iv.findViewById(R.id.txtPoints);
             thumbImg = iv.findViewById(R.id.imgThumb);
-
+            checkImg = iv.findViewById(R.id.imgCheck);
         }
 
         public void bind(final Trainer t, final OnItemClickListener listener) {
@@ -82,7 +84,11 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
                     .apply(RequestOptions.circleCropTransform())
                     .into(thumbImg);
-
+            if (t.getId() == mMyTrainerId) {
+                checkImg.setVisibility(View.VISIBLE);
+            }else {
+                checkImg.setVisibility(View.GONE);
+            }
             // h.thumbImg.setImageURI();
             pointsTV.setText(String.valueOf(t.getPoint()));
             ratingBar.setRating(t.getRate());

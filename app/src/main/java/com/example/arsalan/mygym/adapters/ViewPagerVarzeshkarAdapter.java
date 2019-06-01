@@ -58,7 +58,7 @@ public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new MyGymFragment();
             case 2:
-                return MyTrainerFragment.newInstance(mCurrentUser);
+                return MyTrainerFragment.newInstance(mCurrentUser.getId(),mCurrentUser.getTrainerId(),true);
             case 3:
                 return AthleteMealPlanListFragment.newInstance(mCurrentUser);
             case 4:

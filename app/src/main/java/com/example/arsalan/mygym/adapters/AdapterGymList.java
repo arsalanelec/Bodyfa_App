@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import static com.example.arsalan.mygym.models.MyConst.BASE_API_URL;
+import static com.example.arsalan.mygym.models.MyConst.BASE_CONTENT_URL;
 
 /**
  * Created by Arsalan on 10-02-2018.
@@ -52,7 +53,7 @@ public class AdapterGymList extends Adapter<AdapterGymList.VH> {
         h.addressTV.setText(g.getAddress());
         h.gymNameTV.setText(g.getTitle());
         Glide.with(h.itemView.getContext())
-                .load(BASE_API_URL + g.getThumbUrl())
+                .load(BASE_CONTENT_URL + g.getThumbUrl())
                 .apply(new RequestOptions().placeholder(R.drawable.avatar).centerCrop())
                 .into(h.thumbImg);
 /*

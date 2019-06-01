@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="gym"
+            type="com.example.arsalan.mygym.models.Gym" />
+    </data>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -58,6 +64,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/background_rect_stroke"
             android:ems="10"
+            android:text="@{gym.title}"
             android:hint="@string/gym_name_hint"
             android:inputType="textPersonName" />
 
@@ -97,6 +104,7 @@
             android:ems="10"
             android:gravity="top|right"
             android:hint="@string/gym_address_hint"
+            android:text="@{gym.address}"
             android:inputType="textMultiLine"
             android:minLines="3" />
 
@@ -112,6 +120,7 @@
             android:background="@drawable/background_rect_stroke"
             android:ems="10"
             android:hint="@string/phone_1"
+            android:text="@{gym.phone1}"
             android:inputType="phone"
             android:maxLength="7" />
         <EditText
@@ -122,38 +131,128 @@
             android:background="@drawable/background_rect_stroke"
             android:ems="10"
             android:hint="@string/phone_2"
+            android:text="@{gym.phone2}"
             android:inputType="phone"
             android:maxLength="7" />
         <TextView
+            android:id="@+id/textView11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/monthly_fee" />
+            android:fontFamily="@font/iran_sans_mobile"
+            android:text="قیمت عضویت ۱ روزه:"
+            android:textSize="10sp" />
 
         <EditText
-            android:id="@+id/etMonthlyFee"
+            android:id="@+id/etRegisterDailyFee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_rect_stroke"
-            android:ems="10"
-            android:hint="@string/in_rial"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_light"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/ic_rial"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:gravity="left"
             android:inputType="numberDecimal"
-            android:maxLength="7" />
-
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:text="@{String.valueOf(gym.oneDayFee)}" />
 
         <TextView
+            android:id="@+id/textView12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/half_month_fee" />
+            android:fontFamily="@font/iran_sans_mobile"
+            android:text="قیمت عضویت ۷ روزه:"
+            android:textSize="10sp" />
 
         <EditText
-            android:id="@+id/etHalfMonthFee"
+            android:id="@+id/etRegisterWeeklyFee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_rect_stroke"
-            android:ems="10"
-            android:hint="@string/in_rial"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_light"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/ic_rial"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:gravity="left"
             android:inputType="numberDecimal"
-            android:maxLength="7" />
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:text="@{String.valueOf(gym.weeklyFee)}" />
+        <TextView
+            android:id="@+id/txtCurrentBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:text="قیمت عضویت 12 روزه:"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/etRegisterTwelveFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_light"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/ic_rial"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:gravity="left"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:text="@{String.valueOf(gym.weeklyFee)}" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:text="قیمت عضویت نیم ماه:"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/etRegister1HalfMonthFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_light"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/ic_rial"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:gravity="left"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:text="@{String.valueOf(gym.halfMonthFee)}" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:text="قیمت عضویت ماهیانه:"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/etRegisterMonthlyFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/gray_light"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/ic_rial"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:gravity="left"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:text="@{String.valueOf(gym.monthlyFee)}" />
+
 
         <TextView
             android:layout_width="match_parent"
@@ -173,6 +272,7 @@
             android:ems="10"
             android:gravity="top|right"
             android:hint="@string/extra_description_hint"
+            android:text="@{gym.description}"
             android:inputType="textMultiLine"
             android:minLines="3" />
 
@@ -195,3 +295,4 @@
             android:textColor="@android:color/white" />
     </LinearLayout>
 </ScrollView>
+</layout>

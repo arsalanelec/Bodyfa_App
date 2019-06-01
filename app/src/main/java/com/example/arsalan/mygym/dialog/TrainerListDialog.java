@@ -2,13 +2,8 @@ package com.example.arsalan.mygym.dialog;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +11,14 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import com.example.arsalan.mygym.MyKeys;
-import com.example.arsalan.mygym.models.RetTrainerList;
-import com.example.arsalan.mygym.models.Trainer;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterTrainers;
+import com.example.arsalan.mygym.models.RetTrainerList;
+import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 
@@ -87,7 +85,7 @@ public class TrainerListDialog extends DialogFragment {
         View v = inflater.inflate(R.layout.dialog_trainer_list, container, false);
         RecyclerView rv = v.findViewById(R.id.rvTrainers);
         trainerList = new ArrayList<>();
-        adapter = new AdapterTrainers(trainerList, new AdapterTrainers.OnItemClickListener() {
+        /*adapter = new AdapterTrainers(trainerList, new AdapterTrainers.OnItemClickListener() {
             @Override
             public void onItemClick(Trainer trainer, View view) {
                 Intent intent = new Intent();
@@ -95,7 +93,7 @@ public class TrainerListDialog extends DialogFragment {
                 getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_OK, intent);
                 dismiss();
             }
-        });
+        });*/
         rv.setAdapter(adapter);
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
@@ -139,12 +137,6 @@ public class TrainerListDialog extends DialogFragment {
         mListener = null;
     }
 
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void getTrainerWeb(int cityId, int gymId, int sortType) {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
@@ -170,6 +162,11 @@ public class TrainerListDialog extends DialogFragment {
             }
         });
 
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 
 

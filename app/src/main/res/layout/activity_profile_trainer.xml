@@ -20,7 +20,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_profile_trained" />
-
-
+    <!--<include layout="@layout/content_profile_trained" />-->
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:rotation="180"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

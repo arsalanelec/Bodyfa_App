@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity
         , AthleteMealPlanListFragment.OnFragmentInteractionListener
         , AthleteWorkoutPlanListFragment.OnFragmentInteractionListener
         , RateDialog.OnFragmentInteractionListener
-, RequestWorkoutPlanDialog.OnFragmentInteractionListener
-, TrainerOrderListFragment.OnFragmentInteractionListener
-, SelectTrainerJoinTimeDialog.OnFragmentInteractionListener
+        , RequestWorkoutPlanDialog.OnFragmentInteractionListener
+        , TrainerOrderListFragment.OnFragmentInteractionListener
+        , SelectTrainerJoinTimeDialog.OnFragmentInteractionListener
         , Injectable {
     private static final String KEY_THEME_ID = "key theme id";
     private static final String KEY_PIRVATE_VIEW = "key private view";
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity
                 Log.e("Pushe-AS-Sample", c.getMessage());
                 c.printStackTrace();
             }
-        }else {
+        } else {
             Log.d(TAG, "onCreate: Pushe Not Initialized");
         }
 
@@ -246,94 +246,108 @@ public class MainActivity extends AppCompatActivity
                     mThemeResId = R.style.AppTheme_NoActionBar;
 
                 }
-                PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
-                PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
-                if (mCurrentUser.getRoleName().equals(KEY_ROLE_TRAINER)) {
-                    if (!mCurrentTrainer.isConfirmed()) {
-                        final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
-                        TextView title = titleView.findViewById(R.id.textView);
-                        title.setText(getString(R.string.incomplete_profile));
-                        final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
-                        TextView bodyText = bodyView.findViewById(R.id.textView);
-                        bodyText.setText(getString(R.string.trainer_incomplete_profile_dialog));
-                        final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
-                                .setView(bodyView)
-                                .setCustomTitle(titleView)
-                                .setPositiveButton(getString(R.string.completing_profile), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int ii) {
-                                        Intent i = new Intent();
-                                        i.setClass(mContext, EditProfileActivity.class);
-                                        i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, MyKeys.KEY_ROLE_TRAINER);
-                                        i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
-                                        startActivity(i);
-                                    }
-                                })
-                                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.cancel();
-                                    }
-                                })
-                                .create();
-                        dialog.show();
-                    } else {
+
+                switch (mCurrentUser.getRoleName()) {
+                    case KEY_ROLE_TRAINER: {
+                        if (!mCurrentTrainer.isConfirmed()) {
+                            final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
+                            TextView title = titleView.findViewById(R.id.textView);
+                            title.setText(getString(R.string.incomplete_profile));
+                            final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
+                            TextView bodyText = bodyView.findViewById(R.id.textView);
+                            bodyText.setText(getString(R.string.trainer_incomplete_profile_dialog));
+                            final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
+                                    .setView(bodyView)
+                                    .setCustomTitle(titleView)
+                                    .setPositiveButton(getString(R.string.completing_profile), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int ii) {
+                                            Intent i = new Intent();
+                                            i.setClass(mContext, EditProfileActivity.class);
+                                            i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, MyKeys.KEY_ROLE_TRAINER);
+                                            i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                                            startActivity(i);
+                                        }
+                                    })
+                                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.cancel();
+                                        }
+                                    })
+                                    .create();
+                            dialog.setOnShowListener(dialog1 ->
+                                switchBtn.setEnabled(true));
+                            dialog.show();
+                        } else {
+                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+                            Intent intent = new Intent();
+                            intent.setClass(mContext, MainActivity.class);
+                            intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
+                            intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                            intent.putExtra(EXTRA_OBJ_TRAINER, mCurrentTrainer);
+                            finish();
+                            startActivity(intent);
+                            // overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            // overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+                        }
+                    }
+                    break;
+                    case KEY_ROLE_ATHLETE: {
+                        PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                        PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
                         Intent intent = new Intent();
                         intent.setClass(mContext, MainActivity.class);
-                        intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
+                        intent.putExtra(EXTRA_ROLE_CHOICE, mCurrentUser.getRoleName());
                         intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
-                        intent.putExtra(EXTRA_OBJ_TRAINER, mCurrentTrainer);
                         finish();
                         startActivity(intent);
-                        // overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        // overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
                     }
-                } else if (mCurrentUser.getRoleName().equals(KEY_ROLE_ATHLETE)) {
+                    break;
 
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, MainActivity.class);
-                    intent.putExtra(EXTRA_ROLE_CHOICE, mCurrentUser.getRoleName());
-                    intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
-                    finish();
-                    startActivity(intent);
-
-                } else if (mCurrentUser.getRoleName().equals(KEY_ROLE_GYM)) {
-
-                    if (!mCurrentUser.isConfirmed()) {
-                        final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
-                        TextView title = titleView.findViewById(R.id.textView);
-                        title.setText(R.string.incomplete_profile);
-                        final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
-                        TextView bodyText = bodyView.findViewById(R.id.textView);
-                        bodyText.setText(getString(R.string.gym_incomplete_profile_dialog));
-                        final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
-                                .setView(bodyView)
-                                .setCustomTitle(titleView)
-                                .setPositiveButton(R.string.completing_profile, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int ii) {
-                                        Intent i = new Intent();
-                                        i.setClass(mContext, EditProfileActivity.class);
-                                        i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, MyKeys.KEY_ROLE_TRAINER);
-                                        i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
-                                        startActivity(i);
-                                        overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
-                                        MainActivity.this.finish();
-                                    }
-                                })
-                                .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel())
-                                .create();
-                        dialog.show();
-                    } else {
-                        Intent intent = new Intent();
-                        intent.setClass(mContext, PrivateMainActivity.class);
-                        intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
-                        intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
-                        intent.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
-                        MainActivity.this.finish();
+                    case KEY_ROLE_GYM: {
+                        if (!mCurrentGym.isConfirmed()) {
+                            final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
+                            TextView title = titleView.findViewById(R.id.textView);
+                            title.setText(R.string.incomplete_profile);
+                            final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
+                            TextView bodyText = bodyView.findViewById(R.id.textView);
+                            bodyText.setText(getString(R.string.gym_incomplete_profile_dialog));
+                            final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
+                                    .setView(bodyView)
+                                    .setCustomTitle(titleView)
+                                    .setPositiveButton(R.string.completing_profile, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int ii) {
+                                            Intent i = new Intent();
+                                            i.setClass(mContext, EditProfileActivity.class);
+                                            i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
+                                            i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                                            i.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
+                                            startActivity(i);
+                                            overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+                                        }
+                                    })
+                                    .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel())
+                                    .create();
+                            dialog.setOnShowListener(dialog1 ->
+                                    switchBtn.setEnabled(true));
+                            dialog.show();
+                        } else {
+                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+                            Intent intent = new Intent();
+                            intent.setClass(mContext, MainActivity.class);
+                            intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
+                            intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                            intent.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
+                            finish();
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+                        }
                     }
+                    break;
                 }
 
 
@@ -428,7 +442,7 @@ public class MainActivity extends AppCompatActivity
         mUserCreditViewModel.init(mCurrentUser.getId());
         mUserCreditViewModel.getCredit().observe(this, credit -> {
             if (credit != null) {
-                mCredit=credit;
+                mCredit = credit;
                 TextView creditTv = navigationView.getHeaderView(0).findViewById(R.id.txtUserCredit);
                 creditTv.setText(credit.getCreditFromatted());
             }
@@ -663,7 +677,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
                 if (response.isSuccessful()) {
-                    Log.d("addEditPushehId", "onResponse: on success: Userid:"+mCurrentUser.getId()+" pusheId:"+pushehId+" msg:"+response.message());
+                    Log.d("addEditPushehId", "onResponse: on success: Userid:" + mCurrentUser.getId() + " pusheId:" + pushehId + " msg:" + response.message());
                 } else {
                     Log.d("addEditPushehId", "onResponse: on Notsuccess code:" + response.code());
                 }
@@ -700,28 +714,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public LiveData<Integer> requestWorkoutPlanFromWeb(long trainedId, String title, String description,int amount) {
+    public LiveData<Integer> requestWorkoutPlanFromWeb(long trainedId, String title, String description, int amount) {
         //check for enough balance
-        if(mCredit!=null && mCredit.getCredit()<amount){
+        if (mCredit != null && mCredit.getCredit() < amount) {
             AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), mCredit.getCredit());
             dialog.show(getSupportFragmentManager(), "");
-            MutableLiveData<Integer> status=new MutableLiveData<>(-1);
+            MutableLiveData<Integer> status = new MutableLiveData<>(-1);
             return status;
         }
-        return MyWebService.requestWorkoutPlanFromWeb(this,mCurrentUser.getId(),trainedId,title,description);
+        return MyWebService.requestWorkoutPlanFromWeb(this, mCurrentUser.getId(), trainedId, title, description);
     }
 
     @Override
-    public LiveData<RetResponseStatus>  requestTrainerJoinPlanFromWeb(long athleteId, long trainerGymId, String selectedDuration, int amount) {
+    public LiveData<RetResponseStatus> requestTrainerJoinPlanFromWeb(long athleteId, long trainerGymId, String selectedDuration, int amount) {
         //check for enough balance
-        if(mCredit!=null && mCredit.getCredit()<amount){
+        if (mCredit != null && mCredit.getCredit() < amount) {
             AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), mCredit.getCredit());
             dialog.show(getSupportFragmentManager(), "");
-            MutableLiveData<RetResponseStatus> status=new MutableLiveData<>();
-            status.setValue(new RetResponseStatus(STATUS_FAIL,""));
+            MutableLiveData<RetResponseStatus> status = new MutableLiveData<>();
+            status.setValue(new RetResponseStatus(STATUS_FAIL, ""));
             return status;
         }
-        return MyWebService.athleteMembershipRequestFromWeb(this,athleteId,trainerGymId,selectedDuration);
+        return MyWebService.athleteMembershipRequestFromWeb(this, athleteId, trainerGymId, selectedDuration);
     }
 
 
@@ -747,7 +761,8 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             if (position == 0) return NewsListFragment.newInstance("", "");
             if (position == 1) return TutorialFragment.newInstance("", "");
-            if (position == 2) return TrainerListFragment.newInstance("", "");
+            if (position == 2)
+                return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
             if (position == 3) return GymListFragment.newInstance("", "");
 
             return new HomeFragment();

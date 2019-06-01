@@ -119,14 +119,14 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         nameTV.setText(((MyApplication) getActivity().getApplication()).getCurrentUser().getName());
 
         LinearLayout trainderSelectBtn = v.findViewById(R.id.llSelectTrainer);
-        trainderSelectBtn.setOnClickListener(new View.OnClickListener() {
+        /*trainderSelectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TrainerListDialog dialog = new TrainerListDialog();
                 dialog.setTargetFragment(DashBoardAthleteFragment.this, REQ_SELECT_TRAINER);
                 dialog.show(getFragmentManager(), "");
             }
-        });
+        });*/
 
         Button editProfileBtn = v.findViewById(R.id.btnEditProfilePic);
         editProfileBtn.setOnClickListener(new View.OnClickListener() {
@@ -157,33 +157,11 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
             }
         });
         tabLayout.setupWithViewPager(mGalleryPager);
-        // GalleryViewModel galleryViewModel;
-        /*GalleryViewModel.createInstance(
-                mCurrentAthlete.getId(),
-                "Bearer " + ((MyApplication2) getActivity().getApplication()).getCurrentToken().getToken()
-        );*/
+
         mGalleryItemList = new ArrayList<>();
-        // galleryViewModel = ViewModelProviders.of(DashBoardAthleteFragment.this).get(GalleryViewModel.class);
         mGalleryAdapter = new GalleryPagerAdapter(mGalleryItemList);
         mGalleryPager.setAdapter(mGalleryAdapter);
-       /* galleryViewModel.getGalleryItems(
-                mCurrentAthlete.getId(),
-                "Bearer " + ((MyApplication2) getActivity().getApplication()).getCurrentToken().getToken()).observe(DashBoardAthleteFragment.this, items -> {
-            mGalleryItemList.removeAll(mGalleryItemList);
-            mGalleryItemList.addAll(items);
-            mGalleryAdapter.notifyDataSetChanged();
-            Log.d(getClass().getSimpleName(), "onDataObserve: cnt:" + items.size());
-        });*/
 
-        /*MyWebService.getGalleryWeb(getActivity(), mCurrentAthlete.getId(), new MyWebService.OnGalleryLoadListener() {
-            @Override
-            public void onGalleryLoad(ArrayList<GalleryItem> galleryItems) {
-                mGalleryItemList.removeAll(mGalleryItemList);
-                mGalleryItemList.addAll(galleryItems);
-                mGalleryAdapter.notifyDataSetChanged();
-
-            }
-        });*/
         Button captureImageBtn = v.findViewById(R.id.btnCapture);
         captureImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,16 +221,6 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         if (waitingDialog != null && waitingDialog.isShowing()) waitingDialog.dismiss();
         viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentAthlete.getId());
 
-        /*MyWebService.getGalleryWeb(getActivity(), mCurrentAthlete.getId(), new MyWebService.OnGalleryLoadListener() {
-            @Override
-            public void onGalleryLoad(ArrayList<GalleryItem> galleryItems) {
-                mGalleryItemList.removeAll(mGalleryItemList);
-                mGalleryItemList.addAll(galleryItems);
-                mGalleryAdapter.notifyDataSetChanged();
-                // mGalleryAdapter.notifyDataSetChanged();
-                mGalleryPager.setCurrentItem(mGalleryAdapter.getCount()-1);
-            }
-        });*/
     }
 
     @Override

@@ -279,7 +279,7 @@
     <string name="gym_name">نام باشگاه:</string>
     <string name="gym_name_hint">نام باشگاه</string>
     <string name="gym_address">آدرس باشگاه:</string>
-    <string name="gym_address_hint">آدرس باشگاه...</string>
+    <string name="gym_address_hint">آدرس باشگاه…</string>
     <string name="phone_1">تلفن 1</string>
     <string name="phone_2">تلفن 2</string>
     <string name="monthly_fee">شهریه ماهیانه:</string>
@@ -287,7 +287,7 @@
     <string name="half_month_fee">شهریه یک روز در میان:</string>
     <string name="gym_feature">امکانات باشگاه:</string>
     <string name="extra_desctiption">توضیحات تکمیلی:</string>
-    <string name="extra_description_hint">توضیحات باشگاه...</string>
+    <string name="extra_description_hint">توضیحات باشگاه…</string>
     <string name="choose_address_on_map">انتخاب آدرس رو نقشه</string>
     <string name="order_a_plan">سفارش برنامه</string>
     <string name="meal">غذایی</string>

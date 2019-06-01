@@ -1,6 +1,5 @@
 package com.example.arsalan.mygym.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
@@ -8,12 +7,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -25,14 +18,21 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.arsalan.mygym.R;
+import com.example.arsalan.mygym.activities.ProfileTrainerActivity;
+import com.example.arsalan.mygym.adapters.AdapterTrainers;
+import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.CityNState;
 import com.example.arsalan.mygym.models.Province;
 import com.example.arsalan.mygym.models.RetTrainerList;
 import com.example.arsalan.mygym.models.Trainer;
-import com.example.arsalan.mygym.activities.ProfileTrainerActivity;
-import com.example.arsalan.mygym.R;
-import com.example.arsalan.mygym.adapters.AdapterTrainers;
-import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
@@ -47,33 +47,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.arsalan.mygym.MyKeys.EXTRA_IMAGE_TRANSITION_NAME;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_PARCLABLE_OBJ;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_MY_TRAINER;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_TRAINER_ID;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
 
 
 public class TrainerListFragment extends Fragment implements Injectable {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private static final String ARG_ATHLETE_ID = "param-athlete-id";
+    private static final String ARG_TRAINER_ID = "param-trainer-id";
+    @Inject
+    MyViewModelFactory factory;
     private List<Trainer> trainerList;
     private OnFragmentInteractionListener mListener;
     private AdapterTrainers adapter;
-
     private ToggleButton byMedalBtn;
     private ToggleButton byRankBtn;
-
     private TrainerListViewModel viewModel;
-
-    @Inject
-    MyViewModelFactory factory;
-
     private View waitingFL;
+    private long mUserId;
+    private long mTrainerId;
 
     public TrainerListFragment() {
         // Required empty public constructor
@@ -83,16 +77,14 @@ public class TrainerListFragment extends Fragment implements Injectable {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param userId Parameter 1.
      * @return A new instance of fragment GymListFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static TrainerListFragment newInstance(String param1, String param2) {
+    public static TrainerListFragment newInstance(long userId,long currentTrainerId) {
         TrainerListFragment fragment = new TrainerListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putLong(ARG_ATHLETE_ID, userId);
+        args.putLong(ARG_TRAINER_ID, currentTrainerId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,8 +93,8 @@ public class TrainerListFragment extends Fragment implements Injectable {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mUserId = getArguments().getLong(ARG_ATHLETE_ID);
+            mTrainerId = getArguments().getLong(ARG_TRAINER_ID);
         }
     }
 
@@ -114,20 +106,16 @@ public class TrainerListFragment extends Fragment implements Injectable {
 
         RecyclerView rv = v.findViewById(R.id.rvTrainers);
         trainerList = new ArrayList<>();
-        adapter = new AdapterTrainers(trainerList, new AdapterTrainers.OnItemClickListener() {
+        adapter = new AdapterTrainers(trainerList,mTrainerId, new AdapterTrainers.OnItemClickListener() {
             @Override
             public void onItemClick(Trainer trainer, View view) {
                 Intent i = new Intent();
                 i.setClass(getActivity(), ProfileTrainerActivity.class);
-                i.putExtra(EXTRA_PARCLABLE_OBJ, trainer);
-                i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(view));
+                i.putExtra(EXTRA_TRAINER_ID, trainer.getId());
+                i.putExtra(EXTRA_USER_ID, mUserId);
+                i.putExtra(EXTRA_IS_MY_TRAINER,(mTrainerId == trainer.getId()));
+                //i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(view));
 
-              /*  ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        view,
-                        ViewCompat.getTransitionName(view));
-*/
-             //   startVideoRecorderActivity(i, options.toBundle());
                 startActivity(i);
             }
         });
@@ -139,7 +127,7 @@ public class TrainerListFragment extends Fragment implements Injectable {
 
         provinceSpn.setAdapter(new ProvinceAdapter());
 
-         waitingFL = v.findViewById(R.id.flWaiting);
+        waitingFL = v.findViewById(R.id.flWaiting);
         byMedalBtn = v.findViewById(R.id.btnByMedals);
         byRankBtn = v.findViewById(R.id.btnByRank);
         byMedalBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -219,17 +207,6 @@ public class TrainerListFragment extends Fragment implements Injectable {
         mListener = null;
     }
 
-    private interface OnGetTrainerListner {
-        void onSuccess();
-
-        void onFailed();
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void getTrainerWeb(int cityId, int gymId, int sortType, final OnGetTrainerListner onGetTrainerListner) {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
@@ -252,6 +229,17 @@ public class TrainerListFragment extends Fragment implements Injectable {
             }
         });
 
+    }
+
+    private interface OnGetTrainerListner {
+        void onSuccess();
+
+        void onFailed();
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 
     class ProvinceAdapter implements SpinnerAdapter {

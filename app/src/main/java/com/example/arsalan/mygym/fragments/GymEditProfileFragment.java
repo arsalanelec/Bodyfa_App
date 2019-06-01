@@ -14,15 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterCitySp;
 import com.example.arsalan.mygym.adapters.AdapterProvinceSp;
+import com.example.arsalan.mygym.databinding.FragmentGymEditProfileBinding;
 import com.example.arsalan.mygym.dialog.AddLocationDialog;
 import com.example.arsalan.mygym.models.City;
 import com.example.arsalan.mygym.models.CityNState;
@@ -32,7 +31,6 @@ import com.example.arsalan.mygym.models.Province;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.maps.model.LatLng;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -44,6 +42,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -53,7 +52,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.arsalan.mygym.models.MyConst.BASE_API_URL;
+import static com.example.arsalan.mygym.models.MyConst.BASE_CONTENT_URL;
 
 
 public class GymEditProfileFragment extends Fragment implements AddLocationDialog.OnFragmentInteractionListener {
@@ -64,13 +63,13 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
     private Gym mCurrentGym;
     private OnFragmentInteractionListener mListener;
     private Uri resultUri;
-    private SimpleDraweeView gymImg;
 
     private LatLng mLatLong;
 
     private MultipartBody.Part thumbBody;
     private MultipartBody.Part imageBody;
     private int REQ_ADD_LOCATION = 100;
+    private FragmentGymEditProfileBinding mBind;
 
     public GymEditProfileFragment() {
         // Required empty public constructor
@@ -90,11 +89,22 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mCurrentGym = getArguments().getParcelable(ARG_GYM);
-            if (mCurrentGym != null) {
+            if (mCurrentGym == null) {
+                Log.d(TAG, "onCreate: Current Gym is Null!");
+                mCurrentGym=new Gym();
+            }else {
+                Log.d(TAG, "onCreate: GYM ins Not Null Title:"+mCurrentGym.getTitle());
+            }
+            /*if(mCurrentGym.getLat()!=0 && mCurrentGym.getLng()!=0) {
                 mLatLong = new LatLng(
                         mCurrentGym.getLat(),
-                        mCurrentGym.getLon());
-            }
+                        mCurrentGym.getLng());
+            }else {
+                mLatLong=new LatLng(29.636080, 52.525654);   //Baghe Eram
+            }*/
+            mLatLong = new LatLng(
+                    mCurrentGym.getLat(),
+                    mCurrentGym.getLng());
         }
     }
 
@@ -102,28 +112,21 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_gym_edit_profile, container, false);
-        final EditText titleET = v.findViewById(R.id.etTitle);
-        titleET.setText(mCurrentGym.getTitle());
+         mBind = DataBindingUtil.inflate(inflater, R.layout.fragment_gym_edit_profile, container, false);
+       mBind.setGym(mCurrentGym);
 
-        final EditText addressET = v.findViewById(R.id.etAddress);
-        addressET.setText(mCurrentGym.getAddress());
 
-        final EditText descriptionET = v.findViewById(R.id.etDescription);
-        descriptionET.setText(mCurrentGym.getDescription());
 
         //استانها
-        final Spinner provinceSp = v.findViewById(R.id.spnProvince);
-        final Spinner citySp = v.findViewById(R.id.spnCity);
-        provinceSp.setAdapter(new AdapterProvinceSp());
+        mBind.spnProvince.setAdapter(new AdapterProvinceSp());
         if (mCurrentGym.getCityId() > 0) {
-            for (int i = 0; i < provinceSp.getAdapter().getCount(); i++) {
-                if (provinceSp.getItemIdAtPosition(i) == CityNState.getProvinceByCityId(mCurrentGym.getCityId()).getId()) {
-                    provinceSp.setSelection(i);
-                    citySp.setAdapter(new AdapterCitySp(CityNState.getProvinceByCityId(mCurrentGym.getCityId()).getId()));
-                    for (int j = 0; j < citySp.getAdapter().getCount(); j++) {
-                        if (citySp.getItemIdAtPosition(j) == mCurrentGym.getCityId()) {
-                            citySp.setSelection(j);
+            for (int i = 0; i < mBind.spnProvince.getAdapter().getCount(); i++) {
+                if (mBind.spnProvince.getItemIdAtPosition(i) == CityNState.getProvinceByCityId(mCurrentGym.getCityId()).getId()) {
+                    mBind.spnProvince.setSelection(i);
+                    mBind.spnCity.setAdapter(new AdapterCitySp(CityNState.getProvinceByCityId(mCurrentGym.getCityId()).getId()));
+                    for (int j = 0; j <  mBind.spnCity.getAdapter().getCount(); j++) {
+                        if ( mBind.spnCity.getItemIdAtPosition(j) == mCurrentGym.getCityId()) {
+                            mBind.spnCity.setSelection(j);
                             break;
                         }
 
@@ -132,22 +135,22 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
                 }
             }
         } else {
-            provinceSp.setSelection(16); //فارس
-            citySp.setAdapter(new AdapterCitySp(17));
-            for (int j = 0; j < citySp.getAdapter().getCount(); j++) {
-                if (citySp.getItemIdAtPosition(j) == 262) { //شیراز
-                    citySp.setSelection(j);
+            mBind.spnProvince.setSelection(16); //فارس
+            mBind.spnCity.setAdapter(new AdapterCitySp(17));
+            for (int j = 0; j < mBind.spnCity.getAdapter().getCount(); j++) {
+                if (mBind.spnCity.getItemIdAtPosition(j) == 262) { //شیراز
+                    mBind.spnCity.setSelection(j);
                     break;
                 }
 
             }
         }
 
-        provinceSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mBind.spnProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (((AdapterCitySp) citySp.getAdapter()).getProvinceId() != l)
-                    citySp.setAdapter(new AdapterCitySp(l));
+                if (((AdapterCitySp)  mBind.spnCity.getAdapter()).getProvinceId() != l)
+                    mBind.spnCity.setAdapter(new AdapterCitySp(l));
             }
 
             @Override
@@ -156,29 +159,26 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
             }
         });
 
-        Button addLocationBtn = v.findViewById(R.id.btnAddLocation);
-        addLocationBtn.setOnClickListener(new View.OnClickListener() {
+        mBind.btnAddLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AddLocationDialog dialog;
-                if (mLatLong.latitude > 0.0) { //by lat lng
+                if (mLatLong.latitude != 0.0) { //by lat lng
                     Log.d(TAG, "add location by lat lng: " + mLatLong.latitude + " lng:" + mLatLong.longitude);
                     dialog = AddLocationDialog.newInstance(mLatLong);
 
                 } else { //by city name
                     Log.d(TAG, "add location by city");
-                    dialog = AddLocationDialog.newInstance(((City) citySp.getSelectedItem()).getName(), ((Province) provinceSp.getSelectedItem()).getName());
+                    dialog = AddLocationDialog.newInstance(((City) mBind.spnCity.getSelectedItem()).getName(), ((Province) mBind.spnProvince.getSelectedItem()).getName());
                 }
                 dialog.setTargetFragment(GymEditProfileFragment.this, REQ_ADD_LOCATION);
                 dialog.show(getFragmentManager(), "");
             }
         });
 
-        gymImg = v.findViewById(R.id.imgGym);
-        gymImg.setImageURI(BASE_API_URL + mCurrentGym.getPictureUrl());
+        mBind.imgGym.setImageURI(BASE_CONTENT_URL + mCurrentGym.getPictureUrl());
 
-        Button changeImageBtn = v.findViewById(R.id.btnEditImage);
-        changeImageBtn.setOnClickListener(new View.OnClickListener() {
+        mBind.btnEditImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CropImage.activity()
@@ -193,27 +193,15 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
                         .start(getContext(), GymEditProfileFragment.this);
             }
         });
-        final EditText phone1ET = v.findViewById(R.id.etPhone1);
-        phone1ET.setText(mCurrentGym.getPhone1());
 
-        final EditText phone2ET = v.findViewById(R.id.etPhone2);
-        phone2ET.setText(mCurrentGym.getPhone2());
-
-        final EditText halfMonthFeeET = v.findViewById(R.id.etHalfMonthFee);
-        halfMonthFeeET.setText(String.valueOf(mCurrentGym.getHalfMonthFee()));
-
-        final EditText monthlyFeeET = v.findViewById(R.id.etMonthlyFee);
-        monthlyFeeET.setText(String.valueOf(mCurrentGym.getMonthlyFee()));
-
-        Button submitBtn = v.findViewById(R.id.btnSubmit);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
+        mBind.btnSubmit.setOnClickListener(new View.OnClickListener() {
             public ProgressDialog waitingDialog;
 
             @Override
             public void onClick(View view) {
-                if (titleET.getText().toString().isEmpty()) {
-                    titleET.setError(getString(R.string.title_is_empty));
-                    titleET.requestFocus();
+                if (mBind.etTitle.getText().toString().isEmpty()) {
+                    mBind.etTitle.setError(getString(R.string.title_is_empty));
+                    mBind.etTitle.requestFocus();
                     return;
                 }
 
@@ -223,20 +211,20 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
 
                 MediaType plainMT = MediaType.parse("text/plain");
                 Map<String, RequestBody> requestBodyMap = new HashMap<>();
-                requestBodyMap.put("UserId", RequestBody.create(plainMT, String.valueOf(mCurrentGym.getId())));
-                requestBodyMap.put("Title", RequestBody.create(plainMT, String.valueOf(titleET.getText().toString())));
-                requestBodyMap.put("Address", RequestBody.create(plainMT, String.valueOf(addressET.getText().toString())));
-                requestBodyMap.put("Phone1", RequestBody.create(plainMT, String.valueOf(phone1ET.getText().toString())));
-                requestBodyMap.put("Phone2", RequestBody.create(plainMT, String.valueOf(phone2ET.getText().toString())));
+                requestBodyMap.put("UserId", RequestBody.create(plainMT, String.valueOf(((MyApplication) getActivity().getApplication()).getCurrentUser().getId())));
+                requestBodyMap.put("Title", RequestBody.create(plainMT, mBind.etTitle.getText().toString()));
+                requestBodyMap.put("Address", RequestBody.create(plainMT, mBind.etAddress.getText().toString()));
+                requestBodyMap.put("Phone1", RequestBody.create(plainMT, mBind.etPhone1.getText().toString()));
+                requestBodyMap.put("Phone2", RequestBody.create(plainMT, mBind.etPhone2.getText().toString()));
                 requestBodyMap.put("Lat", RequestBody.create(plainMT, String.valueOf(mLatLong.latitude)));
                 requestBodyMap.put("Long", RequestBody.create(plainMT, String.valueOf(mLatLong.longitude)));
-                requestBodyMap.put("Description", RequestBody.create(plainMT, descriptionET.getText().toString()));
-                requestBodyMap.put("CityId", RequestBody.create(plainMT, String.valueOf(citySp.getSelectedItemId())));
-                requestBodyMap.put("HalfMonthFee", RequestBody.create(plainMT, halfMonthFeeET.getText().toString()));
-                requestBodyMap.put("MonthlyFee", RequestBody.create(plainMT, monthlyFeeET.getText().toString()));
-
-                requestBodyMap.put("Description", RequestBody.create(plainMT, descriptionET.getText().toString()));
-
+                requestBodyMap.put("Description", RequestBody.create(plainMT, mBind.etDescription.getText().toString()));
+                requestBodyMap.put("CityId", RequestBody.create(plainMT, String.valueOf(mBind.spnCity.getSelectedItemId())));
+                requestBodyMap.put("OneDayFee", RequestBody.create(plainMT, mBind.etRegisterDailyFee.getText().toString()));
+                requestBodyMap.put("WeeklyFee", RequestBody.create(plainMT, mBind.etRegisterWeeklyFee.getText().toString()));
+                requestBodyMap.put("TwelveDaysFee", RequestBody.create(plainMT, mBind.etRegisterTwelveFee.getText().toString()));
+                requestBodyMap.put("HalfMonthFee", RequestBody.create(plainMT, mBind.etRegister1HalfMonthFee.getText().toString()));
+                requestBodyMap.put("MonthlyFee", RequestBody.create(plainMT, mBind.etRegisterMonthlyFee.getText().toString()));
 
                 try {
                     if (resultUri != null) {
@@ -321,7 +309,9 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
 
                         @Override
                         public void onFailure(Call<RetroResult> call, Throwable t) {
-                            Log.d(TAG, "onClick: response is Error:" + t.getMessage());
+                            waitingDialog.dismiss();
+                            Toast.makeText(getContext(), R.string.error_accord_try_again, Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onClick: response is Error:" + t.getCause());
                             //    waitingDialog.dismiss();
                         }
                     });
@@ -338,7 +328,7 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
 
 
         });
-        return v;
+        return mBind.getRoot();
     }
 
 
@@ -373,7 +363,7 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
                 Log.d("EDITPROFILEACTIVITY", "onActivityResult: " + resultUri);
-                gymImg.setImageURI(resultUri);
+                mBind.imgGym.setImageURI(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }

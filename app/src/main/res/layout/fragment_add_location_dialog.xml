@@ -6,6 +6,7 @@
     tools:context=".dialog.AddLocationDialog"
     android:orientation="vertical"
     android:layoutDirection="rtl"
+
     >
 <com.google.android.gms.maps.MapView
     android:id="@+id/mapView"

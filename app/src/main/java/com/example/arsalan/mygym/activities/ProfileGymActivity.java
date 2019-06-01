@@ -133,7 +133,7 @@ public class ProfileGymActivity extends AppCompatActivity implements OnMapReadyC
         // Creating a marker
 
         MarkerOptions markerOptions = new MarkerOptions();
-        LatLng latLng = new LatLng(mCurrentGym.getLat(), mCurrentGym.getLon());
+        LatLng latLng = new LatLng(mCurrentGym.getLat(), mCurrentGym.getLng());
         // Setting the position for the marker
         markerOptions.position(latLng);
 

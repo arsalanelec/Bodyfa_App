@@ -13,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,13 +30,11 @@ import com.example.arsalan.mygym.models.GalleryItem;
 import com.example.arsalan.mygym.models.Honor;
 import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.Trainer;
-import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.viewModels.GalleryViewModel;
 import com.example.arsalan.mygym.viewModels.HonorViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerViewModel;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +44,6 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -65,10 +60,14 @@ import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
 
 public class MyTrainerFragment extends Fragment implements Injectable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_ATHLETE = "param1";
+    private static final String ARG_ATHLETE = "param-athlete";
+    private static final String ARG_TRAINER = "param-trainer";
+    private static final String ARG_IS_MY_TRAINER = "is-my-trainer";
     @Inject
     MyViewModelFactory factory;
-    private User mCurrentAthlete;
+    private long mAthleteId;
+    private long mTrainerId;
+    private boolean mIsMyTrainer;
     private OnFragmentInteractionListener mListener;
     private TrainerViewModel trainerViewModel;
     private HonorViewModel honorViewModel;
@@ -89,10 +88,12 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     }
 
 
-    public static MyTrainerFragment newInstance(User athlete) {
+    public static MyTrainerFragment newInstance(long athleteId,long trainerId,boolean isMyTrainer) {
         MyTrainerFragment fragment = new MyTrainerFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_ATHLETE, athlete);
+        args.putLong(ARG_ATHLETE, athleteId);
+        args.putLong(ARG_TRAINER, trainerId);
+        args.putBoolean(ARG_IS_MY_TRAINER, isMyTrainer);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,7 +102,9 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mCurrentAthlete = getArguments().getParcelable(ARG_ATHLETE);
+            mAthleteId = getArguments().getLong(ARG_ATHLETE);
+            mTrainerId = getArguments().getLong(ARG_TRAINER);
+            mIsMyTrainer = getArguments().getBoolean(ARG_IS_MY_TRAINER);
 
         }
     }
@@ -122,6 +125,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
             }
             return false;
         });
+
         bind.tablayout.setupWithViewPager(bind.vpGallery);
         mGalleryItemList = new ArrayList<GalleryItem>();
         mGalleryAdapter = new GalleryPagerAdapter(mGalleryItemList);
@@ -133,17 +137,21 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         bind.rvHonor.setLayoutManager(linearLayout);
         bind.rvHonor.setAdapter(mHonorAdapter);
         bind.rvHonor.setVisibility(View.GONE);
-        // getHonorsWeb(mCurrentAthlete.getTrainerId());
+        //if the athlete is not a memever of the trainer then cant send message to him/her
+        if(!mIsMyTrainer) {
+            bind.btnSendMessage.setVisibility(View.GONE);
+        }
+        // getHonorsWeb(mTrainerId);
 
         bind.cvRegistrationOrder.setOnClickListener(b -> {
             if (mTrainer != null) {
-                SelectTrainerJoinTimeDialog dialog = SelectTrainerJoinTimeDialog.newInstance(mCurrentAthlete.getId(),mTrainer);
+                SelectTrainerJoinTimeDialog dialog = SelectTrainerJoinTimeDialog.newInstance(mAthleteId,mTrainer);
                 dialog.show(getFragmentManager(), "");
             }
         });
         bind.cvWorkoutOrder.setOnClickListener(b -> {
             if (mTrainer != null) {
-                RequestWorkoutPlanDialog dialog = RequestWorkoutPlanDialog.newInstance(mCurrentAthlete.getId(), mTrainer.getId(),mTrainer.getWorkoutPlanPrice());
+                RequestWorkoutPlanDialog dialog = RequestWorkoutPlanDialog.newInstance(mAthleteId, mTrainer.getId(),mTrainer.getWorkoutPlanPrice());
                 dialog.show(getFragmentManager(), "");
             }
         });
@@ -153,7 +161,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
 
     private void rateTheTrainer(View view) {
         if (mTrainer != null) {
-            RateDialog dialog = RateDialog.newInstance(mCurrentAthlete.getId(), mTrainer.getId());
+            RateDialog dialog = RateDialog.newInstance(mAthleteId, mTrainer.getId());
             dialog.show(getFragmentManager(), "");
         }
     }
@@ -162,7 +170,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trainerViewModel = ViewModelProviders.of(this, factory).get(TrainerViewModel.class);
-        trainerViewModel.init(mCurrentAthlete.getTrainerId());
+        trainerViewModel.init(mTrainerId);
         trainerViewModel.getTrainer().observe(this, trainer -> {
             if (trainer != null) {
                 mTrainer = trainer;
@@ -174,7 +182,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent();
-                        intent.putExtra(EXTRA_USER_ID, mCurrentAthlete.getId());
+                        intent.putExtra(EXTRA_USER_ID, mAthleteId);
                         intent.putExtra(EXTRA_PARTY_ID, trainer.getId());
                         intent.putExtra(EXTRA_PARTY_NAME, trainer.getName());
                         intent.putExtra(EXTRA_PARTY_THUMB, trainer.getThumbUrl());
@@ -186,7 +194,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
             }
         });
         galleryViewModel = ViewModelProviders.of(this, factory).get(GalleryViewModel.class);
-        galleryViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentAthlete.getTrainerId());
+        galleryViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mTrainerId);
         galleryViewModel.getGalleryItemList().observe(this, galleryItems -> {
             Log.d("onActivityCreated", "observe: ");
             mGalleryItemList.removeAll(mGalleryItemList);
@@ -196,7 +204,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         });
 
         honorViewModel = ViewModelProviders.of(this, factory).get(HonorViewModel.class);
-        honorViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentAthlete.getTrainerId());
+        honorViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mTrainerId);
         honorViewModel.getHonorList().observe(this, honors -> {
             if (honors != null) {
                 Log.d(getClass().getSimpleName(), "observe: honor");
@@ -207,7 +215,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
             }
         });
         mCreditVm = ViewModelProviders.of(this, factory).get(UserCreditViewModel.class);
-        mCreditVm.init(mCurrentAthlete.getId());
+        mCreditVm.init(mAthleteId);
         mCreditVm.getCredit().observe(this, userCredit -> {
             if(userCredit!=null) {
                 mCredit = userCredit.getCredit();
