@@ -510,7 +510,7 @@ public class PrivateMainActivity extends AppCompatActivity
 
 
     private class ViewPagerTrainerAdapter extends FragmentStatePagerAdapter {
-        String[] titles = {getString(R.string.dashboard), getString(R.string.my_athleths), getString(R.string.plans), getString(R.string.orders), getString(R.string.transactions), getString(R.string.messages)};
+        String[] titles = {getString(R.string.dashboard), getString(R.string.my_athleths), getString(R.string.plans), getString(R.string.orders), getString(R.string.transactions)};//, getString(R.string.messages)};
 
         public ViewPagerTrainerAdapter(FragmentManager fm) {
             super(fm);
@@ -544,8 +544,8 @@ public class PrivateMainActivity extends AppCompatActivity
                     return new TutorialFragment();
                 case 4:
                     return new TrainerListFragment();
-                case 5:
-                    return InboxFragment.newInstance(mCurrentUser);
+               // case 5:
+               //     return InboxFragment.newInstance(mCurrentUser);
 
             }
             return new HomeFragment();

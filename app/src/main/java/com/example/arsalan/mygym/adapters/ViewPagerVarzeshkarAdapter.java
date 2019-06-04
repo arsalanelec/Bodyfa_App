@@ -32,7 +32,7 @@ public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
     public ViewPagerVarzeshkarAdapter(FragmentManager fm, Context context, User user) {
         super(fm);
         mContext = context;
-        titles = new String[]{mContext.getString(R.string.my_dashboard), mContext.getString(R.string.my_gym), mContext.getString(R.string.my_trainers), mContext.getString(R.string.meal_plan), mContext.getString(R.string.workout_plan), mContext.getString(R.string.messages)};
+        titles = new String[]{mContext.getString(R.string.my_dashboard), mContext.getString(R.string.my_gym), mContext.getString(R.string.my_trainers), mContext.getString(R.string.meal_plan), mContext.getString(R.string.workout_plan)};//, mContext.getString(R.string.messages)};
         mCurrentUser = user;
     }
 
@@ -64,8 +64,8 @@ public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
                 return AthleteMealPlanListFragment.newInstance(mCurrentUser);
             case 4:
                 return AthleteWorkoutPlanListFragment.newInstance(mCurrentUser);
-            case 5:
-                return InboxFragment.newInstance(mCurrentUser);
+           // case 5:
+           //     return InboxFragment.newInstance(mCurrentUser);
         }
 
         return new HomeFragment();

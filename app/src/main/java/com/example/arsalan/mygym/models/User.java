@@ -65,7 +65,7 @@ public class User implements Parcelable {
     @SerializedName("RoleName")
     private String roleName;
     @SerializedName("IsConfirmed")
-    private String isConfirmed;
+    private boolean isConfirmed;
 
     @SerializedName("TrainerUserId")
     private long trainerId;
@@ -92,9 +92,35 @@ public class User implements Parcelable {
         gender = in.readByte() != 0;
         roleId = in.readInt();
         roleName = in.readString();
-        isConfirmed = in.readString();
+        isConfirmed = in.readByte() != 0;
         trainerId = in.readLong();
         registerDate = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(password);
+        dest.writeString(userName);
+        dest.writeString(name);
+        dest.writeString(phone);
+        dest.writeString(age);
+        dest.writeString(address);
+        dest.writeString(weight);
+        dest.writeLong(cityId);
+        dest.writeString(PictureUrl);
+        dest.writeString(ThumbUrl);
+        dest.writeByte((byte) (gender ? 1 : 0));
+        dest.writeInt(roleId);
+        dest.writeString(roleName);
+        dest.writeByte((byte) (isConfirmed ? 1 : 0));
+        dest.writeLong(trainerId);
+        dest.writeString(registerDate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -109,8 +135,8 @@ public class User implements Parcelable {
         }
     };
 
-    public boolean isConfirmed() {
-        return isConfirmed.equals("True");
+    public boolean  isConfirmed() {
+        return isConfirmed;
     }
 
     public String getRoleName() {
@@ -185,7 +211,7 @@ public class User implements Parcelable {
         this.roleId = roleId;
     }
 
-    public void setIsConfirmed(String isConfirmed) {
+    public void setIsConfirmed(boolean isConfirmed) {
         this.isConfirmed = isConfirmed;
     }
 
@@ -234,10 +260,6 @@ public class User implements Parcelable {
         return gender;
     }
 
-    public String getIsConfirmed() {
-        return isConfirmed;
-    }
-
     public long getTrainerId() {
         return trainerId;
     }
@@ -252,32 +274,6 @@ public class User implements Parcelable {
 
     public String getRegisterDate() {
         return registerDate;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(id);
-        parcel.writeString(password);
-        parcel.writeString(userName);
-        parcel.writeString(name);
-        parcel.writeString(phone);
-        parcel.writeString(age);
-        parcel.writeString(address);
-        parcel.writeString(weight);
-        parcel.writeLong(cityId);
-        parcel.writeString(PictureUrl);
-        parcel.writeString(ThumbUrl);
-        parcel.writeByte((byte) (gender ? 1 : 0));
-        parcel.writeInt(roleId);
-        parcel.writeString(roleName);
-        parcel.writeString(isConfirmed);
-        parcel.writeLong(trainerId);
-        parcel.writeString(registerDate);
     }
 
     @Override

@@ -224,7 +224,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("/api/Trainer/GetTrainerAthletes")
-    Call<RetTrainerAthleteList> getMyAthleteList(@Header("Authorization") String token, @Part("TrainerId") long trainerId);
+    Call<RetTrainerAthleteList> getMyAthleteList(@Header("Authorization") String token, @Part("TrainerUserId") long trainerId);
 
     @Multipart
     @POST("api/Trainer/EditHonors")

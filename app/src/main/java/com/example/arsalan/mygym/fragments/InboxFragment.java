@@ -53,21 +53,21 @@ public class InboxFragment extends Fragment implements Injectable {
     private static final String ARG_USER = "param1";
     @Inject
     MyViewModelFactory factory;
-    private User mCurrentUser;
     private List<InboxItem> privateMessageList = new ArrayList<>();
     private OnFragmentInteractionListener mListener;
     private ProgressBar waitingPB;
     private AdapterPm adapter;
     private InboxItemListViewModel viewModel;
+    private long mUserId;
 
     public InboxFragment() {
         // Required empty public constructor
     }
 
-    public static InboxFragment newInstance(User user) {
+    public static InboxFragment newInstance(long userId) {
         InboxFragment fragment = new InboxFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_USER, user);
+        args.putLong(ARG_USER, userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,9 +76,9 @@ public class InboxFragment extends Fragment implements Injectable {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mCurrentUser = getArguments().getParcelable(ARG_USER);
+            mUserId = getArguments().getLong(ARG_USER);
         } else {
-            mCurrentUser = new User();
+            throw new RuntimeException("InboxFragment: Argument User Id Is Empty");
         }
     }
 
@@ -94,8 +94,6 @@ public class InboxFragment extends Fragment implements Injectable {
         adapter = new AdapterPm();
         listView.setAdapter(adapter);
         //  getInboxList(mCurrentUser.getId());
-        v.setRotation(180);
-
         return v;
     }
 
@@ -103,7 +101,7 @@ public class InboxFragment extends Fragment implements Injectable {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(InboxItemListViewModel.class);
-        viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentUser.getId());
+        viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mUserId);
 
         viewModel.getInboxItemList().observe(this, inboxItems -> {
             Log.d("onActivityCreated", "observe: ");
@@ -208,7 +206,7 @@ public class InboxFragment extends Fragment implements Injectable {
                 public void onClick(View view) {
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MessageRoomActivity.class);
-                    intent.putExtra(EXTRA_USER_ID, mCurrentUser.getId());
+                    intent.putExtra(EXTRA_USER_ID, mUserId);
                     intent.putExtra(EXTRA_PARTY_ID, getItem(i).getPartyId());
                     intent.putExtra(EXTRA_PARTY_NAME, getItem(i).getPartyName());
                     intent.putExtra(EXTRA_PARTY_THUMB, getItem(i).getPartyThumbUrl());

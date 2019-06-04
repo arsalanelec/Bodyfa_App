@@ -33,7 +33,7 @@ public class ViewPagerTrainerAdapter extends FragmentStatePagerAdapter {
     public ViewPagerTrainerAdapter(FragmentManager fm, Context context,User user,Trainer trainer) {
         super(fm);
         mContext = context;
-        titles = new String[]{mContext.getString(R.string.dashboard), mContext.getString(R.string.my_athleths), mContext.getString(R.string.plans), mContext.getString(R.string.orders), mContext.getString(R.string.transactions), mContext.getString(R.string.messages)};
+        titles = new String[]{mContext.getString(R.string.dashboard), mContext.getString(R.string.my_athleths), mContext.getString(R.string.plans), mContext.getString(R.string.orders), mContext.getString(R.string.transactions)};//, mContext.getString(R.string.messages)};
     mCurrentUser=user;
     mCurrentTrainer=trainer;
     }
@@ -66,8 +66,8 @@ public class ViewPagerTrainerAdapter extends FragmentStatePagerAdapter {
                 return  TrainerOrderListFragment.newInstance(mCurrentTrainer.getId());
             case 4:
                 return new TrainerListFragment();
-            case 5:
-                return InboxFragment.newInstance(mCurrentUser);
+            //case 5:
+            //    return InboxFragment.newInstance(mCurrentUser);
 
         }
         return new HomeFragment();

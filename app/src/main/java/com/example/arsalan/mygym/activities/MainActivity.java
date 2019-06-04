@@ -15,7 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -238,10 +241,20 @@ public class MainActivity extends AppCompatActivity
                 .into(imgThumb);
         //
 
-        Button switchBtn = toolbar.findViewById(R.id.btnSwitch);
-        switchBtn.setOnClickListener(new View.OnClickListener() {
+        Switch switchBtn = toolbar.findViewById(R.id.btnSwitch);
+        if(mPrivateView)switchBtn.setChecked(true);
+
+        ImageButton goToInboxBtn=findViewById(R.id.btnChatlist);
+        if(!mCurrentUser.isConfirmed())goToInboxBtn.setVisibility(View.GONE);
+        goToInboxBtn.setOnClickListener(b->{
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,ChatListActivity.class);
+            intent.putExtra(EXTRA_USER_ID,mCurrentUser.getId());
+            startActivity(intent);
+        });
+        switchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(final View view) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 switchBtn.setEnabled(false);
                 //swap view flag for private/general
                 if (!mPrivateView) {
@@ -365,19 +378,19 @@ public class MainActivity extends AppCompatActivity
         if (!mPrivateView) {
             if (mGeneratVpga == null) {
                 mGeneratVpga = new ViewPagerOmoomiAdapter(getSupportFragmentManager());
-                switchBtn.setText(getText(R.string.dashboard));
+                //switchBtn.setText(getText(R.string.dashboard));
 
             }
             viewPager.setAdapter(mGeneratVpga);
         } else if (roleName.equals(KEY_ROLE_ATHLETE)) {
-            switchBtn.setText(getText(R.string.general));
+           // switchBtn.setText(getText(R.string.general));
             if (mPrivateVpa == null) {
                 mPrivateVpa = new ViewPagerVarzeshkarAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser);
             }
             viewPager.setAdapter(mPrivateVpa);
 
         } else if (roleName.equals(KEY_ROLE_TRAINER)) {
-            switchBtn.setText(getText(R.string.general));
+           // switchBtn.setText(getText(R.string.general));
             if (mPrivateVpa == null) {
                 mPrivateVpa = new ViewPagerTrainerAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser, mCurrentTrainer);
             }

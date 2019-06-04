@@ -40,7 +40,8 @@ import dagger.android.AndroidInjectionModule;
         , WorkoutPlanActivityModule.class
         , EditProfileActivityModule.class
         , TrancastionListActivityModule.class
-        ,ProfileTrainerActivityModule.class})
+        , ProfileTrainerActivityModule.class
+        , ChatListActivityModule.class})
 
 public interface AppComponent {
     void inject(MyApplication myApplication);
