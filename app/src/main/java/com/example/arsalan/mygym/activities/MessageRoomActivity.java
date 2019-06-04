@@ -42,7 +42,7 @@ import static com.example.arsalan.mygym.MyKeys.VIEW_TYPE_PM_ME;
 import static com.example.arsalan.mygym.MyKeys.VIEW_TYPE_PM_OTHERS;
 
 public class MessageRoomActivity extends AppCompatActivity {
-
+    private static final String TAG = "MessageRoomActivity";
     private List<PrivateMessage> mPrivateMessageList;
     private AdapterPMList adapter;
     private long mUserId;
@@ -61,7 +61,7 @@ public class MessageRoomActivity extends AppCompatActivity {
         mPartyId = getIntent().getLongExtra(EXTRA_PARTY_ID, 0);
         String title = getIntent().getStringExtra(EXTRA_PARTY_NAME);
         mPartyThumUrl = MyConst.BASE_CONTENT_URL + getIntent().getStringExtra(EXTRA_PARTY_THUMB);
-
+        Log.d(TAG, "onCreate: userId:"+mUserId+" partyId:"+mPartyId+" imageUrl:"+mPartyThumUrl);
         if (title != null) setTitle(title);
 
         final RecyclerView pmListRV = findViewById(R.id.rvPM);
@@ -112,10 +112,15 @@ public class MessageRoomActivity extends AppCompatActivity {
         call.enqueue(new Callback<RetroResult>() {
             @Override
             public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
-                getPMListWeb();
-                sendMessageET.setText("");
-                sendBtn.setEnabled(true);
+                if(response.isSuccessful()) {
+                    getPMListWeb();
+                    sendMessageET.setText("");
+                    sendBtn.setEnabled(true);
+                    Log.d("sendPrivateMessage", "onResponse: success!");
+                }else {
+                    Log.d("sendPrivateMessage", "onResponse: error!");
 
+                }
             }
 
             @Override

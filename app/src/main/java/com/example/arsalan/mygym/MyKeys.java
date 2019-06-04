@@ -62,4 +62,5 @@ public class MyKeys {
     public static final String EXTRA_CURRENT_LANG = "current language";
     public static final String KEY_CURRENT_LANG = "key current language";
 
+    public static final String EXTRA_CREDIT_AMOUNT = "EXTRA_CREDIT_AMOUNT";
 }

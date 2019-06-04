@@ -25,10 +25,10 @@ public interface TrainerAthleteDao {
     LiveData<TrainerAthlete> getAthleteById(long id);
 
 
-    @Query("SELECT * From TrainerAthlete WHERE trainerId = :trainerId AND status=:status")
+    @Query("SELECT * From TrainerAthlete WHERE parentId = :trainerId AND status=:status")
     LiveData<List<TrainerAthlete>> getAthleteListByTrainerStatus(long trainerId,String status);
 
-    @Query("DELETE FROM TrainerAthlete WHERE trainerId=:trainerId")
+    @Query("DELETE FROM TrainerAthlete WHERE parentId=:trainerId")
     int deleteByTrainerId(long trainerId);
 
     @Query("DELETE FROM TrainerAthlete WHERE id=:requestId")
@@ -36,4 +36,10 @@ public interface TrainerAthleteDao {
 
     @Query("UPDATE TrainerAthlete SET status=:status WHERE id=:requestId")
     int updateStatus(long requestId, String status);
+
+    @Query("DELETE FROM TrainerAthlete")
+    void deleteAll();
+
+    @Query("SELECT * FROM TrainerAthlete WHERE athleteId=:userId")
+    LiveData<List<TrainerAthlete>> getByAthleteId(long userId);
 }

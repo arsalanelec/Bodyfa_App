@@ -310,6 +310,10 @@ public interface ApiInterface {
     @POST("api/Athletes/AthleteMembershipRequest")
     Call<RetroResult> athleteMembershipRequest(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params);
 
+    @Multipart
+    @POST("api/Athletes/GetMyMembershipRequest")
+    Call<RetTrainerAthleteList> getAthleteMembershipRequests(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params);
+
 
     @Streaming
     @GET

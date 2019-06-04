@@ -14,12 +14,31 @@ public class TrainerAthlete {
     @SerializedName("TrainerAthletsId")
     @Expose
     private long id;
-    @SerializedName("AthleteUserId")
+
+
+
+    @SerializedName(value = "AthleteUserId",alternate = {"AthleteId"})
     @Expose
     private long athleteId;
-    @SerializedName("TrainerUserId")
+    @SerializedName(value = "ParentId",alternate = {"TrainerUserId"})
     @Expose
-    private long trainerId;
+    private long parentId;
+
+    @SerializedName("ParentUsername")
+    @Expose
+    private long parentUsername;
+
+    @SerializedName("ParentName")
+    @Expose
+    private String parentName;
+    @SerializedName("ParentFamily")
+    @Expose
+    private String parentFamily;
+
+    @SerializedName("ParentPicture")
+    @Expose
+    private String parentThumbUrl;
+
     @SerializedName("AthleteThumbPicture")
     @Expose
     private String athleteThumbPicture;
@@ -238,15 +257,50 @@ public class TrainerAthlete {
         this.statusFa = statusFa;
     }
 
-    public long getTrainerId() {
-        return trainerId;
+    public long getParentId() {
+        return parentId;
     }
 
-    public void setTrainerId(long trainerId) {
-        this.trainerId = trainerId;
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 
     public String getRequestDatePersianString(){
         return getStringFormatOfDate(registerDateTs);
+    }
+    public String getRequestEndDatePersianString(){
+        return getStringFormatOfDate(toDateTs);
+    }
+
+    public long getParentUsername() {
+        return parentUsername;
+    }
+
+    public void setParentUsername(long parentUsername) {
+        this.parentUsername = parentUsername;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public String getParentFamily() {
+        return parentFamily;
+    }
+
+    public void setParentFamily(String parentFamily) {
+        this.parentFamily = parentFamily;
+    }
+
+    public String getParentThumbUrl() {
+        return parentThumbUrl;
+    }
+
+    public void setParentThumbUrl(String parentThumbUrl) {
+        this.parentThumbUrl = parentThumbUrl;
     }
 }

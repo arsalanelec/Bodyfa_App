@@ -15,6 +15,7 @@ import com.example.arsalan.mygym.fragments.HomeFragment;
 import com.example.arsalan.mygym.fragments.InboxFragment;
 import com.example.arsalan.mygym.fragments.MyGymFragment;
 import com.example.arsalan.mygym.fragments.MyTrainerFragment;
+import com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment;
 import com.example.arsalan.mygym.models.User;
 
 import androidx.annotation.NonNull;
@@ -31,7 +32,7 @@ public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
     public ViewPagerVarzeshkarAdapter(FragmentManager fm, Context context, User user) {
         super(fm);
         mContext = context;
-        titles = new String[]{mContext.getString(R.string.my_dashboard), mContext.getString(R.string.my_gym), mContext.getString(R.string.my_trainer), mContext.getString(R.string.meal_plan), mContext.getString(R.string.workout_plan), mContext.getString(R.string.messages)};
+        titles = new String[]{mContext.getString(R.string.my_dashboard), mContext.getString(R.string.my_gym), mContext.getString(R.string.my_trainers), mContext.getString(R.string.meal_plan), mContext.getString(R.string.workout_plan), mContext.getString(R.string.messages)};
         mCurrentUser = user;
     }
 
@@ -58,7 +59,7 @@ public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new MyGymFragment();
             case 2:
-                return MyTrainerFragment.newInstance(mCurrentUser.getId(),mCurrentUser.getTrainerId(),true);
+                return MyTrainerMembershipFragment.newInstance(mCurrentUser.getId());//MyTrainerFragment.newInstance(mCurrentUser.getId(),mCurrentUser.getTrainerId(),true);
             case 3:
                 return AthleteMealPlanListFragment.newInstance(mCurrentUser);
             case 4:

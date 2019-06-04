@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" >
+    <data>
+        <variable
+            name="trainer"
+            type="com.example.arsalan.mygym.models.TrainerAthlete" />
+        <variable
+            name="onClickListener"
+            type="com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment.OnRequestItemListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:onClick="@{()->onClickListener.onItemClicked(trainer.parentId)}">
+
+
+        <ImageView
+            android:id="@+id/imgThumb"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:elevation="2dp"
+            />
+
+        <TextView
+            android:id="@+id/txtTrainerName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{trainer.parentName}"
+            android:gravity="right"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgThumb"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/status"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/imgThumb"
+            app:layout_constraintTop_toBottomOf="@+id/txtTrainerName" />
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="@{trainer.statusFa}"
+            android:textColor="@{trainer.status.equals(&quot;confirmed&quot;) ? @color/green: @color/dark_gray}"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/textView29"
+            app:layout_constraintTop_toTopOf="@+id/textView29" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/request_date"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/txtStatus"
+            app:layout_constraintTop_toTopOf="@+id/txtStatus" />
+
+        <TextView
+            android:id="@+id/txtReqDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="@{trainer.requestDatePersianString}"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/textView31"
+            app:layout_constraintTop_toTopOf="@+id/textView31" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

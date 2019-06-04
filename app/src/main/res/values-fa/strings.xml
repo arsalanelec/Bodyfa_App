@@ -330,5 +330,8 @@
     <string name="what_rate">چه امتیازی می دهید؟</string>
     <string name="accept">تایید</string>
     <string name="trainer_athlete_membership_accepted">ورزشکار به عضویت شما در آمد.</string>
+    <string name="status">وضعیت:</string>
+    <string name="my_trainers">مربیان من</string>
+    <string name="request_date">تاریخ درخواست:</string>
 
 </resources>

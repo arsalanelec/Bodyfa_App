@@ -109,14 +109,15 @@ public class TrainerListFragment extends Fragment implements Injectable {
         adapter = new AdapterTrainers(trainerList,mTrainerId, new AdapterTrainers.OnItemClickListener() {
             @Override
             public void onItemClick(Trainer trainer, View view) {
-                Intent i = new Intent();
+                mListener.onGoToTrainerPage(trainer.getId(),false);
+/*                Intent i = new Intent();
                 i.setClass(getActivity(), ProfileTrainerActivity.class);
                 i.putExtra(EXTRA_TRAINER_ID, trainer.getId());
                 i.putExtra(EXTRA_USER_ID, mUserId);
                 i.putExtra(EXTRA_IS_MY_TRAINER,(mTrainerId == trainer.getId()));
                 //i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(view));
 
-                startActivity(i);
+                startActivity(i);*/
             }
         });
         rv.setAdapter(adapter);
@@ -195,10 +196,10 @@ public class TrainerListFragment extends Fragment implements Injectable {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } /*else {
+        } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
@@ -238,8 +239,8 @@ public class TrainerListFragment extends Fragment implements Injectable {
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+
+        void onGoToTrainerPage(long trainerId, boolean isMyTrainer);
     }
 
     class ProvinceAdapter implements SpinnerAdapter {

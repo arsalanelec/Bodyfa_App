@@ -339,5 +339,8 @@
     <string name="medal_photo_is_empty">تصویر مقام رسمی فدراسیون خالی میباشد. لطفا تصویر مدرک خود را بارگذاری نمایید.</string>
     <string name="accept">accept</string>
     <string name="trainer_athlete_membership_accepted">ورزشکار به عضویت شما در آمد.</string>
+    <string name="status">status:</string>
+    <string name="my_trainers">My Trainers</string>
+    <string name="request_date">Request Date:</string>
 
 </resources>

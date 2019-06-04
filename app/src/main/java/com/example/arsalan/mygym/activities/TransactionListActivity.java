@@ -30,6 +30,8 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
+import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
+
 public class TransactionListActivity extends AppCompatActivity implements Injectable, HasSupportFragmentInjector {
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
@@ -41,7 +43,7 @@ public class TransactionListActivity extends AppCompatActivity implements Inject
         super.onCreate(savedInstanceState);
         long mUserId;
         if (getIntent().getExtras() != null) {
-            mUserId = getIntent().getExtras().getLong(MyConst.EXTRA_USER_ID, 0);
+            mUserId = getIntent().getExtras().getLong(EXTRA_USER_ID, 0);
         } else {
             throw new RuntimeException("No UserId Passed!");
         }

@@ -36,8 +36,8 @@
             app:layout_constraintStart_toEndOf="@+id/btnCancel"
             app:layout_constraintTop_toTopOf="parent"
 
-            android:onClick="@{()->onDeleteClick.onSubmitClick(athlete.id,athlete.trainerId,athlete.athleteId,athlete.athleteName,athlete.athleteThumbPicture,typeOfRequest)}"/>
-            <!--( int requestId,long trainerId,long athleteId,String athleteName,String athleteThumbUrl)-->
+            android:onClick="@{()->onDeleteClick.onSubmitClick(athlete.id,athlete.parentId,athlete.athleteId,athlete.athleteName,athlete.athleteThumbPicture,typeOfRequest)}"/>
+            <!--( int requestId,long parentId,long athleteId,String athleteName,String athleteThumbUrl)-->
 
 
 

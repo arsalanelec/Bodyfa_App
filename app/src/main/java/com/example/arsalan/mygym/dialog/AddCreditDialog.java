@@ -59,7 +59,6 @@ public class AddCreditDialog extends DialogFragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment AddCreditDialog.
      */
-    // TODO: Rename and change types and number of parameters
     public static AddCreditDialog newInstance(long userId, int param2) {
         AddCreditDialog fragment = new AddCreditDialog();
         Bundle args = new Bundle();

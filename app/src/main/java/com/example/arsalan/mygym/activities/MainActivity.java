@@ -52,6 +52,8 @@ import com.example.arsalan.mygym.fragments.AthleteWorkoutPlanListFragment;
 import com.example.arsalan.mygym.fragments.DashBoardAthleteFragment;
 import com.example.arsalan.mygym.fragments.GymListFragment;
 import com.example.arsalan.mygym.fragments.HomeFragment;
+import com.example.arsalan.mygym.fragments.MyTrainerFragment;
+import com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment;
 import com.example.arsalan.mygym.fragments.NewsListFragment;
 import com.example.arsalan.mygym.fragments.TrainerListFragment;
 import com.example.arsalan.mygym.fragments.TrainerOrderListFragment;
@@ -90,10 +92,13 @@ import retrofit2.Response;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_CURRENT_LANG;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_EDIT_MODE;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_EXIT_ACCOUNT;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_MY_TRAINER;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_OBJ_GYM;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_OBJ_TRAINER;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_OBJ_USER;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_ROLE_CHOICE;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_TRAINER_ID;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
 import static com.example.arsalan.mygym.MyKeys.KEY_CURRENT_LANG;
 import static com.example.arsalan.mygym.MyKeys.KEY_PLAN_BODY;
 import static com.example.arsalan.mygym.MyKeys.KEY_PLAN_ID;
@@ -116,6 +121,8 @@ public class MainActivity extends AppCompatActivity
         , RequestWorkoutPlanDialog.OnFragmentInteractionListener
         , TrainerOrderListFragment.OnFragmentInteractionListener
         , SelectTrainerJoinTimeDialog.OnFragmentInteractionListener
+,TrainerListFragment.OnFragmentInteractionListener
+,MyTrainerMembershipFragment.OnFragmentInteractionListener
         , Injectable {
     private static final String KEY_THEME_ID = "key theme id";
     private static final String KEY_PIRVATE_VIEW = "key private view";
@@ -207,7 +214,7 @@ public class MainActivity extends AppCompatActivity
             Log.d(getClass().getSimpleName(), "onCreate: pushe initialized!:" + pushehId);
             Pushe.subscribe(this, "Trainer");
             Pushe.subscribe(this, "Gym");
-            Pushe.sendSimpleNotifToUser(this, pushehId, "Hi", "It is a notification from app to itself");
+//            Pushe.sendSimpleNotifToUser(this, pushehId, "Hi", "It is a notification from app to itself");
             try {
                 Pushe.sendCustomJsonToUser(this, pushehId, "{\"key\": \"It is a json from app to itself\"}");
             } catch (co.ronash.pushe.j.c c) {
@@ -543,7 +550,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_transactions) {
             Intent i = new Intent();
             i.setClass(MainActivity.this, TransactionListActivity.class);
-            i.putExtra(MyConst.EXTRA_USER_ID, mCurrentUser.getId());
+            i.putExtra(EXTRA_USER_ID, mCurrentUser.getId());
             startActivity(i);
         } else if (id == R.id.nav_faq) {
 
@@ -736,6 +743,18 @@ public class MainActivity extends AppCompatActivity
             return status;
         }
         return MyWebService.athleteMembershipRequestFromWeb(this, athleteId, trainerGymId, selectedDuration);
+    }
+
+    @Override
+    public void onGoToTrainerPage(long trainerId, boolean isMyTrainer) {
+        Log.d(TAG, "onGoToTrainerPage: userId:"+mCurrentUser.getId());
+        Intent i = new Intent();
+        i.setClass(this, ProfileTrainerActivity.class);
+        i.putExtra(EXTRA_TRAINER_ID, trainerId);
+        i.putExtra(EXTRA_USER_ID, mCurrentUser.getId());
+        i.putExtra(MyKeys.EXTRA_CREDIT_AMOUNT, mCredit.getCredit());
+        i.putExtra(EXTRA_IS_MY_TRAINER,true);
+        startActivity(i);
     }
 
 
