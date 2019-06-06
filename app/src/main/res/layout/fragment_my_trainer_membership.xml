@@ -13,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/white"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,6 +22,14 @@
             android:paddingEnd="8dp"
             android:background="?attr/colorPrimary"
             android:textColor="?attr/colorAccent"/>
+        <TextView
+            android:id="@+id/txtNoActiveRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="درخواستی وجود ندارد."
+            android:gravity="center"
+            android:textColor="@color/gray_dark"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvActiveMembershipRequests"
             class="androidx.recyclerview.widget.RecyclerView"
@@ -36,6 +45,14 @@
             android:paddingEnd="8dp"
             android:background="?attr/colorPrimary"
             android:textColor="?attr/colorAccent"/>
+        <TextView
+            android:id="@+id/txtNoDeactiveRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="درخواستی وجود ندارد."
+            android:gravity="center"
+            android:textColor="@color/gray_dark"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMembershipRequests"
             class="androidx.recyclerview.widget.RecyclerView"

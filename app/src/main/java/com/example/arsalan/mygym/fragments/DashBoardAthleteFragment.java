@@ -20,6 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.MyApplication;
@@ -27,7 +34,6 @@ import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.activities.EditProfileActivity;
 import com.example.arsalan.mygym.di.Injectable;
-import com.example.arsalan.mygym.dialog.TrainerListDialog;
 import com.example.arsalan.mygym.models.GalleryItem;
 import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.ProgressRequestBody;
@@ -53,12 +59,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -188,6 +188,7 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         viewModel = ViewModelProviders.of(this, factory).get(GalleryViewModel.class);
         viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentAthlete.getId());
         viewModel.getGalleryItemList().observe(this, galleryItems -> {
+
             Log.d("onActivityCreated", "observe: ");
             mGalleryItemList.removeAll(mGalleryItemList);
             mGalleryItemList.addAll(galleryItems);

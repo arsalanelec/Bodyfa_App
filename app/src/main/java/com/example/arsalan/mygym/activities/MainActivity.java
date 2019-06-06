@@ -76,6 +76,7 @@ import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.stfalcon.swipeablebutton.SwipeableButton;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -86,6 +87,8 @@ import javax.inject.Inject;
 import co.ronash.pushe.Pushe;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -241,20 +244,12 @@ public class MainActivity extends AppCompatActivity
                 .into(imgThumb);
         //
 
-        Switch switchBtn = toolbar.findViewById(R.id.btnSwitch);
-        if(mPrivateView)switchBtn.setChecked(true);
+        SwipeableButton switchBtn = toolbar.findViewById(R.id.btnSwitch);
 
-        ImageButton goToInboxBtn=findViewById(R.id.btnChatlist);
-        if(!mCurrentUser.isConfirmed())goToInboxBtn.setVisibility(View.GONE);
-        goToInboxBtn.setOnClickListener(b->{
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this,ChatListActivity.class);
-            intent.putExtra(EXTRA_USER_ID,mCurrentUser.getId());
-            startActivity(intent);
-        });
-        switchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        if(mPrivateView)switchBtn.setChecked(true);
+        switchBtn.setOnSwipedListener(new Function0<Unit>() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public Unit invoke() {
                 switchBtn.setEnabled(false);
                 //swap view flag for private/general
                 if (!mPrivateView) {
@@ -266,7 +261,8 @@ public class MainActivity extends AppCompatActivity
                     mThemeResId = R.style.AppTheme_NoActionBar;
 
                 }
-
+                removeShortcut();
+                addShortcut(mPrivateView);
                 switch (mCurrentUser.getRoleName()) {
                     case KEY_ROLE_TRAINER: {
                         if (!mCurrentTrainer.isConfirmed()) {
@@ -297,7 +293,7 @@ public class MainActivity extends AppCompatActivity
                                     })
                                     .create();
                             dialog.setOnShowListener(dialog1 ->
-                                switchBtn.setEnabled(true));
+                                    switchBtn.setEnabled(true));
                             dialog.show();
                         } else {
                             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
@@ -370,9 +366,28 @@ public class MainActivity extends AppCompatActivity
                     break;
                 }
 
+                return null;
+            }
+        });
+
+
+        ImageButton goToInboxBtn=findViewById(R.id.btnChatlist);
+        if(!mCurrentUser.isConfirmed())goToInboxBtn.setVisibility(View.GONE);
+        goToInboxBtn.setOnClickListener(b->{
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,ChatListActivity.class);
+            intent.putExtra(EXTRA_USER_ID,mCurrentUser.getId());
+            startActivity(intent);
+        });
+/*
+        switchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
 
             }
         });
+*/
         Log.d(TAG, "onCreate: stack count:" + getSupportFragmentManager().getBackStackEntryCount());
         //check and choose current view pager
         if (!mPrivateView) {
@@ -476,6 +491,43 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void addShortcut(boolean addPrivateGeneralIcon) {
+        //Adding shortcut for MainActivity
+        //on Home screen
+        Intent shortcutIntent = new Intent(getApplicationContext(),
+                LoginActivity.class);
+
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        Intent addIntent = new Intent();
+        addIntent
+                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Bodyfa");
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                Intent.ShortcutIconResource.fromContext(getApplicationContext(),
+                        addPrivateGeneralIcon?R.mipmap.ic_launcher_puprple:R.mipmap.ic_launcher_blue));
+
+        addIntent
+                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        getApplicationContext().sendBroadcast(addIntent);
+    }
+    private void removeShortcut() {
+
+        //Deleting shortcut for MainActivity
+        //on Home screen
+        Intent shortcutIntent = new Intent(getApplicationContext(),
+                LoginActivity.class);
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        Intent addIntent = new Intent();
+        addIntent
+                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Bodyfa");
+
+        addIntent
+                .setAction("com.android.launcher.action.UNINSTALL_SHORTCUT");
+        getApplicationContext().sendBroadcast(addIntent);
+    }
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

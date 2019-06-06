@@ -62,6 +62,7 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
     private List<MealPlan> mMealPlanList;
     private AdapterAthleteMealPlanList mAdapter;
     private ListView planList;
+    private View mNothingToSee;
 
     public AthleteMealPlanListFragment() {
         // Required empty public constructor
@@ -94,6 +95,7 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
         title.setText(getString(R.string.meal_plan_list));
         planList = v.findViewById(R.id.lstPlan);
         mMealPlanList = new ArrayList<>();
+        mNothingToSee = v.findViewById(R.id.layNothingToShow);
 
         mAdapter = new AdapterAthleteMealPlanList(getContext(), mMealPlanList, new AdapterAthleteMealPlanList.OnItemClickListener() {
             @Override
@@ -119,6 +121,7 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
         mealPlanListViewModel = ViewModelProviders.of(this, factory).get(AthleteMealPlanListViewModel.class);
         mealPlanListViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mUser.getId());
         mealPlanListViewModel.getMealPlanItemList().observe(this, mealPlans -> {
+            mNothingToSee.setVisibility((mealPlans.size() == 0) ? View.VISIBLE : View.GONE);
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: mealPlans cnt:" + mealPlans.size());
             mMealPlanList.removeAll(mMealPlanList);
             mMealPlanList.addAll(mealPlans);

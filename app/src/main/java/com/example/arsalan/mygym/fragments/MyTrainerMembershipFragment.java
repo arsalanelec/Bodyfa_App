@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,7 +54,8 @@ public class MyTrainerMembershipFragment extends Fragment implements Injectable 
     private RequestAdapter mAdapter;
     private RequestAdapter mAdapterActiveReq;
     private List<TrainerAthlete> mOtherRequestList;
-
+private TextView noActiveRequestTxt;
+private TextView noDeactiveRequestTxt;
     public MyTrainerMembershipFragment() {
         // Required empty public constructor
     }
@@ -86,6 +88,8 @@ public class MyTrainerMembershipFragment extends Fragment implements Injectable 
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_my_trainer_membership, container, false);
+        noActiveRequestTxt = v.findViewById(R.id.txtNoActiveRequest);
+        noDeactiveRequestTxt = v.findViewById(R.id.txtNoDeactiveRequest);
         RecyclerView activeRequestRv = v.findViewById(R.id.rvActiveMembershipRequests);
         activeRequestRv.setLayoutManager(new LinearLayoutManager(getContext()));
         activeRequestRv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -97,8 +101,10 @@ public class MyTrainerMembershipFragment extends Fragment implements Injectable 
         requestRv.setLayoutManager(new LinearLayoutManager(getContext()));
         requestRv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
+
         mOtherRequestList = new ArrayList<>();
         mAdapter = new RequestAdapter(mOtherRequestList);
+
         requestRv.setAdapter(mAdapter);
         v.setRotation(180);
         return v;
@@ -117,10 +123,14 @@ public class MyTrainerMembershipFragment extends Fragment implements Injectable 
             for (TrainerAthlete trainerAthlete : requestList) {
                 if (trainerAthlete.getStatus().equalsIgnoreCase("confirmed")) {
                     mActiveRequestList.add(trainerAthlete);
+
                 } else {
                     mOtherRequestList.add(trainerAthlete);
                 }
             }
+            noActiveRequestTxt.setVisibility((mActiveRequestList.size()>0)?View.GONE:View.VISIBLE);
+            noDeactiveRequestTxt.setVisibility((mOtherRequestList.size()>0)?View.GONE:View.VISIBLE);
+
             mAdapterActiveReq.notifyDataSetChanged();
             mAdapter.notifyDataSetChanged();
         });

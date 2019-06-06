@@ -20,40 +20,55 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <FrameLayout
+            <RelativeLayout
+                android:id="@+id/lay"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
 
-                <Switch
+                <com.stfalcon.swipeablebutton.SwipeableButton
                     android:id="@+id/btnSwitch"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="32dp"
-                    android:track="@drawable/switch_track_custom"
-                    android:thumb="@drawable/switch_thumb_custom"
-                    android:switchMinWidth="200dp"
-                    />
+                    android:paddingStart="8dp"
+                    android:paddingEnd="64dp"
+                    app:checkedBackground="@drawable/shape_sample_scrolling_view_checked2"
+                    app:checkedIcon="@android:color/transparent"
+                    app:checkedToggleBackground="@drawable/ic_bodyfa_white"
+                    app:durationAnimation="250"
+                    app:isClickToSwipeEnable="false"
+                    app:textChecked="@string/general_lt"
+                    app:textColorChecked="?attr/colorAccent"
+                    app:textColorUnChecked="?attr/colorAccent"
+                    app:textSize="5sp"
+                    app:textUnchecked="@string/private_gt"
+                    app:thresholdEnd="0.3"
+                    app:thresholdStart="0.7"
+                    app:uncheckedBackground="@drawable/shape_sample_scrolling_view_unchecked2"
+                    app:uncheckedIcon="@android:color/transparent"
+                    app:uncheckedToggleBackground="@drawable/ic_bodyfa_left_white" />
 
                 <ImageButton
                     android:id="@+id/btnChatlist"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_gravity="left|center_vertical"
+                    android:layout_marginStart="50dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:src="@drawable/ic_send_24dp"
+                    android:background="@android:color/transparent"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
-                    android:background="@android:color/transparent"
-                    android:gravity="center" />
-            </FrameLayout>
+                    android:gravity="center"
+                    android:src="@drawable/ic_send_24dp" />
+            </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
