@@ -342,8 +342,8 @@
     <string name="status">status:</string>
     <string name="my_trainers">My Trainers</string>
     <string name="request_date">Request Date:</string>
-    <string name="general_lt"><![CDATA[>>>     عمومی]]></string>
-    <string name="private_gt"><![CDATA[داشبورد    <<<]]></string>
+    <string name="general_lt">swipe Left</string>
+    <string name="private_gt">swipe right</string>
     <string name="your_trainer_didnt_send_any_plan">Your Trainer didn\'t send you any plan! to order a plan please go to your trainer page.</string>
 
 </resources>

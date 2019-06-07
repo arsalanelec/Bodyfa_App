@@ -333,6 +333,8 @@
     <string name="status">وضعیت:</string>
     <string name="my_trainers">مربیان من</string>
     <string name="request_date">تاریخ درخواست:</string>
+    <string name="general_lt">به سمت چپ بکشید</string>
+    <string name="private_gt">به سمت راست بکشید</string>
     <string name="your_trainer_didnt_send_any_plan">مربی شما برای شما برنامه ای ارسال نکرده است! جهت سفارش برنامه به صفحه مربی مراجعه کنید.</string>
 
 </resources>
