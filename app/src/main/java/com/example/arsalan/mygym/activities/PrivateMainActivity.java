@@ -420,7 +420,7 @@ public class PrivateMainActivity extends AppCompatActivity
     }
 
     private class ViewPagerOmoomiAdapter extends FragmentStatePagerAdapter {
-        String[] titles = {getString(R.string.home), getString(R.string.news), getString(R.string.training_tutorial), getString(R.string.trainers), getString(R.string.gyms)};
+        String[] titles = {getString(R.string.home), getString(R.string.newsHead), getString(R.string.training_tutorial), getString(R.string.trainers), getString(R.string.gyms)};
 
         public ViewPagerOmoomiAdapter(FragmentManager fm) {
             super(fm);

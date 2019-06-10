@@ -13,7 +13,7 @@ import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.GalleryItem;
 import com.example.arsalan.mygym.models.MealPlanDay;
-import com.example.arsalan.mygym.models.News;
+import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.RetGalleryList;
 import com.example.arsalan.mygym.models.RetGym;
 import com.example.arsalan.mygym.models.RetNewsList;
@@ -61,7 +61,7 @@ public class MyWebService {
     public static final int STATUS_FAIL = -1;
     public static final int STATUS_ERROR = -2;
 
-    public static void getNewsWeb(long publisherId, int typeId, final List<News> newsList, final RecyclerView.Adapter adapter, Context context, final RecyclerView recyclerView, final WebServiceResultImplementation WebServiceResultImplementation) {
+    public static void getNewsWeb(long publisherId, int typeId, final List<NewsHead> newsList, final RecyclerView.Adapter adapter, Context context, final RecyclerView recyclerView, final WebServiceResultImplementation WebServiceResultImplementation) {
         ApiInterface apiService =
                 ApiClient
                         .getClient().create(ApiInterface.class);

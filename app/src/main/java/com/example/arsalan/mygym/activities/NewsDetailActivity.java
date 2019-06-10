@@ -131,7 +131,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         commentList = new ArrayList<>();
 
         adapter = new AdapterComments(commentList);
-        commentRV = findViewById(R.id.rcyComments);
+        commentRV = findViewById(R.id.rvComments);
         commentRV.setLayoutManager(new LinearLayoutManager(this));
         commentRV.setAdapter(adapter);
 

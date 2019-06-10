@@ -9,17 +9,13 @@ import com.google.gson.annotations.SerializedName;
  * Created by Arsalan on 10-02-2018.
  */
 @Entity
-public class News {
+public class NewsHead {
     @PrimaryKey
     @SerializedName("NewsId")
     private
     long id;
-
+    @SerializedName("Title")
     private String title;
-
-    @SerializedName("Description")
-    private
-    String desc;
 
     @SerializedName("NewsDateFa")
     private
@@ -39,55 +35,23 @@ public class News {
     private  String UserThumbUrl;
 
     @SerializedName("CommentCount")
+
     private
     int commentCnt;
+    @SerializedName("ThumbUrl")
     private String thumbUrl;
 
-    private String pictureUrl;
 
-    private boolean isLiked;
 
-    public News() {
+    public NewsHead() {
     }
 
-    public int getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public void setUserThumbUrl(String userThumbUrl) {
-        UserThumbUrl = userThumbUrl;
-    }
-
-    public void setThumbUrl(String thumbUrl) {
-        this.thumbUrl = thumbUrl;
-    }
-
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
-
-    public void setLiked(boolean liked) {
-        isLiked = liked;
-    }
-
-    public boolean isLiked() {
-        return isLiked;
-    }
-
-    public String getThumbUrl() {
-        return thumbUrl;
-    }
-
-    public String getUserThumbUrl() {
-        return UserThumbUrl;
     }
 
     public String getTitle() {
@@ -96,18 +60,6 @@ public class News {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getDate() {
@@ -134,6 +86,22 @@ public class News {
         this.likeCnt = likeCnt;
     }
 
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getUserThumbUrl() {
+        return UserThumbUrl;
+    }
+
+    public void setUserThumbUrl(String userThumbUrl) {
+        UserThumbUrl = userThumbUrl;
+    }
+
     public int getCommentCnt() {
         return commentCnt;
     }
@@ -142,7 +110,11 @@ public class News {
         this.commentCnt = commentCnt;
     }
 
-    public String getPictureUrl() {
-        return pictureUrl;
+    public String getThumbUrl() {
+        return thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
     }
 }

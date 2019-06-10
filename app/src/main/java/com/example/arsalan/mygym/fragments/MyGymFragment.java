@@ -1,6 +1,7 @@
 package com.example.arsalan.mygym.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -20,8 +21,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.arsalan.mygym.activities.NewsDetailActivity;
 import com.example.arsalan.mygym.models.CityNState;
-import com.example.arsalan.mygym.models.News;
+import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.Province;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterNews;
@@ -88,11 +90,19 @@ public class MyGymFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_my_gym, container, false);
         RecyclerView newsRV = v.findViewById(R.id.rvNews);
         //لیست جدیدترین خبر ها
-        List<News> newsList = new ArrayList<>();
+        List<NewsHead> newsList = new ArrayList<>();
         for (int i=0;i<20;i++)
-            newsList.add(new News());
+            newsList.add(new NewsHead());
 
-        AdapterNews adapter = new AdapterNews(getActivity(), newsList);
+        AdapterNews adapter = new AdapterNews(getActivity(), newsList, new AdapterNews.OnAdapterNewsEventListener() {
+            @Override
+            public void onNewsHeadClick(long newsId) {
+                Intent i = new Intent();
+                i.setClass(getContext(), NewsDetailActivity.class);
+                i.putExtra(NewsDetailActivity.KEY_NEWS_ID,newsId);
+              startActivity(i);
+            }
+        });
         newsRV.setAdapter(adapter);
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
 

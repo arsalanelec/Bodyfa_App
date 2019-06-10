@@ -9,6 +9,7 @@ import com.example.arsalan.mygym.models.Honor;
 import com.example.arsalan.mygym.models.InboxItem;
 import com.example.arsalan.mygym.models.MealPlan;
 import com.example.arsalan.mygym.models.News;
+import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.models.Transaction;
@@ -19,6 +20,7 @@ import com.example.arsalan.mygym.models.WorkoutPlan;
 import com.example.arsalan.mygym.models.WorkoutPlanReq;
 
 @Database(entities = {
+        NewsHead.class,
         News.class,
         Trainer.class,
         Gym.class,
@@ -35,10 +37,12 @@ import com.example.arsalan.mygym.models.WorkoutPlanReq;
         TrainerAthlete.class
 
 }, exportSchema = false
-        , version = 11)
+        , version = 12)
 public abstract class MyDatabase extends RoomDatabase {
 
-    abstract public NewsDao newsDao();
+    abstract public NewsHeadDao newsHeadDao();
+
+    abstract public NewsDetailDao newsDetailDao();
 
     abstract public TrainerDao trainerDao();
 

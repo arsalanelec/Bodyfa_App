@@ -25,7 +25,8 @@ import com.example.arsalan.room.HonorDao;
 import com.example.arsalan.room.InboxItemDao;
 import com.example.arsalan.room.MealPlanDao;
 import com.example.arsalan.room.MyDatabase;
-import com.example.arsalan.room.NewsDao;
+import com.example.arsalan.room.NewsDetailDao;
+import com.example.arsalan.room.NewsHeadDao;
 import com.example.arsalan.room.TrainerAthleteDao;
 import com.example.arsalan.room.TrainerDao;
 import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
@@ -58,8 +59,14 @@ class AppModule {
 
     @Singleton
     @Provides
-    NewsDao provideNewsDao(MyDatabase db) {
-        return db.newsDao();
+    NewsHeadDao provideNewsDao(MyDatabase db) {
+        return db.newsHeadDao();
+    }
+
+    @Singleton
+    @Provides
+    NewsDetailDao provideNewsDetailDao(MyDatabase db) {
+        return db.newsDetailDao();
     }
 
     @Singleton

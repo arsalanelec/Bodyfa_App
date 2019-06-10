@@ -62,7 +62,7 @@
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
-                    android:src="@drawable/ic_send_24dp" />
+                    android:src="@drawable/ic_send" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 

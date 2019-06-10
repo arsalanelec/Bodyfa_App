@@ -30,6 +30,7 @@ import com.example.arsalan.mygym.fragments.InboxFragment;
 import com.example.arsalan.mygym.fragments.MyAthleteListFragment;
 import com.example.arsalan.mygym.fragments.MyTrainerFragment;
 import com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment;
+import com.example.arsalan.mygym.fragments.NewsDetailFragment;
 import com.example.arsalan.mygym.fragments.NewsListFragment;
 import com.example.arsalan.mygym.fragments.TrainerListFragment;
 import com.example.arsalan.mygym.fragments.TrainerOrderListFragment;
@@ -95,6 +96,9 @@ public abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract MyTrainerMembershipFragment contributeMyTrainerMembershipFragment();
+
+    @ContributesAndroidInjector
+    abstract NewsDetailFragment contributeNewsDetailFragment();
 
 
 }

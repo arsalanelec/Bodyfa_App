@@ -6,13 +6,13 @@ import java.util.List;
 
 public class RetNewsList {
     @SerializedName("Records")
-    List<News> records;
+    List<NewsHead> records;
     @SerializedName("RecordCount")
     int recordsCount;
     public RetNewsList() {
     }
 
-    public List<News> getRecords() {
+    public List<NewsHead> getRecords() {
         return records;
     }
 

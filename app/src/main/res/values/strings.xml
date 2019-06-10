@@ -186,7 +186,7 @@
     <string name="gym_profile">Gym profile</string>
     <string name="general">General</string>
     <string name="home">Home</string>
-    <string name="news">News</string>
+    <string name="newsHead">News</string>
     <string name="training_tutorial">Training tutorial</string>
     <string name="trainers">Trainers</string>
     <string name="gyms">Gyms</string>
@@ -345,5 +345,7 @@
     <string name="general_lt">swipe Left</string>
     <string name="private_gt">swipe right</string>
     <string name="your_trainer_didnt_send_any_plan">Your Trainer didn\'t send you any plan! to order a plan please go to your trainer page.</string>
+    <string name="press_back_exit">Press Back again to exis…</string>
+    <string name="write_a_comment">write a comment…</string>
 
 </resources>

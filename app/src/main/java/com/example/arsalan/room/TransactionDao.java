@@ -1,6 +1,5 @@
 package com.example.arsalan.room;
 
-import com.example.arsalan.mygym.models.News;
 import com.example.arsalan.mygym.models.Transaction;
 
 import java.util.List;

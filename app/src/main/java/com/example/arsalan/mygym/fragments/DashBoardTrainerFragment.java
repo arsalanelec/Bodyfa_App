@@ -22,12 +22,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
+import com.example.arsalan.mygym.activities.NewsDetailActivity;
 import com.example.arsalan.mygym.activities.PostContentActivity;
 import com.example.arsalan.mygym.adapters.AdapterNews;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.GalleryItem;
 import com.example.arsalan.mygym.models.MyConst;
-import com.example.arsalan.mygym.models.News;
+import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.ProgressRequestBody;
 import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.viewModels.GalleryViewModel;
@@ -69,7 +70,7 @@ public class DashBoardTrainerFragment extends Fragment implements WebServiceResu
     private static final String ARG_USER = "param1";
     @Inject
     MyViewModelFactory factory;
-    private List<News> newsList;
+    private List<NewsHead> newsList;
     private AdapterNews adapter;
     private User mUser;
     private TextView nameTV;
@@ -125,7 +126,15 @@ public class DashBoardTrainerFragment extends Fragment implements WebServiceResu
 
         RecyclerView newsRV = v.findViewById(R.id.rvNews);
         newsList = new ArrayList<>();
-        adapter = new AdapterNews(getActivity(), newsList);
+        adapter = new AdapterNews(getActivity(), newsList,new AdapterNews.OnAdapterNewsEventListener() {
+            @Override
+            public void onNewsHeadClick(long newsId) {
+                Intent i = new Intent();
+                i.setClass(getContext(), NewsDetailActivity.class);
+                i.putExtra(NewsDetailActivity.KEY_NEWS_ID,newsId);
+                startActivity(i);
+            }
+        });
 
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         newsRV.setAdapter(adapter);

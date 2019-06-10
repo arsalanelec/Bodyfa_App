@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -153,6 +154,7 @@ public class MainActivity extends AppCompatActivity
     private Bundle eBundle;
     private UserCreditViewModel mUserCreditViewModel;
     private UserCredit mCredit;
+    boolean doubleBackToExitPressedOnce=false;
 
     public MainActivity() {
         mContext = this;
@@ -555,7 +557,21 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(mContext, R.string.press_back_exit, Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
         }
     }
 
@@ -843,7 +859,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0) return NewsListFragment.newInstance("", "");
+            if (position == 0) return NewsListFragment.newInstance(mCurrentUser.getId());
             if (position == 1) return TutorialFragment.newInstance("", "");
             if (position == 2)
                 return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());

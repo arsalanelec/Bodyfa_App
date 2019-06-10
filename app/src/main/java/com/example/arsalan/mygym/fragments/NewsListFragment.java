@@ -12,14 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ToggleButton;
 
-import com.example.arsalan.mygym.models.News;
+import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterNews;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
@@ -33,18 +35,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class NewsListFragment extends Fragment implements WebServiceResultImplementation , Injectable, SwipeRefreshLayout.OnRefreshListener {
+public class NewsListFragment extends Fragment implements WebServiceResultImplementation , Injectable, SwipeRefreshLayout.OnRefreshListener , AdapterNews.OnAdapterNewsEventListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final String TAG = "NewsListFragment";
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private long mUserId;
 
     private OnFragmentInteractionListener mListener;
-    private List<News> newsList;
+    private List<NewsHead> newsList;
     private AdapterNews adapter;
 
     private FrameLayout waitingFL;
@@ -55,6 +56,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     MyViewModelFactory factory;
     private SwipeRefreshLayout mSwipeRefresh;
     private int mNewsType=1;
+    private View detailContainer;
 
     public NewsListFragment() {
         // Required empty public constructor
@@ -63,17 +65,14 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param userId Parameter 1.
      * @return A new instance of fragment NewsListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NewsListFragment newInstance(String param1, String param2) {
+    public static NewsListFragment newInstance(long userId) {
         NewsListFragment fragment = new NewsListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putLong(ARG_PARAM1, userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,8 +81,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mUserId = getArguments().getLong(ARG_PARAM1);
         }
 
     }
@@ -92,11 +90,11 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
-        viewModel.getNewsList().observe(this, new Observer<List<News>>() {
+        viewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
             @Override
-            public void onChanged(@Nullable List<News> newNewsList) {
-                Log.d("onActivityCreated", "observe: ");
-                newsList.removeAll(newsList);
+            public void onChanged(@Nullable List<NewsHead> newNewsList) {
+                Log.d("NewsListViewModel", "observe: cnt:"+newNewsList.size());
+                newsList.clear();
                 newsList.addAll(newNewsList);
                 adapter.notifyDataSetChanged();
                 waitingFL.setVisibility(View.GONE);
@@ -116,9 +114,9 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
         final RecyclerView newsRV = v.findViewById(R.id.rvNews);
         newsList = new ArrayList<>();
         /*for (int i = 0; i < 20; i++)
-            newsList.add(new News());*/
+            newsList.add(new NewsHead());*/
 
-        adapter = new AdapterNews(getActivity(), newsList);
+        adapter = new AdapterNews(getActivity(), newsList,this::onNewsHeadClick);
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         // newsRV.setLayoutAnimation(animation);
         newsRV.setAdapter(adapter);
@@ -141,15 +139,17 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
                 mSwipeRefresh.setRefreshing(true);
                 //waitingFL.setVisibility(View.VISIBLE);
 
-
                 //   MyWebService.getNewsWeb(0, b ? 1 : 2, newsList, adapter, getContext(), newsRV, NewsListFragment.this);
             }
         });
+         detailContainer=v.findViewById(R.id.container);
+        detailContainer.setVisibility(View.GONE);
         fitnessNewsTgl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 foodNewsTgl.setChecked(!b);
                 compoundButton.setEnabled(!b);
+                Log.d(TAG, "fitnessNewsTgl onCheckedChanged: ");
             }
         });
          mSwipeRefresh = v.findViewById(R.id.swipeLay);
@@ -169,6 +169,26 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }*/
+    }
+    @Override
+    //Pressed return button - returns to the results menu
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailContainer.getVisibility()==View.VISIBLE){
+                    detailContainer.setVisibility(View.GONE);
+                    //your code
+
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -192,6 +212,14 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
         mSwipeRefresh.setRefreshing(true);
 
         viewModel.init(mNewsType);
+    }
+
+    @Override
+    public void onNewsHeadClick(long newsId) {
+        Log.d(TAG, "onNewsHeadClick: ");
+        getFragmentManager().beginTransaction().replace(R.id.container,NewsDetailFragment.newInstance(mUserId,newsId),"").commit();
+        detailContainer.setVisibility(View.VISIBLE);
+
     }
 
 

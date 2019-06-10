@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="news"
+            type="com.example.arsalan.mygym.models.News" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".activities.NewsDetailActivity"
+        tools:showIn="@layout/activity_news_detail"
+        android:layoutDirection="rtl"
+        android:fadeScrollbars="false">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/txt_toolbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{news.title}"/>
+                    <ImageButton
+                        android:id="@+id/ib_back"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:layout_gravity="start"
+                        android:contentDescription="TODO"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:background="@android:color/transparent"
+                        android:visibility="visible"
+                        android:src="@drawable/ic_arrow_back_black_24dp" />
+                </androidx.appcompat.widget.Toolbar>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/image"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="H,1:1" />
+
+                    <ImageView
+                        android:id="@+id/imgHeart"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/heart_png" />
+                    />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageButton
+                    android:id="@+id/imgBtnIsLiked"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_favorite_48dp" />
+
+                <TextView
+                    android:id="@+id/txtLikeCnt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:drawableStart="@drawable/ic_favorite_solid_12dp"
+                    android:gravity="center_vertical"
+                    android:text="@{String.format(@string/likedCount,news.likeCnt)}" />
+
+                <TextView
+                    android:id="@+id/txtContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:text="@{news.desc}"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtCommentsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:paddingStart="8dp"
+                    android:text="@{String.format(@string/user_comments,news.commentCnt)}" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/imgBtnCommentSubmit"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/colorPrimary"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_send"
+                        android:layout_gravity="center"
+                        android:elevation="2dp"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilComment"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/write_a_comment" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/flWaiting"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray_light">
+                <ProgressBar
+                    android:id="@+id/pbWaiting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="true"/>
+                <TextView
+                    android:id="@+id/txtError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/error_accord_try_again"
+                    android:layout_below="@id/pbWaiting"
+                    android:gravity="center"
+                    android:layout_margin="16dp"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+        </FrameLayout>
+    </ScrollView>
+</layout>

@@ -194,7 +194,7 @@
     <string name="gym_profile">پروفایل باشگاه</string>
     <string name="general">عمومی</string>
     <string name="home">خانه</string>
-    <string name="news">اخبار ورزشی و تغذیه</string>
+    <string name="newsHead">اخبار ورزشی و تغذیه</string>
     <string name="training_tutorial">آموزش حرکات</string>
     <string name="trainers">قهرمان ها</string>
     <string name="gyms">باشگاه ها</string>
@@ -336,5 +336,7 @@
     <string name="general_lt">به سمت چپ بکشید</string>
     <string name="private_gt">به سمت راست بکشید</string>
     <string name="your_trainer_didnt_send_any_plan">مربی شما برای شما برنامه ای ارسال نکرده است! جهت سفارش برنامه به صفحه مربی مراجعه کنید.</string>
+    <string name="press_back_exit">برای خروج، دوباره بازگشت را فشار دهید…</string>
+    <string name="write_a_comment">یک دیدگاه بنویسید…</string>
 
 </resources>

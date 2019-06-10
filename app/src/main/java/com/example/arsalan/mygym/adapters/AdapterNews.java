@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.activities.NewsDetailActivity;
 import com.example.arsalan.mygym.models.MyConst;
-import com.example.arsalan.mygym.models.News;
+import com.example.arsalan.mygym.models.NewsHead;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
@@ -25,12 +25,14 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 public class AdapterNews extends Adapter<AdapterNews.VH> {
     private static final String TAG = "AdapterNews";
-    List<News> newsList;
+    List<NewsHead> newsList;
     Activity mActivity;
+    OnAdapterNewsEventListener eventListener;
 
-    public AdapterNews(Activity activity, List<News> newsList) {
+    public AdapterNews(Activity activity, List<NewsHead> newsList,OnAdapterNewsEventListener onAdapterNewsEventListener) {
         this.newsList = newsList;
         this.mActivity = activity;
+        eventListener=onAdapterNewsEventListener;
     }
 
     @Override
@@ -46,22 +48,23 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
 
     @Override
     public void onBindViewHolder(final VH h, int position) {
-        final News news = newsList.get(position);
-        h.titleTV.setText(news.getTitle());
-        h.viewCntTV.setText(String.valueOf(news.getVisitcnt()));
-        h.likeCntTV.setText(String.valueOf(news.getLikeCnt()));
-        h.commentCntTV.setText(String.valueOf(news.getCommentCnt()));
-        h.dateTV.setText(news.getDate());
-        h.thumb.setImageURI(MyConst.BASE_CONTENT_URL + news.getThumbUrl());
-        h.avatar.setImageURI(MyConst.BASE_CONTENT_URL + news.getUserThumbUrl());
+        final NewsHead newsHead = newsList.get(position);
+        h.titleTV.setText(newsHead.getTitle());
+        h.viewCntTV.setText(String.valueOf(newsHead.getVisitcnt()));
+        h.likeCntTV.setText(String.valueOf(newsHead.getLikeCnt()));
+        h.commentCntTV.setText(String.valueOf(newsHead.getCommentCnt()));
+        h.dateTV.setText(newsHead.getDate());
+        h.thumb.setImageURI(MyConst.BASE_CONTENT_URL + newsHead.getThumbUrl());
+        h.avatar.setImageURI(MyConst.BASE_CONTENT_URL + newsHead.getUserThumbUrl());
         h.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: newId:" + news.getId());
-                Intent i = new Intent();
+                Log.d(TAG, "onClick: newId:" + newsHead.getId());
+                eventListener.onNewsHeadClick(newsHead.getId());
+                /*Intent i = new Intent();
                 i.setClass(h.itemView.getContext(), NewsDetailActivity.class);
-                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, news.getId());
-                h.itemView.getContext().startActivity(i);
+                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsHead.getId());
+                h.itemView.getContext().startActivity(i);*/
             }
         });
 
@@ -91,5 +94,8 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
             thumb = itemView.findViewById(R.id.imgThumb);
             avatar = itemView.findViewById(R.id.imgAvatar);
         }
+    }
+    public interface OnAdapterNewsEventListener{
+        void onNewsHeadClick(long newsId);
     }
 }
