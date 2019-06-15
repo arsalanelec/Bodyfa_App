@@ -1,7 +1,6 @@
 package com.example.arsalan.mygym.adapters;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.arsalan.mygym.R;
-import com.example.arsalan.mygym.activities.NewsDetailActivity;
 import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.NewsHead;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -91,7 +89,7 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
             likeCntTV = itemView.findViewById(R.id.txtLikeCnt);
             commentCntTV = itemView.findViewById(R.id.txtCommentCnt);
             dateTV = itemView.findViewById(R.id.txtDate);
-            thumb = itemView.findViewById(R.id.imgThumb);
+            thumb = itemView.findViewById(R.id.img_thumb);
             avatar = itemView.findViewById(R.id.imgAvatar);
         }
     }

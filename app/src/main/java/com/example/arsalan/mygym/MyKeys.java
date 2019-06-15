@@ -29,6 +29,7 @@ public class MyKeys {
     public final static String EXTRA_GALLERY_ARRAY = "EXTRA_GALLERY_ARRAY";
 
     public final static String EXTRA_EXIT_ACCOUNT = "EXTRA_EXIT_ACCOUNT";
+    public final static String EXTRA_TUTORIAL_CAT_ID = "EXTRA_TUTORIAL_CAT_ID";
 
 
     public final static String KEY_PLAN_NAME = "KEY_PLANE_NAME";

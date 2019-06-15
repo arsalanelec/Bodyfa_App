@@ -25,4 +25,11 @@ public interface NewsDetailDao {
 
     @Query("DELETE FROM News WHERE id=:id")
     void delete(long id);
+    //get next id in the table
+    @Query("Select id From NewsHead WHERE id > :newsId")
+    LiveData<Integer> getNextNewsId(long newsId);
+
+    //get previous id in the table
+    @Query("Select id From NewsHead WHERE id < :newsId")
+    LiveData<Integer> getPrevNewsId(long newsId);
 }

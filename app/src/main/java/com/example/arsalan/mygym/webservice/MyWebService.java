@@ -218,7 +218,7 @@ public class MyWebService {
             public void onFailure(Call<RetUserProfile> call, Throwable t) {
                 waitingDialog.dismiss();
                 Log.d("login.onFailure", "onFailure " + t.getLocalizedMessage());
-                if (t.getMessage().contains("No address associated with hostname"))
+                if (t.getMessage()!=null && t.getMessage().contains("No address associated with hostname"))
                     Toast.makeText(activity, activity.getString(R.string.error_connect_to_internet), Toast.LENGTH_LONG).show();
 
                 Toast.makeText(activity, activity.getString(R.string.error_accord_try_again), Toast.LENGTH_LONG).show();

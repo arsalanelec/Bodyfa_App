@@ -98,7 +98,7 @@ public class MyAthleteListDialog extends DialogFragment implements Injectable {
         athleteCnt = v.findViewById(R.id.txtAthleteCount);
         athleteCnt.setVisibility(View.INVISIBLE);
 
-        RecyclerView rv = v.findViewById(R.id.rvTrainers);
+        RecyclerView rv = v.findViewById(R.id.rv_trainers);
         mAdapter = new AdapterAthletesDialog(mAthleteList, new AdapterAthletesDialog.OnItemClickListener() {
             @Override
             public void onItemClick(TrainerAthlete athlete, View view) {
@@ -123,7 +123,7 @@ public class MyAthleteListDialog extends DialogFragment implements Injectable {
                 startVideoRecorderActivity(i, options.toBundle());*/
             }
         });
-        waitingFL = v.findViewById(R.id.flWaiting);
+        waitingFL = v.findViewById(R.id.fl_waiting);
         rv.setAdapter(mAdapter);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         return v;

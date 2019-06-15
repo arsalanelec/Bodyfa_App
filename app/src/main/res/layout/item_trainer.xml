@@ -8,7 +8,7 @@
     android:foreground="?attr/selectableItemBackgroundBorderless">
 
     <ImageView
-        android:id="@+id/imgThumb"
+        android:id="@+id/img_thumb"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginEnd="8dp"
@@ -30,7 +30,7 @@
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgThumb" />
+        app:layout_constraintTop_toBottomOf="@+id/img_thumb" />
 
     <TextView
         android:id="@+id/txtTitle"
@@ -88,12 +88,12 @@
         app:layout_constraintStart_toEndOf="@+id/txtPoints"
         app:layout_constraintTop_toTopOf="@+id/txtPoints" />
 
-    <ImageView
+   <!-- <ImageView
         android:id="@+id/imgCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/imgThumb"
-        app:layout_constraintTop_toTopOf="@+id/imgThumb"
+        app:layout_constraintStart_toStartOf="@+id/img_thumb"
+        app:layout_constraintTop_toTopOf="@+id/img_thumb"
         app:srcCompat="@drawable/ic_check_circle_24dp"
-        tools:visibility="gone" />
+        tools:visibility="gone" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

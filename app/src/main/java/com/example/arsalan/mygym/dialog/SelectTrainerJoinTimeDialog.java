@@ -32,7 +32,7 @@ import static com.example.arsalan.mygym.models.MyConst.BASE_CONTENT_URL;
  * Activities that contain this fragment must implement the
  * {@link SelectTrainerJoinTimeDialog.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SelectTrainerJoinTimeDialog#newInstance} factory method to
+ * Use the {@link SelectTrainerJoinTimeDialog#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class SelectTrainerJoinTimeDialog extends DialogFragment {
@@ -52,7 +52,7 @@ public class SelectTrainerJoinTimeDialog extends DialogFragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param trainer Parameter 1.

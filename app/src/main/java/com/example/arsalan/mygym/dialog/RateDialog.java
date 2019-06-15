@@ -19,7 +19,7 @@ import com.example.arsalan.mygym.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RateDialog#newInstance} factory method to
+ * Use the {@link RateDialog#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class RateDialog extends DialogFragment {
@@ -42,7 +42,7 @@ public class RateDialog extends DialogFragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment RateDialog.

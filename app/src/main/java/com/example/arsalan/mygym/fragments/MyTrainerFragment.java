@@ -155,7 +155,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
                 dialog.show(getFragmentManager(), "");
             }
         });
-        bind.getRoot().setRotation(180);
+        bind.ibBack.setOnClickListener(b->container.setVisibility(View.GONE));
         return bind.getRoot();
     }
 
@@ -249,6 +249,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
 
     }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

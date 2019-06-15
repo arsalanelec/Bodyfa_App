@@ -7,7 +7,7 @@ import java.util.List;
 public class RetTutorialList {
     @SerializedName("Records")
     List<Tutorial> records;
-    @SerializedName("RecordCount")
+    @SerializedName("RecordsCount")
     int recordsCount;
     public RetTutorialList() {
     }

@@ -1,31 +1,44 @@
 package com.example.arsalan.mygym.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.arsalan.mygym.MyApplication;
-import com.example.arsalan.mygym.models.WorkoutPlan;
-import com.example.arsalan.mygym.models.RetWorkoutPlan;
-import com.example.arsalan.mygym.models.User;
+import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterAthleteWorkoutPlanList;
+import com.example.arsalan.mygym.databinding.ItemAthleteWorkoutPlanRequestBinding;
 import com.example.arsalan.mygym.di.Injectable;
+import com.example.arsalan.mygym.dialog.RequestWorkoutPlanDialog;
+import com.example.arsalan.mygym.dialog.TrainerListDialog;
+import com.example.arsalan.mygym.models.RetWorkoutPlan;
+import com.example.arsalan.mygym.models.Trainer;
+import com.example.arsalan.mygym.models.User;
+import com.example.arsalan.mygym.models.WorkoutPlan;
+import com.example.arsalan.mygym.models.WorkoutPlanReq;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.AthleteWorkoutPlanListViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
+import com.example.arsalan.mygym.viewModels.TrainerWorkoutPlanReqVm;
 import com.example.arsalan.room.WorkoutPlanDao;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,29 +51,29 @@ import retrofit2.Response;
  * Activities that contain this fragment must implement the
  * {@link AthleteWorkoutPlanListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AthleteWorkoutPlanListFragment#newInstance} factory method to
+ * Use the {@link AthleteWorkoutPlanListFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
-public class AthleteWorkoutPlanListFragment extends Fragment implements Injectable{
+public class AthleteWorkoutPlanListFragment extends Fragment implements Injectable {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-
-
-    private User mUser;
-
-    private AthleteWorkoutPlanListViewModel workoutPlanListViewModel;
-
+    private static final int REQ_SELECT_TRAINER = 1;
+    private static final String TAG = "AthleteWorkoutPlanListF";
     @Inject
-    MyViewModelFactory factory;
-
+    MyViewModelFactory mFactory;
     @Inject
     WorkoutPlanDao workoutPlanDao;
-
+    private User mUser;
+    private AthleteWorkoutPlanListViewModel workoutPlanListViewModel;
     private OnFragmentInteractionListener mListener;
     private ListView mPlanListView;
     private ArrayList<WorkoutPlan> mWorkoutPlanList;
     private AdapterAthleteWorkoutPlanList mAdapter;
+    private View nothingToseeView;
+    private TrainerWorkoutPlanReqVm workoutPlanReqVm;
+    private List<WorkoutPlanReq> mRequestList;
+    private WorkoutPlanRequestAdapter mWorkoutReqAdapter;
 
     public AthleteWorkoutPlanListFragment() {
         // Required empty public constructor
@@ -88,12 +101,11 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_athlete_meal_plan_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_athlete_workout_plan_list, container, false);
         TextView title = v.findViewById(R.id.txtTitle);
         title.setText(getString(R.string.workout_plan_list));
-
-         mPlanListView = v.findViewById(R.id.lstPlan);
-         mWorkoutPlanList = new ArrayList<>();
+        mPlanListView = v.findViewById(R.id.lst_plan);
+        mWorkoutPlanList = new ArrayList<>();
 
         mAdapter = new AdapterAthleteWorkoutPlanList(getContext(), mWorkoutPlanList, new AdapterAthleteWorkoutPlanList.OnItemClickListener() {
             @Override
@@ -101,31 +113,70 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
                 getAthleteWorkoutPlanWeb(workoutPlan.getAthleteWorkoutPlanId(), new OnGetPlanListener() {
                     @Override
                     public void onGetPlan(long planId, String title, String body) {
-                        mListener.addEditWorkoutPlan(planId, title,body, false);
+                        mListener.addEditWorkoutPlan(planId, title, body, false);
 
                     }
                 });
 
             }
         });
+
         mPlanListView.setAdapter(mAdapter);
+        FloatingActionButton addPlanBtn = v.findViewById(R.id.fab_add_plan);
+        addPlanBtn.setOnClickListener(b -> {
+            TrainerListDialog dialog = new TrainerListDialog();
+            dialog.setTargetFragment(AthleteWorkoutPlanListFragment.this, REQ_SELECT_TRAINER);
+            dialog.show(getFragmentManager(), "");
+        });
+        mRequestList = new ArrayList<>();
+        mWorkoutReqAdapter = new WorkoutPlanRequestAdapter(mRequestList);
+        ListView workoutRequestLst = v.findViewById(R.id.lst_request);
+        workoutRequestLst.setAdapter(mWorkoutReqAdapter);
+        nothingToseeView = v.findViewById(R.id.layNothingToShow);
         v.setRotation(180);
         return v;
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        workoutPlanListViewModel = ViewModelProviders.of(this, factory).get(AthleteWorkoutPlanListViewModel.class);
+        workoutPlanListViewModel = ViewModelProviders.of(this, mFactory).get(AthleteWorkoutPlanListViewModel.class);
         workoutPlanListViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mUser.getId());
         workoutPlanListViewModel.getWorkoutPlanItemList().observe(this, workoutPlans -> {
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: workoutPlan cnt:" + workoutPlans.size());
             mWorkoutPlanList.removeAll(mWorkoutPlanList);
             mWorkoutPlanList.addAll(workoutPlans);
             mAdapter.notifyDataSetChanged();
+            if (workoutPlans.size() > 0) {
+                nothingToseeView.setVisibility(View.GONE);
+            } else {
+                nothingToseeView.setVisibility(View.VISIBLE);
+            }
 
             // waitingFL.setVisibility(View.GONE);
         });
 
+        workoutPlanReqVm = ViewModelProviders.of(this, mFactory).get(TrainerWorkoutPlanReqVm.class);
+        workoutPlanReqVm.initAll(mUser.getId());
+        workoutPlanReqVm.getWorkoutPlanListLv().observe(this, workoutPlanReqs -> {
+            Log.d(TAG, "onActivityCreated: workoutPlanReqs.size:"+workoutPlanReqs.size());
+            mRequestList.clear();
+            if (workoutPlanReqs != null && workoutPlanReqs.size() > 0) {
+                mRequestList.addAll(workoutPlanReqs);
+            }
+            mWorkoutReqAdapter.notifyDataSetChanged();
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQ_SELECT_TRAINER) {    //Result of Selected Trainer from dialog
+            Trainer trainer = data.getParcelableExtra(MyKeys.EXTRA_OBJ_TRAINER);
+            RequestWorkoutPlanDialog dialog = RequestWorkoutPlanDialog.newInstance(mUser.getId(), trainer.getId(), trainer.getWorkoutPlanPrice());
+            dialog.show(getFragmentManager(), "");
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -144,32 +195,6 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
         super.onDetach();
         mListener = null;
     }
-
-
-
-    /*private void getWorkoutPlanListWeb(long userId, final ArrayList<WorkoutPlan> workoutPlans, final AdapterAthleteWorkoutPlanList adapter) {
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-
-        Log.d(getClass().getSimpleName(), "getWorkoutPlanListWeb: در حال دریافت لیست برنامه غذایی");
-        Call<RetWorkoutPlanList> call = apiService.getAthleteWorkoutPlanList("Bearer " + ((MyApplication2) getActivity().getApplication()).getCurrentToken().getToken(), userId);
-        call.enqueue(new Callback<RetWorkoutPlanList>() {
-            @Override
-            public void onResponse(Call<RetWorkoutPlanList> call, Response<RetWorkoutPlanList> response) {
-                if(response!=null&&response.isSuccessful()) {
-                    workoutPlans.removeAll(workoutPlans);
-                    workoutPlans.addAll(response.body().getRecords());
-                    adapter.notifyDataSetChanged();
-                    Log.d(getClass().getSimpleName(), "onResponse: ");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RetWorkoutPlanList> call, Throwable t) {
-                Log.d(getClass().getSimpleName(), "onFailed");
-            }
-        });
-    }*/
 
     private void getAthleteWorkoutPlanWeb(final long planId, final OnGetPlanListener onGetPlanListener) {
         ApiInterface apiService =
@@ -202,6 +227,7 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
         });
 
     }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -222,6 +248,44 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
         void onGetPlan(long planId, String title, String body);
     }
 
+    private class WorkoutPlanRequestAdapter extends BaseAdapter {
+        List<WorkoutPlanReq> workoutPlanReqList;
+
+        public WorkoutPlanRequestAdapter(List<WorkoutPlanReq> workoutPlanReqList) {
+
+            this.workoutPlanReqList = workoutPlanReqList;
+        }
+
+        @Override
+        public int getCount() {
+            return workoutPlanReqList.size();
+        }
+
+        @Override
+        public WorkoutPlanReq getItem(int position) {
+            return workoutPlanReqList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return workoutPlanReqList.get(position).getId();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ItemAthleteWorkoutPlanRequestBinding binding;
+            if (convertView != null) {
+                binding = (ItemAthleteWorkoutPlanRequestBinding) convertView.getTag();
+                binding.setWorkoutReq(getItem(position));
+            } else {
+                binding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.item_athlete_workout_plan_request, parent, false);
+                convertView = binding.getRoot();
+                convertView.setTag(binding);
+            }
+
+            return convertView;
+        }
+    }
 
 
 }

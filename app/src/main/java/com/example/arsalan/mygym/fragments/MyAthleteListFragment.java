@@ -2,7 +2,6 @@ package com.example.arsalan.mygym.fragments;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -91,7 +90,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         athleteCnt = v.findViewById(R.id.txtAthleteCount);
         athleteCnt.setVisibility(View.INVISIBLE);
 
-        RecyclerView rv = v.findViewById(R.id.rvTrainers);
+        RecyclerView rv = v.findViewById(R.id.rv_trainers);
         mAthleteList = new ArrayList<>();
         mAdapter = new AdapterAthletes(mAthleteList, new AdapterAthletes.OnItemClickListener() {
             @Override
@@ -113,7 +112,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         });
         rv.setAdapter(mAdapter);
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        waitingFL = v.findViewById(R.id.flWaiting);
+        waitingFL = v.findViewById(R.id.fl_waiting);
         v.setRotation(180);
         return v;
     }

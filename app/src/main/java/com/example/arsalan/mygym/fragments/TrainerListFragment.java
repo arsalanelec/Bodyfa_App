@@ -1,18 +1,18 @@
 package com.example.arsalan.mygym.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.arsalan.mygym.R;
-import com.example.arsalan.mygym.activities.ProfileTrainerActivity;
 import com.example.arsalan.mygym.adapters.AdapterTrainers;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.CityNState;
@@ -47,13 +46,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_MY_TRAINER;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_TRAINER_ID;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
-
 
 public class TrainerListFragment extends Fragment implements Injectable {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ATHLETE_ID = "param-athlete-id";
     private static final String ARG_TRAINER_ID = "param-trainer-id";
@@ -68,19 +62,20 @@ public class TrainerListFragment extends Fragment implements Injectable {
     private View waitingFL;
     private long mUserId;
     private long mTrainerId;
+    private View detailFragment;
 
     public TrainerListFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param userId Parameter 1.
      * @return A new instance of fragment GymListFragment.
      */
-    public static TrainerListFragment newInstance(long userId,long currentTrainerId) {
+    public static TrainerListFragment newInstance(long userId, long currentTrainerId) {
         TrainerListFragment fragment = new TrainerListFragment();
         Bundle args = new Bundle();
         args.putLong(ARG_ATHLETE_ID, userId);
@@ -103,23 +98,21 @@ public class TrainerListFragment extends Fragment implements Injectable {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_trainer_list, container, false);
-
-        RecyclerView rv = v.findViewById(R.id.rvTrainers);
+        detailFragment = v.findViewById(R.id.container_trainer);
+        RecyclerView rv = v.findViewById(R.id.rv_trainers);
         trainerList = new ArrayList<>();
-        adapter = new AdapterTrainers(trainerList,mTrainerId, new AdapterTrainers.OnItemClickListener() {
+        adapter = new AdapterTrainers( new AdapterTrainers.OnItemClickListener() {
             @Override
             public void onItemClick(Trainer trainer, View view) {
-                mListener.onGoToTrainerPage(trainer.getId(),false);
-/*                Intent i = new Intent();
-                i.setClass(getActivity(), ProfileTrainerActivity.class);
-                i.putExtra(EXTRA_TRAINER_ID, trainer.getId());
-                i.putExtra(EXTRA_USER_ID, mUserId);
-                i.putExtra(EXTRA_IS_MY_TRAINER,(mTrainerId == trainer.getId()));
-                //i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(view));
-
-                startActivity(i);*/
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container_trainer, MyTrainerFragment.newInstance(mUserId, trainer.getId(), false))
+                        .commit();
+                detailFragment.setVisibility(View.VISIBLE);
+                //mListener.onGoToTrainerPage(trainer.getId(),false);
             }
         });
+        adapter.addAll(trainerList);
         rv.setAdapter(adapter);
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
@@ -128,7 +121,7 @@ public class TrainerListFragment extends Fragment implements Injectable {
 
         provinceSpn.setAdapter(new ProvinceAdapter());
 
-        waitingFL = v.findViewById(R.id.flWaiting);
+        waitingFL = v.findViewById(R.id.fl_waiting);
         byMedalBtn = v.findViewById(R.id.btnByMedals);
         byRankBtn = v.findViewById(R.id.btnByRank);
         byMedalBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -159,17 +152,6 @@ public class TrainerListFragment extends Fragment implements Injectable {
         });
 
 
-       /* getTrainerWeb(0, 0, 1, new OnGetTrainerListner() {
-            @Override
-            public void onSuccess() {
-                waitingFL.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailed() {
-
-            }
-        });*/
         v.setRotation(180);
         return v;
     }
@@ -182,7 +164,7 @@ public class TrainerListFragment extends Fragment implements Injectable {
             Log.d("onActivityCreated", "observe: ");
             this.trainerList.removeAll(this.trainerList);
             this.trainerList.addAll(trainerList);
-            adapter.notifyDataSetChanged();
+            adapter.addAll(trainerList);
             waitingFL.setVisibility(View.GONE);
         });
         viewModel.init(2);
@@ -208,28 +190,25 @@ public class TrainerListFragment extends Fragment implements Injectable {
         mListener = null;
     }
 
-    private void getTrainerWeb(int cityId, int gymId, int sortType, final OnGetTrainerListner onGetTrainerListner) {
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-
-        Call<RetTrainerList> call = apiService.getTrainerList(0, 10, gymId, cityId, sortType);
-        call.enqueue(new Callback<RetTrainerList>() {
+    @Override
+    //Pressed return button - returns to the results menu
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onResponse(Call<RetTrainerList> call, Response<RetTrainerList> response) {
-                onGetTrainerListner.onSuccess();
-                if (response.isSuccessful())
-                    Log.d("getNewsWeb", "onResponse: records:" + response.body().getRecordsCount());
-                trainerList.removeAll(trainerList);
-                trainerList.addAll(response.body().getRecords());
-                adapter.notifyDataSetChanged();
-            }
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-            @Override
-            public void onFailure(Call<RetTrainerList> call, Throwable t) {
-                onGetTrainerListner.onFailed();
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility() == View.VISIBLE) {
+                    detailFragment.setVisibility(View.GONE);
+                    //your code
+
+                    return true;
+                }
+                return false;
             }
         });
-
     }
 
     private interface OnGetTrainerListner {

@@ -15,9 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -25,7 +23,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterComments;
 import com.example.arsalan.mygym.databinding.FragmentNewsDetailBinding;
@@ -55,7 +52,7 @@ import retrofit2.Response;
  * Activities that contain this fragment must implement the
  * {@link NewsDetailFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link NewsDetailFragment#newInstance} factory method to
+ * Use the {@link NewsDetailFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class NewsDetailFragment extends Fragment implements Injectable {
@@ -63,6 +60,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER_ID = "param1";
     private static final String ARG_NEWS_ID = "param2";
+    private static final String TAG = "NewsDetailFragment";
     @Inject
     MyViewModelFactory mFactory;
     @Inject
@@ -76,13 +74,16 @@ public class NewsDetailFragment extends Fragment implements Injectable {
     private List<Comment> mCommentList;
     private AdapterComments mAdapter;
     private int mLikeCount;
+    private Integer mNextNewsId;
+    private NewsDetailViewModel viewModel;
+    private Integer mPrevNewsId;
 
     public NewsDetailFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param userId Parameter 1.
@@ -197,16 +198,25 @@ public class NewsDetailFragment extends Fragment implements Injectable {
         mBind.ibBack.setOnClickListener(b->{
            container.setVisibility(View.GONE);
         });
+        mBind.imgBtnNext.setOnClickListener(b->{
+            viewModel.init(mUserId, mNextNewsId);
+        });
+
+        mBind.imgBtnPrevious.setOnClickListener(b->{
+            viewModel.init(mUserId, mPrevNewsId);
+        });
+
         return mBind.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        NewsDetailViewModel viewModel= ViewModelProviders.of(this,mFactory).get(NewsDetailViewModel.class);
+         viewModel= ViewModelProviders.of(this,mFactory).get(NewsDetailViewModel.class);
         viewModel.init(mUserId,mNewsId);
         viewModel.getNews().observe(this,news->{
             if(news!=null) {
+                Log.d("NewsDetailViewModel", "onActivityCreated: newsId:"+news.getId());
                 mBind.setNews(news);
                 getCommentWeb(news.getId());
                 mBind.image.setImageURI(MyConst.BASE_CONTENT_URL + news.getPictureUrl());
@@ -218,6 +228,25 @@ public class NewsDetailFragment extends Fragment implements Injectable {
 
         });
 
+        viewModel.getNextNews().observe(this,nextNews->{
+
+            if(nextNews!=null) {
+                mBind.imgBtnNext.setVisibility(View.VISIBLE);
+                mNextNewsId =nextNews;
+            }else {
+                mBind.imgBtnNext.setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.getPrevNewsId().observe(this,prevNewsId->{
+
+            if(prevNewsId!=null) {
+                mBind.imgBtnPrevious.setVisibility(View.VISIBLE);
+                mPrevNewsId =prevNewsId;
+            }else {
+                mBind.imgBtnPrevious.setVisibility(View.GONE);
+            }
+        });
     }
 
 
@@ -244,25 +273,29 @@ public class NewsDetailFragment extends Fragment implements Injectable {
     private void getCommentWeb(final long newId) {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
-        final ProgressDialog waitingDialog = new ProgressDialog(getContext());
-        waitingDialog.setMessage(getString(R.string.please_wait_a_moment));
-        waitingDialog.show();
+
         Call<RetCommentList> call = apiService.getCommentList(mToken.getTokenBearer(), 0, 100, newId);
         call.enqueue(new Callback<RetCommentList>() {
             @Override
             public void onResponse(Call<RetCommentList> call, Response<RetCommentList> response) {
-                waitingDialog.dismiss();
-                if (response.isSuccessful() && response.body() != null)
-                    Log.d("getCommentWeb", "onResponse: record:" + response.body().getRecords().size());
-                mCommentList.removeAll(mCommentList);
-                if (response.body() != null && response.body().getRecords().size() > 0)
+                mBind.pbWaiting.setVisibility(View.GONE);
+                if (response.isSuccessful()) {
+                    mCommentList.removeAll(mCommentList);
                     mCommentList.addAll(response.body().getRecords());
-                mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
+                    if(mCommentList.size()>0){
+                        mBind.rvComments.setVisibility(View.VISIBLE);
+                        mBind.txtNoComment.setVisibility(View.GONE);
+                    }else {
+                        mBind.rvComments.setVisibility(View.GONE);
+                        mBind.txtNoComment.setVisibility(View.VISIBLE);
+                    }
+                }
             }
 
             @Override
             public void onFailure(Call<RetCommentList> call, Throwable t) {
-                waitingDialog.dismiss();
+                mBind.pbWaiting.setVisibility(View.GONE);
             }
         });
     }

@@ -90,7 +90,6 @@ import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_TRAINER;
 
 public class PrivateMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , TutorialFragment.OnFragmentInteractionListener
         , NewPlanDialog.OnFragmentInteractionListener
         , TrainerPlansTabFragment.OnFragmentInteractionListener
         , DashBoardAthleteFragment.OnFragmentInteractionListener
@@ -353,15 +352,6 @@ public class PrivateMainActivity extends AppCompatActivity
         return true;
     }
 
-    //از لیست گروه های آموزشی به لیست آموزش ها
-    @Override
-    public void goToTutorialList(int catId, String title) {
-        Intent i = new Intent();
-        i.putExtra(TutorialListActivity.KEY_CAT_ID, catId);
-        i.putExtra(TutorialListActivity.KEY_TITLE, title);
-        i.setClass(this, TutorialListActivity.class);
-        startActivity(i);
-    }
 
     @Override
     public void goToNewPlane(int planType, String name) {

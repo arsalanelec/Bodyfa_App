@@ -11,7 +11,7 @@
     app:layout_constraintDimensionRatio="1:1">
 
     <ImageView
-        android:id="@+id/imgThumb"
+        android:id="@+id/img_thumb"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginBottom="8dp"
@@ -32,7 +32,7 @@
         android:text="رونی کالمن"
         android:textColor="@android:color/black"
         android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/imgThumb"
+        app:layout_constraintStart_toEndOf="@+id/img_thumb"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -45,7 +45,7 @@
         android:text="تاریخ عضویت:"
         android:textColor="@android:color/black"
         android:textSize="8sp"
-        app:layout_constraintStart_toEndOf="@+id/imgThumb"
+        app:layout_constraintStart_toEndOf="@+id/img_thumb"
         app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
     <TextView

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.SortedList;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -24,13 +25,84 @@ import java.util.List;
 
 public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
     private final OnItemClickListener mListener;
-    List<Trainer> trainerList;
-    long mMyTrainerId;
+    private SortedList<Trainer> trainerSortedList;
 
-    public AdapterTrainers(List<Trainer> trainerList, long myTrainerId, OnItemClickListener listener) {
-        this.trainerList = trainerList;
+    public AdapterTrainers(OnItemClickListener listener) {
         mListener = listener;
-        mMyTrainerId = myTrainerId;
+        trainerSortedList = new SortedList<Trainer>(Trainer.class, new SortedList.Callback<Trainer>() {
+            @Override
+            public int compare(Trainer o1, Trainer o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+
+            @Override
+            public void onChanged(int position, int count) {
+                notifyItemRangeChanged(position, count);
+            }
+
+            @Override
+            public boolean areContentsTheSame(Trainer oldItem, Trainer newItem) {
+                return oldItem.getName().equals(newItem.getName());
+            }
+
+            @Override
+            public boolean areItemsTheSame(Trainer item1, Trainer item2) {
+                return item1.getId() == item2.getId();
+            }
+
+            @Override
+            public void onInserted(int position, int count) {
+                notifyItemRangeInserted(position, count);
+            }
+
+            @Override
+            public void onRemoved(int position, int count) {
+                notifyItemRangeRemoved(position, count);
+            }
+
+            @Override
+            public void onMoved(int fromPosition, int toPosition) {
+                notifyItemMoved(fromPosition, toPosition);
+            }
+        });
+    }
+
+    //conversation helpers
+    public void addAll(List<Trainer> trainers) {
+        trainerSortedList.beginBatchedUpdates();
+        for (int i = 0; i < trainers.size(); i++) {
+            trainerSortedList.add(trainers.get(i));
+        }
+        trainerSortedList.endBatchedUpdates();
+    }
+
+    public void replaceAll(List<Trainer> trainers) {
+        trainerSortedList.beginBatchedUpdates();
+        for (int i = trainerSortedList.size() - 1; i >= 0; i--) {
+            final Trainer trainer = trainerSortedList.get(i);
+            if (!trainers.contains(trainer)) {
+                trainerSortedList.remove(trainer);
+            }
+        }
+        trainerSortedList.addAll(trainers);
+        trainerSortedList.endBatchedUpdates();
+    }
+
+    public void clear() {
+        trainerSortedList.beginBatchedUpdates();
+        //remove items at end, to avoid unnecessary array shifting
+        while (trainerSortedList.size() > 0) {
+            trainerSortedList.removeItemAt(trainerSortedList.size() - 1);
+        }
+        trainerSortedList.endBatchedUpdates();
+    }
+
+    public void remove(Trainer trainer) {
+        trainerSortedList.remove(trainer);
+    }
+
+    public void add(Trainer trainer) {
+        trainerSortedList.add(trainer);
     }
 
     @Override
@@ -42,12 +114,12 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
     @Override
     public void onBindViewHolder(final VH h, int position) {
 
-        h.bind(trainerList.get(position), mListener);
+        h.bind(trainerSortedList.get(position), mListener);
     }
 
     @Override
     public int getItemCount() {
-        return trainerList.size();
+        return trainerSortedList.size();
     }
 
     //Activity mActivity;
@@ -61,7 +133,6 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
 
     class VH extends RecyclerView.ViewHolder {
         ImageView thumbImg;
-        ImageView checkImg;
         TextView nameTV;
         TextView honorTV;
         TextView pointsTV;
@@ -74,8 +145,7 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
             honorTV = iv.findViewById(R.id.txtTitle);
             ratingBar = iv.findViewById(R.id.ratingBar);
             pointsTV = iv.findViewById(R.id.txtPoints);
-            thumbImg = iv.findViewById(R.id.imgThumb);
-            checkImg = iv.findViewById(R.id.imgCheck);
+            thumbImg = iv.findViewById(R.id.img_thumb);
         }
 
         public void bind(final Trainer t, final OnItemClickListener listener) {
@@ -84,11 +154,6 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
                     .apply(RequestOptions.circleCropTransform())
                     .into(thumbImg);
-            if (t.getId() == mMyTrainerId) {
-                checkImg.setVisibility(View.VISIBLE);
-            }else {
-                checkImg.setVisibility(View.GONE);
-            }
             // h.thumbImg.setImageURI();
             pointsTV.setText(String.valueOf(t.getPoint()));
             ratingBar.setRating(t.getRate());

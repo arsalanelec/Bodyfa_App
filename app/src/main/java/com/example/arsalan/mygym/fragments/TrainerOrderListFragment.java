@@ -41,7 +41,7 @@ import javax.inject.Inject;
  * Activities that contain this fragment must implement the
  * {@link TrainerOrderListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TrainerOrderListFragment#newInstance} factory method to
+ * Use the {@link TrainerOrderListFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class TrainerOrderListFragment extends Fragment implements Injectable, SwipeRefreshLayout.OnRefreshListener {
@@ -70,7 +70,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param trainerId Parameter 1.
@@ -112,7 +112,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         workoutPlanReqVm = ViewModelProviders.of(this, mFactory).get(TrainerWorkoutPlanReqVm.class);
-        workoutPlanReqVm.init(mTrainerId);
+        workoutPlanReqVm.initWaiting(mTrainerId);
         workoutPlanReqVm.getWorkoutPlanListLv().observe(this, workoutPlanReqs -> {
             Log.d(TAG, "onActivityCreated: workoutPlanReqs Changed listSize:" + workoutPlanReqs.size());
             mRequestList.removeAll(mRequestList);
@@ -160,7 +160,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
     @Override
     public void onRefresh() {
-        workoutPlanReqVm.init(mTrainerId);
+        workoutPlanReqVm.initWaiting(mTrainerId);
     }
 
     public interface OnRequestRowClickListener {

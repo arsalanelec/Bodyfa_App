@@ -260,7 +260,11 @@ public class WorkoutPlanFragment extends Fragment {
                             mSavedTime = millis;
                             if (mListener != null)
                                 mListener.updateTimesUi(workoutRow, itemTimes * 1000, millis, finalTotalTime * 1000, (finalTotalTime * 1000) - (itemTimes * 1000 - millis), mDayOfWeek);
-                            else Log.d(TAG, "onTick: mlistener is null");
+                            else {
+                                Log.d(TAG, "onTick: mlistener is null");
+                                this.cancel();
+                            }
+
                         }
 
                         @Override

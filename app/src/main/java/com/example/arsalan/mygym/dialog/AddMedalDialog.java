@@ -193,7 +193,7 @@ public class AddMedalDialog extends DialogFragment {
 
 
         });
-        imgThumb = v.findViewById(R.id.imgThumb);
+        imgThumb = v.findViewById(R.id.img_thumb);
         imgThumb.setOnClickListener(new View.OnClickListener()
 
         {

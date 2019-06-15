@@ -16,7 +16,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ToggleButton;
@@ -63,7 +62,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      * @param userId Parameter 1.
      * @return A new instance of fragment NewsListFragment.
@@ -120,7 +119,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         // newsRV.setLayoutAnimation(animation);
         newsRV.setAdapter(adapter);
-        waitingFL = v.findViewById(R.id.flWaiting);
+        waitingFL = v.findViewById(R.id.fl_waiting);
 
         final ToggleButton foodNewsTgl = v.findViewById(R.id.btnFoodNews);
 

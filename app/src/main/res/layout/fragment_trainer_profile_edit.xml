@@ -16,7 +16,7 @@
         tools:context="com.example.arsalan.mygym.fragments.TrainerEditProfileFragment">
 
         <FrameLayout
-            android:id="@+id/flWaiting"
+            android:id="@+id/fl_waiting"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible">

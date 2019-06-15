@@ -64,6 +64,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.arsalan.mygym.MyKeys.EXTRA_TUTORIAL_CAT_ID;
+
 public class PostTutorialActivity extends AppCompatActivity {
     static final String FILE_PREFIX = "recorder-";
     static final String THUMBNAIL_FILE_EXTENSION = "jpg";
@@ -138,7 +140,7 @@ public class PostTutorialActivity extends AppCompatActivity {
         tutorialList = new ArrayList<>();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getTutorialWeb(getIntent().getIntExtra(TutorialListActivity.KEY_CAT_ID, 1));
+        getTutorialWeb(getIntent().getIntExtra(EXTRA_TUTORIAL_CAT_ID, 1));
     }
 
     public boolean hasAllPermissions() {
@@ -337,14 +339,14 @@ public class PostTutorialActivity extends AppCompatActivity {
         }
                 , "Video Clip");
 
-        Log.d(TAG, "sendVideo: groupdID:" + getIntent().getIntExtra(TutorialListActivity.KEY_CAT_ID, 1) + "\n tutorialId:" + (int) tutorialSpn.getSelectedItemId());
+        Log.d(TAG, "sendVideo: groupdID:" + getIntent().getIntExtra(EXTRA_TUTORIAL_CAT_ID, 1) + "\n tutorialId:" + (int) tutorialSpn.getSelectedItemId());
         MultipartBody.Part videoBody =
                 MultipartBody.Part.createFormData("PictureUrl", mVideoFile.getName(), requestVideoFile);
 
         MediaType plainMT = MediaType.parse("text/plain");
         Map<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put("UserId", RequestBody.create(plainMT, String.valueOf(((MyApplication) getApplication()).getCurrentUser().getId())));
-        requestBodyMap.put("tutorialCategoryId", RequestBody.create(plainMT, String.valueOf(getIntent().getIntExtra(TutorialListActivity.KEY_CAT_ID, 1))));
+        requestBodyMap.put("tutorialCategoryId", RequestBody.create(plainMT, String.valueOf(getIntent().getIntExtra(EXTRA_TUTORIAL_CAT_ID, 1))));
         if (!newRB.isChecked()) {
             requestBodyMap.put("TutorialSubCategoryId", RequestBody.create(plainMT, String.valueOf((int) tutorialSpn.getSelectedItemId())));
         } else {

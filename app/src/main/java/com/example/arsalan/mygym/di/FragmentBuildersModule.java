@@ -18,6 +18,7 @@ package com.example.arsalan.mygym.di;
 
 import com.example.arsalan.mygym.dialog.MyAthleteListDialog;
 import com.example.arsalan.mygym.dialog.RequestWorkoutPlanDialog;
+import com.example.arsalan.mygym.dialog.TrainerListDialog;
 import com.example.arsalan.mygym.dialog.TrainerWorkoutPlanListToSendDialog;
 import com.example.arsalan.mygym.dialog.TutorialVideoListDialog;
 import com.example.arsalan.mygym.fragments.AthleteMealPlanListFragment;
@@ -99,6 +100,9 @@ public abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract NewsDetailFragment contributeNewsDetailFragment();
+
+    @ContributesAndroidInjector
+    abstract TrainerListDialog contributeTrainerListDialog();
 
 
 }

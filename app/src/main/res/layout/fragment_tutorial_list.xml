@@ -1,52 +1,92 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.arsalan.mygym.fragments.TutorialFragment">
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-
-        <ToggleButton
-            android:id="@+id/btnGeneral"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:background="@drawable/button_rect"
-            android:checked="true"
-            android:fontFamily="@font/iran_sans_mobile"
-            android:paddingEnd="32dp"
-            android:paddingStart="32dp"
-            android:textColor="@drawable/text_button_color"
-            android:textOff="@string/general"
-            android:textOn="@string/general"
-            />
-
-        <ToggleButton
-            android:id="@+id/btnVip"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:background="@drawable/button_rect"
-            android:fontFamily="@font/iran_sans_mobile"
-            android:paddingEnd="32dp"
-            android:paddingStart="32dp"
-            android:textColor="@drawable/text_button_color"
-            android:textOff="@string/vip"
-            android:textOn="@string/vip"
-            />
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/lstTutorial"
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layoutAnimation="@anim/layout_animation_fall_down"/>
+        android:layout_height="match_parent"
+        android:layoutDirection="rtl"
+        tools:context=".fragments.TutorialFragment"
+        android:background="@android:color/white">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/txt_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                />
+            <ImageButton
+                android:id="@+id/ib_back"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_gravity="start"
+                android:contentDescription="TODO"
+                android:foreground="?attr/selectableItemBackground"
+                android:background="@android:color/transparent"
+                android:visibility="visible"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
+        </androidx.appcompat.widget.Toolbar>
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+                <ToggleButton
+                    android:id="@+id/btnGeneral"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/button_rect"
+                    android:checked="true"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="32dp"
+                    android:textColor="@drawable/text_button_color"
+                    android:textOff="@string/general"
+                    android:textOn="@string/general" />
+                <ToggleButton
+                    android:id="@+id/btnVip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/button_rect"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="32dp"
+                    android:textColor="@drawable/text_button_color"
+                    android:textOff="@string/vip"
+                    android:textOn="@string/vip" />
+            </LinearLayout>
+            <ListView
+                android:id="@+id/lstTutorial"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layoutAnimation="@anim/layout_animation_fall_down" />
+        </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:backgroundTint="@color/colorPrimary"
+            android:src="@drawable/ic_video_call_24dp"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

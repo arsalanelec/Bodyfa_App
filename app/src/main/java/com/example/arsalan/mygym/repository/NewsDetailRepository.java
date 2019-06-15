@@ -40,6 +40,14 @@ public class NewsDetailRepository {
         return newsDao.getNews(newsId);
     }
 
+    public LiveData<Integer> getNextNewsDetail(long newsId) {
+        return newsDao.getNextNewsId(newsId);
+    }
+
+    public LiveData<Integer> getPrevNewsDetail(long newsId) {
+        return newsDao.getPrevNewsId(newsId);
+    }
+
     private void refreshNewsDetail(long userId, long newsId) {
         executor.execute(new Runnable() {
 

@@ -21,9 +21,15 @@ public class TrainerWorkoutPlanReqVm extends ViewModel {
 
     }
 
-    public void init(long trainerId){
-        mWorkoutPlanListLv=  mRepository.getListLive(trainerId);
+    public void initWaiting(long trainerId){
+        mWorkoutPlanListLv=  mRepository.getWaitingListLive(trainerId);
     }
+
+
+    public void initAll(long trainerId){
+        mWorkoutPlanListLv=  mRepository.getAllListLive(trainerId);
+    }
+
     public LiveData<Integer> cancelRequest(long requestId){
         return mRepository.cancelWorkoutRequest(requestId);
     }

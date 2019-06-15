@@ -155,16 +155,6 @@
                 android:value="com.example.arsalan.mygym.activities.MainActivity" />
         </activity>
         <activity
-            android:name=".activities.TutorialListActivity"
-            android:label="@string/title_activity_tutorial_list"
-            android:parentActivityName=".activities.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.arsalan.mygym.activities.MainActivity" />
-        </activity>
-        <activity
             android:name=".activities.FullscreenVideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen_video"

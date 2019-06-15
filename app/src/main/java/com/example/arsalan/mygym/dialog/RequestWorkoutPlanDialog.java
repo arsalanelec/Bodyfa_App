@@ -3,7 +3,6 @@ package com.example.arsalan.mygym.dialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,10 +10,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +24,6 @@ import android.widget.Toast;
 
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.di.Injectable;
-import com.example.arsalan.mygym.models.UserCredit;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
@@ -40,7 +36,7 @@ import javax.inject.Inject;
  * Activities that contain this fragment must implement the
  * {@link RequestWorkoutPlanDialog.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RequestWorkoutPlanDialog#newInstance} factory method to
+ * Use the {@link RequestWorkoutPlanDialog#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class RequestWorkoutPlanDialog extends DialogFragment implements Injectable {
@@ -65,7 +61,7 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param userId Parameter 1.
@@ -170,8 +166,9 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
                 }
             });
         });
-        ImageButton cancelBtn = v.findViewById(R.id.btnCancel);
+        ImageButton cancelBtn = v.findViewById(R.id.btn_cancel);
         cancelBtn.setOnClickListener(b -> dismiss());
+
         return v;
     }
 

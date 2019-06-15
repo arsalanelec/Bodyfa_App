@@ -92,7 +92,6 @@
     <string name="thumbnail">Thumbnail</string>
     <string name="thumbnail_file_size">Thumbnail File Size</string>
     <string name="unknown">Unknown</string>
-    <string name="title_activity_tutorial_list">TutorialListActivity</string>
     <string name="enter_mobile">شماره موبایل خود را وارد نمایید:</string>
     <string name="sendActivationCode">ارسال کد اعتبار سنجی</string>
     <string name="registerInBodyfa">ثبت نام در بادیفا</string>
@@ -338,5 +337,9 @@
     <string name="your_trainer_didnt_send_any_plan">مربی شما برای شما برنامه ای ارسال نکرده است! جهت سفارش برنامه به صفحه مربی مراجعه کنید.</string>
     <string name="press_back_exit">برای خروج، دوباره بازگشت را فشار دهید…</string>
     <string name="write_a_comment">یک دیدگاه بنویسید…</string>
+    <string name="write_you_first_review">اولین دیدگاه را شما بنویسید!</string>
+    <string name="to_continue_select_a_trainer">برای ادامه مربی مورد نظر را انتخاب کنید…</string>
+    <string name="plan_list">لیست برنامه ها:</string>
+    <string name="request_list">لیست درخواست ها:</string>
 
 </resources>

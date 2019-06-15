@@ -86,7 +86,6 @@
     <string name="thumbnail">Thumbnail</string>
     <string name="thumbnail_file_size">Thumbnail File Size</string>
     <string name="unknown">Unknown</string>
-    <string name="title_activity_tutorial_list">TutorialListActivity</string>
     <string name="enter_mobile">Please enter your phone Number</string>
     <string name="sendActivationCode">Send activation code</string>
     <string name="registerInBodyfa">Register in Bodyfa</string>
@@ -347,5 +346,9 @@
     <string name="your_trainer_didnt_send_any_plan">Your Trainer didn\'t send you any plan! to order a plan please go to your trainer page.</string>
     <string name="press_back_exit">Press Back again to exis…</string>
     <string name="write_a_comment">write a comment…</string>
+    <string name="write_you_first_review">be the first to write a review!</string>
+    <string name="to_continue_select_a_trainer">To continue please select a trainer…</string>
+    <string name="plan_list">Plan List</string>
+    <string name="request_list">Request list:</string>
 
 </resources>

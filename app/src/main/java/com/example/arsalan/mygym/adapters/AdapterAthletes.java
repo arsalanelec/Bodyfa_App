@@ -12,7 +12,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.TrainerAthlete;
-import com.example.arsalan.mygym.models.User;
 
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
         public VH(View iv) {
             super(iv);
             nameTV = iv.findViewById(R.id.txtName);
-            thumbImg = iv.findViewById(R.id.imgThumb);
+            thumbImg = iv.findViewById(R.id.img_thumb);
             registerDateTV = iv.findViewById(R.id.txtRegisterDate);
             sendMessageBtn = iv.findViewById(R.id.btnSendMessage);
 

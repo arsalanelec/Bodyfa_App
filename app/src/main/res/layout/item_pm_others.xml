@@ -6,7 +6,7 @@
     android:layoutDirection="ltr">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/imgThumb"
+        android:id="@+id/img_thumb"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
@@ -27,5 +27,5 @@
         android:text="پیام پیام پیام"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imgThumb" />
+        app:layout_constraintStart_toEndOf="@+id/img_thumb" />
 </androidx.constraintlayout.widget.ConstraintLayout>

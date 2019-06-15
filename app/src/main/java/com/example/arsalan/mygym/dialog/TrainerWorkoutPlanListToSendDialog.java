@@ -45,7 +45,7 @@ import static com.example.arsalan.mygym.webservice.MyWebService.sendWokroutPlanT
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
- * Use the {@link TrainerWorkoutPlanListToSendDialog#newInstance} factory method to
+ * Use the {@link TrainerWorkoutPlanListToSendDialog#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implements Injectable {
@@ -77,7 +77,7 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
@@ -143,7 +143,7 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
                 .apply(new RequestOptions().placeholder(R.drawable.avatar).centerCrop())
                 .into(thumbView);*/
         //cancel when cross button clicked
-        ImageButton cancelBtn=v.findViewById(R.id.btnCancel);
+        ImageButton cancelBtn=v.findViewById(R.id.btn_cancel);
         cancelBtn.setOnClickListener(b->dismiss());
         Button submitBtn=v.findViewById(R.id.btnSubmit);
         if (mWorkoutPlanList != null) {

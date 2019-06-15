@@ -32,7 +32,7 @@ import androidx.fragment.app.Fragment;
  * Activities that contain this fragment must implement the
  * {@link AddCreditDialog.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AddCreditDialog#newInstance} factory method to
+ * Use the {@link AddCreditDialog#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class AddCreditDialog extends DialogFragment {
@@ -52,7 +52,7 @@ public class AddCreditDialog extends DialogFragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param userId Parameter 1.

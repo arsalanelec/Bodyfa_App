@@ -1,5 +1,6 @@
 package com.example.arsalan.mygym.dialog;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -39,6 +41,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -54,7 +57,7 @@ import retrofit2.Response;
  * Activities that contain this fragment must implement the
  * {@link TutorialVideoListDialog.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TutorialVideoListDialog#newInstance} factory method to
+ * Use the {@link TutorialVideoListDialog#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class TutorialVideoListDialog extends DialogFragment implements Injectable {
@@ -85,7 +88,7 @@ public class TutorialVideoListDialog extends DialogFragment implements Injectabl
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
@@ -125,6 +128,14 @@ public class TutorialVideoListDialog extends DialogFragment implements Injectabl
         return v;
     }
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -133,7 +144,7 @@ public class TutorialVideoListDialog extends DialogFragment implements Injectabl
         tutorialListViewModel.getTutorialVideoList().observe(this, tutorialVideos -> {
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: tutorialVideos cnt:" + tutorialVideos.size());
             if (tutorialVideos.size() > 0) {
-                tutorialVideoList.removeAll(tutorialVideoList);
+                tutorialVideoList.clear();
                 tutorialVideoList.addAll(tutorialVideos);
                 mAdapter.notifyDataSetChanged();
                 waitingPB.setVisibility(View.GONE);
@@ -381,7 +392,7 @@ public class TutorialVideoListDialog extends DialogFragment implements Injectabl
                 view = getLayoutInflater().inflate(R.layout.item_tutorial_video, viewGroup, false);
             }
             TextView nameTV = view.findViewById(R.id.txtName);
-            SimpleDraweeView thumbImg = view.findViewById(R.id.imgThumb);
+            SimpleDraweeView thumbImg = view.findViewById(R.id.img_thumb);
             nameTV.setText(videoList.get(i).getName());
             ProgressBar progressBar = view.findViewById(R.id.progressBar);
             TextView progressTV = view.findViewById(R.id.txtProgress);

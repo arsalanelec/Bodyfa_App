@@ -2,24 +2,27 @@ package com.example.arsalan.mygym.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
 import com.example.arsalan.mygym.MyApplication;
+import com.example.arsalan.mygym.R;
+import com.example.arsalan.mygym.activities.PostTutorialActivity;
+import com.example.arsalan.mygym.databinding.FragmentTutorialListBinding;
+import com.example.arsalan.mygym.dialog.TutorialVideoListDialog;
 import com.example.arsalan.mygym.models.RetTutorialList;
 import com.example.arsalan.mygym.models.Tutorial;
-import com.example.arsalan.mygym.R;
-import com.example.arsalan.mygym.dialog.TutorialVideoListDialog;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 
@@ -30,13 +33,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.arsalan.mygym.MyKeys.EXTRA_TUTORIAL_CAT_ID;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link TutorialListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TutorialListFragment#newInstance} factory method to
+ * Use the {@link TutorialListFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class TutorialListFragment extends Fragment {
@@ -44,31 +49,33 @@ public class TutorialListFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final String TAG = "TutorialListFragment";
     // TODO: Rename and change types of parameters
     private int mCatId;
 
     private OnFragmentInteractionListener mListener;
     private List<Tutorial> tutorialList;
     private AdapterTutorialList adapter;
-    private ListView listView;
+    private boolean mCanSendTutorial;
+    private FragmentTutorialListBinding mBind;
 
     public TutorialListFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param catId Parameter 1.
+     * @param catId           Parameter 1.
+     * @param canSendTutorial Parameter 2.
      * @return A new instance of fragment TutorialFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static TutorialListFragment newInstance(int catId) {
+    public static TutorialListFragment newInstance(int catId, boolean canSendTutorial) {
         TutorialListFragment fragment = new TutorialListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, catId);
+        args.putBoolean(ARG_PARAM2, canSendTutorial);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,6 +85,8 @@ public class TutorialListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mCatId = getArguments().getInt(ARG_PARAM1);
+            mCanSendTutorial = getArguments().getBoolean(ARG_PARAM2);
+            Log.d(TAG, "onCreate: catId:" + mCatId);
         }
     }
 
@@ -85,28 +94,39 @@ public class TutorialListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_tutorial_list, container, false);
-         listView = v.findViewById(R.id.lstTutorial);
+        mBind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_tutorial_list, container, false);
         tutorialList = new ArrayList<>();
         adapter = new AdapterTutorialList(tutorialList);
-        listView.setAdapter(adapter);
-        final ToggleButton generatlBtn = v.findViewById(R.id.btnGeneral);
-        final ToggleButton vipBtn = v.findViewById(R.id.btnVip);
-        generatlBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mBind.lstTutorial.setAdapter(adapter);
+        mBind.btnGeneral.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) vipBtn.setChecked(false);
+                if (b) mBind.btnVip.setChecked(false);
             }
         });
-        vipBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mBind.btnVip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) generatlBtn.setChecked(false);
+                if (b) mBind.btnGeneral.setChecked(false);
             }
         });
         if (mCatId != 0) getTutorialWeb(mCatId);
+
+        mBind.fab.setVisibility((mCanSendTutorial) ? View.VISIBLE : View.GONE);
+        mBind.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent();
+                i.setClass(getActivity(), PostTutorialActivity.class);
+                i.putExtra(EXTRA_TUTORIAL_CAT_ID, mCatId);
+                startActivity(i);
+            }
+        });
+
+        //Back Button
+        mBind.ibBack.setOnClickListener(b -> container.setVisibility(View.GONE));
         // v.setRotation(180);
-        return v;
+        return mBind.getRoot();
     }
 
     @Override
@@ -141,7 +161,7 @@ public class TutorialListFragment extends Fragment {
                 if (response.isSuccessful() && response.body().getRecords().size() > 0) {
                     tutorialList.addAll(response.body().getRecords());
                     adapter.notifyDataSetChanged();
-                    listView.scheduleLayoutAnimation();
+                    // mBind.lstTutorial.scheduleLayoutAnimation();
                     Log.d(TAG, "onResponse: recordCnt:" + response.body().getRecordsCount());
                 } else {
                     Log.d(TAG, "onResponse: message:" + response.message());
@@ -202,7 +222,7 @@ public class TutorialListFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    TutorialVideoListDialog dialog =  TutorialVideoListDialog.newInstance(tutorialList.get(i).getId());
+                    TutorialVideoListDialog dialog = TutorialVideoListDialog.newInstance(tutorialList.get(i).getId());
                     dialog.show(getFragmentManager(), "");
                 }
             });

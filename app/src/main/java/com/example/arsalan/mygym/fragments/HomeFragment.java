@@ -16,7 +16,7 @@ import com.example.arsalan.mygym.R;
  * Activities that contain this fragment must implement the
  * {@link HomeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link HomeFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.

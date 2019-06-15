@@ -9,17 +9,15 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +54,6 @@ import com.example.arsalan.mygym.fragments.AthleteWorkoutPlanListFragment;
 import com.example.arsalan.mygym.fragments.DashBoardAthleteFragment;
 import com.example.arsalan.mygym.fragments.GymListFragment;
 import com.example.arsalan.mygym.fragments.HomeFragment;
-import com.example.arsalan.mygym.fragments.MyTrainerFragment;
 import com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment;
 import com.example.arsalan.mygym.fragments.NewsListFragment;
 import com.example.arsalan.mygym.fragments.TrainerListFragment;
@@ -70,11 +67,13 @@ import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.models.UserCredit;
+import com.example.arsalan.mygym.models.WorkoutPlanReq;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
+import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.stfalcon.swipeablebutton.SwipeableButton;
@@ -117,7 +116,6 @@ import static com.example.arsalan.mygym.webservice.MyWebService.STATUS_FAIL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , TutorialFragment.OnFragmentInteractionListener
         , HasSupportFragmentInjector
         , NewPlanDialog.OnFragmentInteractionListener
         , TrainerPlansTabFragment.OnFragmentInteractionListener
@@ -128,8 +126,8 @@ public class MainActivity extends AppCompatActivity
         , RequestWorkoutPlanDialog.OnFragmentInteractionListener
         , TrainerOrderListFragment.OnFragmentInteractionListener
         , SelectTrainerJoinTimeDialog.OnFragmentInteractionListener
-,TrainerListFragment.OnFragmentInteractionListener
-,MyTrainerMembershipFragment.OnFragmentInteractionListener
+        , TrainerListFragment.OnFragmentInteractionListener
+        , MyTrainerMembershipFragment.OnFragmentInteractionListener
         , Injectable {
     private static final String KEY_THEME_ID = "key theme id";
     private static final String KEY_PIRVATE_VIEW = "key private view";
@@ -143,6 +141,10 @@ public class MainActivity extends AppCompatActivity
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
     @Inject
     MyViewModelFactory mFactory;
+
+    @Inject
+    TrainerWorkoutPlanRequestDao mWorkoutReqDao;
+    boolean doubleBackToExitPressedOnce = false;
     private PagerAdapter mGeneratVpga;
     private User mCurrentUser;
     private Trainer mCurrentTrainer;
@@ -154,7 +156,6 @@ public class MainActivity extends AppCompatActivity
     private Bundle eBundle;
     private UserCreditViewModel mUserCreditViewModel;
     private UserCredit mCredit;
-    boolean doubleBackToExitPressedOnce=false;
 
     public MainActivity() {
         mContext = this;
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity
         TextView userNameTV = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         userNameTV.setText(mCurrentUser.getName());
 
-        ImageView imgThumb = navigationView.getHeaderView(0).findViewById(R.id.imgThumb);
+        ImageView imgThumb = navigationView.getHeaderView(0).findViewById(R.id.img_thumb);
 
         Glide.with(this)
                 .load(MyConst.BASE_CONTENT_URL + mCurrentUser.getThumbUrl())
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity
 
         SwipeableButton switchBtn = toolbar.findViewById(R.id.btnSwitch);
 
-        if(mPrivateView)switchBtn.setChecked(true);
+        if (mPrivateView) switchBtn.setChecked(true);
         switchBtn.setOnSwipedListener(new Function0<Unit>() {
             @Override
             public Unit invoke() {
@@ -373,12 +374,12 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-        ImageButton goToInboxBtn=findViewById(R.id.btnChatlist);
-        if(!mCurrentUser.isConfirmed())goToInboxBtn.setVisibility(View.GONE);
-        goToInboxBtn.setOnClickListener(b->{
+        ImageButton goToInboxBtn = findViewById(R.id.btnChatlist);
+        if (!mCurrentUser.isConfirmed()) goToInboxBtn.setVisibility(View.GONE);
+        goToInboxBtn.setOnClickListener(b -> {
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this,ChatListActivity.class);
-            intent.putExtra(EXTRA_USER_ID,mCurrentUser.getId());
+            intent.setClass(MainActivity.this, ChatListActivity.class);
+            intent.putExtra(EXTRA_USER_ID, mCurrentUser.getId());
             startActivity(intent);
         });
 /*
@@ -400,14 +401,14 @@ public class MainActivity extends AppCompatActivity
             }
             viewPager.setAdapter(mGeneratVpga);
         } else if (roleName.equals(KEY_ROLE_ATHLETE)) {
-           // switchBtn.setText(getText(R.string.general));
+            // switchBtn.setText(getText(R.string.general));
             if (mPrivateVpa == null) {
                 mPrivateVpa = new ViewPagerVarzeshkarAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser);
             }
             viewPager.setAdapter(mPrivateVpa);
 
         } else if (roleName.equals(KEY_ROLE_TRAINER)) {
-           // switchBtn.setText(getText(R.string.general));
+            // switchBtn.setText(getText(R.string.general));
             if (mPrivateVpa == null) {
                 mPrivateVpa = new ViewPagerTrainerAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser, mCurrentTrainer);
             }
@@ -507,12 +508,13 @@ public class MainActivity extends AppCompatActivity
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Bodyfa");
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-                        addPrivateGeneralIcon?R.mipmap.ic_launcher_puprple:R.mipmap.ic_launcher_blue));
+                        addPrivateGeneralIcon ? R.mipmap.ic_launcher_puprple : R.mipmap.ic_launcher_blue));
 
         addIntent
                 .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         getApplicationContext().sendBroadcast(addIntent);
     }
+
     private void removeShortcut() {
 
         //Deleting shortcut for MainActivity
@@ -530,6 +532,7 @@ public class MainActivity extends AppCompatActivity
                 .setAction("com.android.launcher.action.UNINSTALL_SHORTCUT");
         getApplicationContext().sendBroadcast(addIntent);
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -569,7 +572,7 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void run() {
-                    doubleBackToExitPressedOnce=false;
+                    doubleBackToExitPressedOnce = false;
                 }
             }, 2000);
         }
@@ -662,16 +665,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    //از لیست گروه های آموزشی به لیست آموزش ها
-    @Override
-    public void goToTutorialList(int catId, String title) {
-        Intent i = new Intent();
-        i.putExtra(TutorialListActivity.KEY_CAT_ID, catId);
-        i.putExtra(TutorialListActivity.KEY_TITLE, title);
-        i.setClass(this, TutorialListActivity.class);
-        startActivity(i);
     }
 
     ///////////////////////////////////////////////////////
@@ -809,8 +802,18 @@ public class MainActivity extends AppCompatActivity
             dialog.show(getSupportFragmentManager(), "");
             MutableLiveData<Integer> status = new MutableLiveData<>(-1);
             return status;
+        }else {
+            WorkoutPlanReq workoutPlanReq=new WorkoutPlanReq();
+            workoutPlanReq.setId(SystemClock.currentThreadTimeMillis());
+            workoutPlanReq.setParentUserId(trainedId);
+            workoutPlanReq.setAthleteId(mCurrentUser.getId());
+            workoutPlanReq.setTitle(title);
+            workoutPlanReq.setDescriptions(description);
+            workoutPlanReq.setStatus("waiting");
+            workoutPlanReq.setStatusFarsi("در انتظار تایید");
+            mWorkoutReqDao.save(workoutPlanReq);
+            return MyWebService.requestWorkoutPlanFromWeb(this, mCurrentUser.getId(), trainedId, title, description);
         }
-        return MyWebService.requestWorkoutPlanFromWeb(this, mCurrentUser.getId(), trainedId, title, description);
     }
 
     @Override
@@ -828,16 +831,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onGoToTrainerPage(long trainerId, boolean isMyTrainer) {
-        Log.d(TAG, "onGoToTrainerPage: userId:"+mCurrentUser.getId());
+        Log.d(TAG, "onGoToTrainerPage: userId:" + mCurrentUser.getId());
         Intent i = new Intent();
         i.setClass(this, ProfileTrainerActivity.class);
         i.putExtra(EXTRA_TRAINER_ID, trainerId);
         i.putExtra(EXTRA_USER_ID, mCurrentUser.getId());
         i.putExtra(MyKeys.EXTRA_CREDIT_AMOUNT, mCredit.getCredit());
-        i.putExtra(EXTRA_IS_MY_TRAINER,true);
+        i.putExtra(EXTRA_IS_MY_TRAINER, true);
         startActivity(i);
     }
-
 
     /**
      * view pager adapter for general view

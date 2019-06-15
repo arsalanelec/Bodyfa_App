@@ -17,7 +17,7 @@ public class WorkoutPlanReq {
     private long id;
     @SerializedName("AthleteUserId")
     @Expose
-    private int athleteId;
+    private long athleteId;
 
     @SerializedName("AthleteThumbPicture")
     @Expose
@@ -28,7 +28,7 @@ public class WorkoutPlanReq {
     private String athleteName;
     @SerializedName("ParentUserId")
     @Expose
-    private int parentUserId;
+    private long parentUserId;
     @SerializedName("ParentName")
     @Expose
     private String parentName;
@@ -87,6 +87,10 @@ public class WorkoutPlanReq {
     @Expose
     private String status;
 
+    @SerializedName("StatusFa")
+    @Expose
+    private String statusFarsi;
+
     public long getId() {
         return id;
     }
@@ -95,11 +99,11 @@ public class WorkoutPlanReq {
         this.id = id;
     }
 
-    public int getAthleteId() {
+    public long getAthleteId() {
         return athleteId;
     }
 
-    public void setAthleteId(int athleteId) {
+    public void setAthleteId(long athleteId) {
         this.athleteId = athleteId;
     }
 
@@ -119,11 +123,11 @@ public class WorkoutPlanReq {
         this.athleteName = athleteName;
     }
 
-    public int getParentUserId() {
+    public long getParentUserId() {
         return parentUserId;
     }
 
-    public void setParentUserId(int parentUserId) {
+    public void setParentUserId(long parentUserId) {
         this.parentUserId = parentUserId;
     }
 
@@ -281,5 +285,13 @@ public class WorkoutPlanReq {
 
     public String getSendDatePersianString(){
        return getStringFormatOfDate(requestDateEnTs);
+    }
+
+    public String getStatusFarsi() {
+        return statusFarsi;
+    }
+
+    public void setStatusFarsi(String statusFarsi) {
+        this.statusFarsi = statusFarsi;
     }
 }

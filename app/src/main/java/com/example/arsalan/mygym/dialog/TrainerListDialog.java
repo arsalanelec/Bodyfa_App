@@ -1,58 +1,65 @@
 package com.example.arsalan.mygym.dialog;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
+import android.view.Window;
+import android.widget.ImageButton;
+import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterTrainers;
-import com.example.arsalan.mygym.models.RetTrainerList;
+import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.Trainer;
-import com.example.arsalan.mygym.retrofit.ApiClient;
-import com.example.arsalan.mygym.retrofit.ApiInterface;
+import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
+import com.example.arsalan.mygym.viewModels.TrainerListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import javax.inject.Inject;
+
+import static android.app.Activity.RESULT_OK;
 
 
-public class TrainerListDialog extends DialogFragment {
+public class TrainerListDialog extends DialogFragment implements Injectable {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    @Inject
+    MyViewModelFactory mFactory;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private List<Trainer> trainerList;
+    private List<Trainer> filteredTrainerList;
     private OnFragmentInteractionListener mListener;
     private AdapterTrainers adapter;
+    private TrainerListViewModel viewModel;
+    private View waitingFL;
 
-    private ToggleButton byMedalBtn;
-    private ToggleButton byRankBtn;
 
     public TrainerListDialog() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
@@ -83,39 +90,57 @@ public class TrainerListDialog extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.dialog_trainer_list, container, false);
-        RecyclerView rv = v.findViewById(R.id.rvTrainers);
+        waitingFL = v.findViewById(R.id.fl_waiting);
+        RecyclerView rv = v.findViewById(R.id.rv_trainers);
+        filteredTrainerList = new ArrayList<>();
         trainerList = new ArrayList<>();
-        /*adapter = new AdapterTrainers(trainerList, new AdapterTrainers.OnItemClickListener() {
-            @Override
-            public void onItemClick(Trainer trainer, View view) {
-                Intent intent = new Intent();
-                intent.putExtra(MyKeys.EXTRA_TRAINER_ID, trainer.getId());
-                getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_OK, intent);
-                dismiss();
-            }
-        });*/
+        adapter = new AdapterTrainers((trainer, view) -> {
+            dismiss();
+            Intent intent = new Intent();
+            intent.putExtra(MyKeys.EXTRA_OBJ_TRAINER,trainer);
+            getTargetFragment().onActivityResult(getTargetRequestCode(),RESULT_OK,intent);
+        });
         rv.setAdapter(adapter);
         rv.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
-        byMedalBtn = v.findViewById(R.id.btnByMedals);
-        byRankBtn = v.findViewById(R.id.btnByRank);
-        byMedalBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        androidx.appcompat.widget.SearchView searchView = v.findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                byRankBtn.setChecked(!b);
-                getTrainerWeb(0, 0, b ? 1 : 2);
-                compoundButton.setEnabled(!b);
-            }
-        });
-        byRankBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                byMedalBtn.setChecked(!b);
-                compoundButton.setEnabled(!b);
-            }
-        });
+            public boolean onQueryTextSubmit(String query) {
+                filteredTrainerList.clear();
+                if (query.isEmpty()) {
+                    filteredTrainerList.addAll(trainerList);
+                } else {
+                    for (Trainer trainer : trainerList) {
+                        if (trainer.getName().toLowerCase().contains(query.toLowerCase())) {
+                            filteredTrainerList.add(trainer);
 
-        getTrainerWeb(0, 0, 1);
+                        }
+                    }
+                }
+                adapter.replaceAll(filteredTrainerList);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filteredTrainerList.clear();
+                if (newText.isEmpty()) {
+                    filteredTrainerList.addAll(trainerList);
+                } else {
+                    for (Trainer trainer : trainerList) {
+                        if (trainer.getName().toLowerCase().contains(newText.toLowerCase())) {
+                            filteredTrainerList.add(trainer);
+
+                        }
+                    }
+                }
+                adapter.replaceAll(filteredTrainerList);
+                return false;
+            }
+        });
+        ImageButton cancelBtn=v.findViewById(R.id.btn_cancel);
+        cancelBtn.setOnClickListener(b->dismiss());
         return v;
     }
 
@@ -137,31 +162,29 @@ public class TrainerListDialog extends DialogFragment {
         mListener = null;
     }
 
-    private void getTrainerWeb(int cityId, int gymId, int sortType) {
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-        final ProgressDialog waitingDialog = new ProgressDialog(getContext());
-        waitingDialog.setMessage(getString(R.string.please_wait_a_moment));
-        waitingDialog.show();
-        Call<RetTrainerList> call = apiService.getTrainerList(0, 10, gymId, cityId, sortType);
-        call.enqueue(new Callback<RetTrainerList>() {
-            @Override
-            public void onResponse(Call<RetTrainerList> call, Response<RetTrainerList> response) {
-                waitingDialog.dismiss();
-                if (response.isSuccessful())
-                    Log.d("getNewsWeb", "onResponse: records:" + response.body().getRecordsCount());
-                trainerList.removeAll(trainerList);
-                trainerList.addAll(response.body().getRecords());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<RetTrainerList> call, Throwable t) {
-                waitingDialog.dismiss();
-
-            }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        viewModel = ViewModelProviders.of(this, mFactory).get(TrainerListViewModel.class);
+        viewModel.getTrainerList().observe(this, trainerList -> {
+            Log.d("onActivityCreated", "observe: ");
+            this.trainerList = trainerList;
+            filteredTrainerList.clear();
+            filteredTrainerList.addAll(trainerList);
+            adapter.addAll(trainerList);
+            waitingFL.setVisibility(View.GONE);
         });
+        viewModel.init(2);
 
+        Log.d(getClass().getSimpleName(), "onActivityCreated: ");
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+       dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 
     public interface OnFragmentInteractionListener {

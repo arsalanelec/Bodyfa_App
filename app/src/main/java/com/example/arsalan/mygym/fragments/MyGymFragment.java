@@ -37,7 +37,7 @@ import java.util.List;
  * Activities that contain this fragment must implement the
  * {@link MyGymFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyGymFragment#newInstance} factory method to
+ * Use the {@link MyGymFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class MyGymFragment extends Fragment {
@@ -57,7 +57,7 @@ public class MyGymFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.

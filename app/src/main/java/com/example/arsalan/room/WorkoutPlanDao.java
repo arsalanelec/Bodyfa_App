@@ -34,6 +34,10 @@ public interface WorkoutPlanDao {
     @Query("Select * From WorkoutPlan WHERE athleteWorkoutPlanId= :id")
     WorkoutPlan getWorkoutPlanByAthletePlanId(long id);
 
+    @Query("DELETE From WorkoutPlan")
+    void deleteAll();
+
+
     @Update
     int updatePlan(WorkoutPlan workoutPlan);
 

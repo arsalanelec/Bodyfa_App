@@ -65,7 +65,6 @@ public class ProfileTrainerActivity extends AppCompatActivity implements Injecta
                 .replace(R.id.container, MyTrainerFragment.newInstance(mUserId, trainerId, isMyCurrentTrainer))
                 .commit();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     @Override

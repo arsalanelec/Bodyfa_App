@@ -37,47 +37,7 @@ public class AthleteWorkoutPlanRepository {
         return workoutPlanDao.getWorkoutPlanByUserId(userId);
     }
 
-   /* public LiveData<WorkoutPlan> getWorkoutPlan(String token, long planId) {
-        getTrainerWorkoutPlan(token, planId);
 
-        return workoutPlanDao.getWorkoutPlanById(planId);
-    }
-
-
-    private void getTrainerWorkoutPlan(String token, long planId) {
-        boolean workoutPlanExist = (workoutPlanDao.getWorkoutPlanById(planId).getValue() != null);
-        if (!workoutPlanExist) {
-            Log.d("refreshWorkoutPlanList", "!workoutPlanExist");
-
-            executor.execute(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetWorkoutPlan> call = apiService.getTrainerWorkoutPlan(token, planId);
-                    try {
-                        Response<RetWorkoutPlan> response = call.execute();
-                        if (response.isSuccessful()) {
-
-                            Log.d("refreshWorkoutPlanList", "run: newDao update:" + workoutPlanDao.updateWorkoutPlan(response.body().getRecord()));
-
-                        } else {
-                            Log.d("refreshWorkoutPlanList", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            });
-        }
-
-
-    }*/
 
     private void refreshWorkoutPlanList(String token, long userId) {
         boolean workoutPlanExist = (workoutPlanDao.loadList().getValue() != null && workoutPlanDao.loadList().getValue().size() > 0);
@@ -96,22 +56,17 @@ public class AthleteWorkoutPlanRepository {
                         Response<RetWorkoutPlanList> response = call.execute();
                         if (response.isSuccessful()) {
                             Log.d("refreshWorkoutPlanList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
-
+                            workoutPlanDao.deleteAll();
                             Log.d("refreshWorkoutPlanList", "run: workoutPlanDao save:" + workoutPlanDao.saveList(response.body().getRecords()).length);
 
                         } else {
                             Log.d("refreshWorkoutPlanList", "run: response.error");
-
                         }
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-
             });
         }
-
-
     }
 }

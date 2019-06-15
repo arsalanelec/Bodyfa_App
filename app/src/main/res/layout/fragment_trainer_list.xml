@@ -4,9 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.arsalan.mygym.fragments.TrainerListFragment">
-
     <FrameLayout
-        android:id="@+id/flWaiting"
+        android:id="@+id/container_trainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+    <FrameLayout
+        android:id="@+id/fl_waiting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -59,7 +64,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTrainers"
+        android:id="@+id/rv_trainers"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

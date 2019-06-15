@@ -66,7 +66,7 @@ public class GymListFragment extends Fragment implements Injectable{
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
@@ -97,7 +97,7 @@ public class GymListFragment extends Fragment implements Injectable{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_gym_list, container, false);
-        RecyclerView rv = v.findViewById(R.id.rvTrainers);
+        RecyclerView rv = v.findViewById(R.id.rv_trainers);
         gyms = new ArrayList<>();
 
 
@@ -133,7 +133,7 @@ public class GymListFragment extends Fragment implements Injectable{
 
             }
         });
-        waitingFL = v.findViewById(R.id.flWaiting);
+        waitingFL = v.findViewById(R.id.fl_waiting);
 
         v.setRotation(180);
         return v;

@@ -39,10 +39,16 @@ public class TrainerWorkoutPlanReqRepository {
         mToken=token;
     }
 
-    public LiveData<List<WorkoutPlanReq>> getListLive( long  parentId) {
-        refreshList(mToken.getToken(),parentId);
+    public LiveData<List<WorkoutPlanReq>> getWaitingListLive(long  parentId) {
+        refreshList(mToken.getTokenBearer(),parentId);
         // return a LiveData directly from the database.
         return planRequestDao.loadAllWaitingList();
+    }
+
+    public LiveData<List<WorkoutPlanReq>> getAllListLive(long  parentId) {
+        refreshList(mToken.getTokenBearer(),parentId);
+        // return a LiveData directly from the database.
+        return planRequestDao.loadAll();
     }
 
     public LiveData<Integer> cancelWorkoutRequest(long planId){
@@ -56,7 +62,7 @@ public class TrainerWorkoutPlanReqRepository {
 
                     ApiInterface apiService =
                             ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetTrainerWorkoutPlanReqList> call = apiService.getTrainerWorkoutPlanRequests("Bearer "+token, id);
+                    Call<RetTrainerWorkoutPlanReqList> call = apiService.getTrainerWorkoutPlanRequests(token, id);
                     try {
                         Response<RetTrainerWorkoutPlanReqList> response = call.execute();
                         if (response.isSuccessful()) {

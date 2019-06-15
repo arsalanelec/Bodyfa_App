@@ -22,7 +22,6 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import static com.example.arsalan.mygym.models.MyConst.BASE_API_URL;
 import static com.example.arsalan.mygym.models.MyConst.BASE_CONTENT_URL;
 
 /**
@@ -95,7 +94,7 @@ public class AdapterGymList extends Adapter<AdapterGymList.VH> {
 
         public VH(View iv) {
             super(iv);
-            thumbImg = iv.findViewById(R.id.imgThumb);
+            thumbImg = iv.findViewById(R.id.img_thumb);
             gymNameTV = iv.findViewById(R.id.txtName);
             addressTV = iv.findViewById(R.id.txtTitle);
             pointsTV = iv.findViewById(R.id.txtPoints);

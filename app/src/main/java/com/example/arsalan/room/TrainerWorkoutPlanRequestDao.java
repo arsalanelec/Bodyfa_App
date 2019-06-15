@@ -18,11 +18,14 @@ public interface TrainerWorkoutPlanRequestDao {
     long[] saveList(List<WorkoutPlanReq> workoutPlanReqs);
 
     @Insert(onConflict = REPLACE)
-    long saveHonor(WorkoutPlanReq workoutPlanReq);
+    long save(WorkoutPlanReq workoutPlanReq);
 
 
     @Query("SELECT * FROM WorkoutPlanReq WHERE status='waiting'")
     LiveData<List<WorkoutPlanReq>> loadAllWaitingList();
+
+    @Query("SELECT * FROM WorkoutPlanReq")
+    LiveData<List<WorkoutPlanReq>> loadAll();
 
     @Query("SELECT * FROM WorkoutPlanReq WHERE id = :id")
     LiveData<WorkoutPlanReq> getWorkoutPlanReqById(long id);

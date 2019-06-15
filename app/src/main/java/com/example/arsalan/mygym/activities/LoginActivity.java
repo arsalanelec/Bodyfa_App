@@ -514,7 +514,40 @@ public class LoginActivity extends AppCompatActivity implements
                         }
                     } catch (Throwable t) {
                         Log.d(TAG, "onResponse: throws:" + t.getLocalizedMessage());
-                        LoginActivity.this.finish();
+                        //LoginActivity.this.finish();
+                        LiveData<User> userLiveData = userDao.getUserById(mUserId);
+                        userLiveData.observe(LoginActivity.this,user -> {
+                            if (user != null) {
+                                Intent i = new Intent();
+                                i.setClass(mContext, MainActivity.class);
+                                i.putExtra(MyKeys.EXTRA_OBJ_USER, user);
+                                switch (user.getRoleName()) {
+                                    case MyKeys.KEY_ROLE_ATHLETE:
+                                        i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
+                                        break;
+                                    case MyKeys.KEY_ROLE_TRAINER:
+                                        LiveData<Trainer> trainerLiveData = trainerDao.getTrainerById(user.getId());
+                                        if (trainerLiveData != null) {
+                                            i.putExtra(MyKeys.EXTRA_OBJ_TRAINER, trainerLiveData.getValue());
+                                            i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
+                                        }
+                                        break;
+                                    case MyKeys.KEY_ROLE_GYM:
+                                        LiveData<Gym> gymLiveData = gymDao.getGymById(user.getId());
+                                        if (gymLiveData != null) {
+                                            i.putExtra(MyKeys.EXTRA_OBJ_GYM, gymLiveData.getValue());
+                                            i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
+                                        }
+                                        break;
+                                }
+                                startActivity(i);
+                                finish();
+                            }else {
+                                Toast.makeText(LoginActivity.this, R.string.error_accord_try_again, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
+
                     }
                 }
             }

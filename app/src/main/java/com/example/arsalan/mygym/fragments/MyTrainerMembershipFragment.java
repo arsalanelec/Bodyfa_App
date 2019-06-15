@@ -1,8 +1,10 @@
 package com.example.arsalan.mygym.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +21,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.databinding.ItemMyTrainerBinding;
 import com.example.arsalan.mygym.di.Injectable;
+import com.example.arsalan.mygym.dialog.SelectTrainerJoinTimeDialog;
+import com.example.arsalan.mygym.dialog.TrainerListDialog;
 import com.example.arsalan.mygym.models.MyConst;
+import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerAthleteViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.example.arsalan.mygym.MyKeys.EXTRA_TRAINER_ID;
 
 
 /**
@@ -38,13 +47,14 @@ import javax.inject.Inject;
  * Activities that contain this fragment must implement the
  * {@link MyTrainerMembershipFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyTrainerMembershipFragment#newInstance} factory method to
+ * Use the {@link MyTrainerMembershipFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class MyTrainerMembershipFragment extends Fragment implements Injectable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String TAG = "MyTrainerMembershipFrag";
+    private static final int REQ_SELECT_TRAINER = 1;
     @Inject
     MyViewModelFactory factory;
     private long mUserId;
@@ -56,12 +66,15 @@ public class MyTrainerMembershipFragment extends Fragment implements Injectable 
     private List<TrainerAthlete> mOtherRequestList;
 private TextView noActiveRequestTxt;
 private TextView noDeactiveRequestTxt;
+    private View detailFragment;
+    private FloatingActionButton mReqMembershipBtn;
+
     public MyTrainerMembershipFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param userId Parameter 1.
@@ -105,9 +118,29 @@ private TextView noDeactiveRequestTxt;
         mOtherRequestList = new ArrayList<>();
         mAdapter = new RequestAdapter(mOtherRequestList);
 
+        detailFragment = v.findViewById(R.id.container_trainer_2);
         requestRv.setAdapter(mAdapter);
+         mReqMembershipBtn = v.findViewById(R.id.fab_request_membership);
+        mReqMembershipBtn.setOnClickListener(b->{
+
+                    TrainerListDialog dialog = new TrainerListDialog();
+                    dialog.setTargetFragment(MyTrainerMembershipFragment.this, REQ_SELECT_TRAINER);
+                    dialog.show(getFragmentManager(), "");
+
+
+        });
         v.setRotation(180);
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==REQ_SELECT_TRAINER){    //Result of Selected Trainer from dialog
+            Trainer trainer = data.getParcelableExtra(MyKeys.EXTRA_OBJ_TRAINER);
+            SelectTrainerJoinTimeDialog dialog = SelectTrainerJoinTimeDialog.newInstance(mUserId,trainer);
+            dialog.show(getFragmentManager(), "");
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -154,7 +187,26 @@ private TextView noDeactiveRequestTxt;
         super.onDetach();
         mListener = null;
     }
+    @Override
+    //Pressed return button - returns to the results menu
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
 
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility()==View.VISIBLE){
+                    detailFragment.setVisibility(View.GONE);
+                    //your code
+
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -206,7 +258,15 @@ private TextView noDeactiveRequestTxt;
 
         @Override
         public void onItemClicked(long trainerId) {
-            mListener.onGoToTrainerPage(trainerId, true);
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container_trainer_2, MyTrainerFragment.newInstance(mUserId, trainerId, true))
+                    .commit();
+            detailFragment.setVisibility(View.VISIBLE);
+
+
+
+        //    mListener.onGoToTrainerPage(trainerId, true);
         }
 
 

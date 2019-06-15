@@ -16,13 +16,15 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layoutDirection="rtl">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layoutDirection="rtl"
-            android:orientation="vertical">
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            >
 
             <TextView
                 android:id="@+id/txtTrainerNotSelected"
@@ -32,32 +34,108 @@
                 android:text="شما هنوز مربی خودتان را نتخاب نکرده اید. برای اتنخاب مربی از 'داشبورد من' گزینه انتخاب مربی را فشار دهید."
                 android:visibility="gone" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layoutDirection="rtl">
+
+
+                <FrameLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/dark_gray"
+                    app:layout_constraintDimensionRatio="3:2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/gray_dark"
+                        android:text="بدون عکس!"
+                        android:textSize="24dp"
+                        android:layout_gravity="center"/>
+                </FrameLayout>
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vpGallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layoutDirection="ltr"
+                    app:layout_constraintDimensionRatio="3:2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+
+                    />
+
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tablayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layoutDirection="ltr"
+                    app:layout_constraintBottom_toBottomOf="@+id/vpGallery"
+                    android:background="@android:color/transparent"
+                    app:tabBackground="@drawable/tab_selector"
+                    app:tabGravity="center"
+                    app:tabIndicatorHeight="0dp" />
+
+
+                <ImageButton
+                    android:id="@+id/ib_back"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="TODO"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:paddingStart="4dp"
+
+                    android:paddingEnd="4dp"
+                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/vpGallery" />
 
                 <TextView
                     android:id="@+id/txtName"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
+                    android:background="@drawable/back_gray_round_rect"
                     android:fontFamily="@font/iran_sans_mobile"
                     android:text="@{trainer.name}"
-                    android:textSize="14sp" />
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/ib_back"
+                    app:layout_constraintStart_toEndOf="@+id/ib_back"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    app:layout_constraintEnd_toStartOf="@+id/flRate"
+                    app:layout_constraintTop_toTopOf="@+id/ib_back" />
 
                 <FrameLayout
                     android:id="@+id/flRate"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:onClick="@{(view)->onRateClick.onClick(view)}"
                     android:padding="8dp"
-                    android:onClick="@{(view)->onRateClick.onClick(view)}">
+                    app:layout_constraintEnd_toEndOf="@+id/vpGallery"
+                    app:layout_constraintTop_toTopOf="@+id/vpGallery">
 
                     <RatingBar
                         android:id="@+id/ratingBar"
@@ -68,44 +146,11 @@
                         android:clickable="false"
                         android:isIndicator="true"
                         android:numStars="5"
-                        android:stepSize="0.5"
-                        android:rating="@{trainer.rate}" />
+                        android:rating="@{trainer.rate}"
+                        android:stepSize="0.5" />
 
 
                 </FrameLayout>
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/vpGallery"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/dark_gray"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:layoutDirection="ltr"
-                    app:layout_constraintDimensionRatio="3:2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:placeholderImage="@drawable/avatar"
-                    app:placeholderImageScaleType="centerCrop">
-
-                </androidx.viewpager.widget.ViewPager>
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tablayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layoutDirection="ltr"
-                    app:layout_constraintBottom_toBottomOf="@+id/vpGallery"
-                    app:tabBackground="@drawable/tab_selector"
-                    app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -133,6 +178,19 @@
                 android:fontFamily="@font/iran_sans_mobile"
                 android:text="با سلام به همه دوستان من به دلیل شرکت در مسابقات بین المللی فعلا در باشگاه حضور نخواهم داشت لطفا از طریق بادیفا با من در تماس باشید."
                 android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="@string/medals" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHonor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_honor_grid" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layOrderButtons"
@@ -171,8 +229,7 @@
                             android:layout_height="32dp"
                             android:layout_gravity="center"
                             android:layout_margin="4dp"
-                            android:src="@drawable/ic_local_dining_black_24dp"
-                            />
+                            android:src="@drawable/ic_local_dining_black_24dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -316,18 +373,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/iran_sans_mobile"
-                android:text="@string/medals" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvHonor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_honor_grid" />
 
         </LinearLayout>
     </ScrollView>

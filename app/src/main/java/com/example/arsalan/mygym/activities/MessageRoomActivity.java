@@ -213,7 +213,7 @@ public class MessageRoomActivity extends AppCompatActivity {
             super(itemView);
             messageTV = itemView.findViewById(R.id.txtView);
             //   dateTV = itemView.findViewById(R.id.txtDate);
-            thumbImg = itemView.findViewById(R.id.imgThumb);
+            thumbImg = itemView.findViewById(R.id.img_thumb);
         }
     }
 }

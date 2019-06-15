@@ -1,10 +1,7 @@
 package com.example.arsalan.mygym.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +9,23 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.arsalan.mygym.MyApplication;
-import com.example.arsalan.mygym.models.MealPlan;
-import com.example.arsalan.mygym.models.RetMealPlan;
-import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterAthleteMealPlanList;
 import com.example.arsalan.mygym.di.Injectable;
+import com.example.arsalan.mygym.models.MealPlan;
+import com.example.arsalan.mygym.models.RetMealPlan;
+import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.AthleteMealPlanListViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.room.MealPlanDao;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,26 +41,20 @@ import retrofit2.Response;
  * Activities that contain this fragment must implement the
  * {@link AthleteMealPlanListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AthleteMealPlanListFragment#newInstance} factory method to
+ * Use the {@link AthleteMealPlanListFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class AthleteMealPlanListFragment extends Fragment implements Injectable {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-
-
-    private User mUser;
-
-    private OnFragmentInteractionListener mListener;
-    private AthleteMealPlanListViewModel mealPlanListViewModel;
-
     @Inject
     MyViewModelFactory factory;
-
     @Inject
     MealPlanDao mealPlanDao;
-
+    private User mUser;
+    private OnFragmentInteractionListener mListener;
+    private AthleteMealPlanListViewModel mealPlanListViewModel;
     private List<MealPlan> mMealPlanList;
     private AdapterAthleteMealPlanList mAdapter;
     private ListView planList;
@@ -90,10 +86,10 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_athlete_meal_plan_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_athlete_plan_list, container, false);
         TextView title = v.findViewById(R.id.txtTitle);
         title.setText(getString(R.string.meal_plan_list));
-        planList = v.findViewById(R.id.lstPlan);
+        planList = v.findViewById(R.id.lst_plan);
         mMealPlanList = new ArrayList<>();
         mNothingToSee = v.findViewById(R.id.layNothingToShow);
 
@@ -110,7 +106,8 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
 
             }
         });
-        // getMealPlanListWeb(mUser.getId(), mMealPlanList, mAdapter);
+        FloatingActionButton floatingActionButton = v.findViewById(R.id.fab_add_plan);
+        floatingActionButton.setVisibility(View.GONE);
         v.setRotation(180);
         return v;
     }
@@ -203,7 +200,7 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
                 MealPlan mealPlan = mealPlanDao.getMealPlanByAthletePlanId(planId);
                 if (mealPlan != null) {
                     onGetPlanListener.onGetPlan(planId, mealPlan.getTitle(), mealPlan.getDescription());
-                }else {
+                } else {
                     Log.d(getClass().getSimpleName(), "onFailure: mealPlan is null");
                 }
 

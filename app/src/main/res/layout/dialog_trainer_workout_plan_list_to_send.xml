@@ -23,11 +23,11 @@ android:layoutDirection="rtl"
             android:padding="8dp"
             android:text="@string/send_to"
             android:textColor="@android:color/white"
-            app:layout_constraintStart_toEndOf="@+id/btnCancel"
+            app:layout_constraintStart_toEndOf="@+id/btn_cancel"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/btnCancel"
+            android:id="@+id/btn_cancel"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

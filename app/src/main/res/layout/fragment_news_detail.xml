@@ -39,6 +39,10 @@
                         android:id="@+id/txt_toolbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
                         android:text="@{news.title}"/>
                     <ImageButton
                         android:id="@+id/ib_back"
@@ -56,7 +60,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="ltr">
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/image"
@@ -77,6 +82,28 @@
                         app:layout_constraintStart_toStartOf="@+id/image"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/heart_png" />
+
+                    <ImageButton
+                        android:id="@+id/img_btn_previous"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/image"
+                        app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
+
+                    <ImageButton
+                        android:id="@+id/img_btn_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/image"
+                        app:layout_constraintStart_toStartOf="@+id/image"
+                        app:layout_constraintTop_toTopOf="@+id/image"
+                        app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
                     />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -143,34 +170,52 @@
                         android:hint="@string/write_a_comment" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
-
+                <ProgressBar
+                    android:id="@+id/pb_waiting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/txt_no_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:gravity="center"
+                    android:text="@string/write_you_first_review"
+                    android:visibility="gone"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvComments"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/flWaiting"
+                android:id="@+id/fl_waiting"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/gray_light">
+                android:background="@color/gray_light"
+                tools:visibility="gone">
+
                 <ProgressBar
-                    android:id="@+id/pbWaiting"
+                    android:id="@+id/pb_waiting2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:indeterminate="true"/>
+                    android:indeterminate="true" />
+
                 <TextView
                     android:id="@+id/txtError"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/error_accord_try_again"
-                    android:layout_below="@id/pbWaiting"
-                    android:gravity="center"
+                    android:layout_below="@id/pb_waiting2"
                     android:layout_margin="16dp"
-                    android:visibility="gone"/>
+                    android:gravity="center"
+                    android:text="@string/error_accord_try_again"
+                    android:visibility="gone" />
             </RelativeLayout>
         </FrameLayout>
     </ScrollView>

@@ -144,7 +144,7 @@ public class MealPlanFragment extends Fragment {
                 titleTV.setText(meanTypes[getItem(i).getType()]);
 
                 FrameLayout frameLayout = view.findViewById(R.id.flMealHead);
-                ImageView imgThum = view.findViewById(R.id.imgThumb);
+                ImageView imgThum = view.findViewById(R.id.img_thumb);
 
                 switch (getItem(i).getType()){
                     case 0: //صبحانه

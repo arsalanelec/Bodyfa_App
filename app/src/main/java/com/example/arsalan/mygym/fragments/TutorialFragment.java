@@ -2,7 +2,7 @@ package com.example.arsalan.mygym.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.arsalan.mygym.models.TutorialGroup;
+import androidx.fragment.app.Fragment;
+
 import com.example.arsalan.mygym.R;
+import com.example.arsalan.mygym.models.TutorialGroup;
 
 import java.util.List;
 
@@ -21,9 +23,8 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TutorialFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TutorialFragment#newInstance} factory method to
+ * Use the {@link TutorialFragment#newInstance} mFactory method to
  * create an instance of this fragment.
  */
 public class TutorialFragment extends Fragment {
@@ -36,14 +37,14 @@ public class TutorialFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private View detailFragment;
 
     public TutorialFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
+     * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
@@ -76,31 +77,30 @@ public class TutorialFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_tutorial, container, false);
         ListView listView = v.findViewById(R.id.lstTutorial);
         listView.setAdapter(new AdapterTutorial());
-
+        detailFragment = v.findViewById(R.id.container2);
         v.setRotation(180);
         return v;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+    //Pressed return button - returns to the results menu
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility() == View.VISIBLE) {
+                    detailFragment.setVisibility(View.GONE);
+                    //your code
 
-
-    public interface OnFragmentInteractionListener {
-        void goToTutorialList(int catId,String title);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     class AdapterTutorial extends BaseAdapter {
@@ -130,18 +130,24 @@ public class TutorialFragment extends Fragment {
             if (view == null)
                 view = getLayoutInflater().inflate(R.layout.item_tutorial_cat, viewGroup, false);
             TextView nameTV = view.findViewById(R.id.txtName);
-            ImageView thumb = view.findViewById(R.id.imgThumb);
+            ImageView thumb = view.findViewById(R.id.img_thumb);
             nameTV.setText(tutorialGroups.get(i).getName());
             thumb.setImageResource(tutorialGroups.get(i).getThumbRes());
             Button showItemsBtn = view.findViewById(R.id.btnShowItems);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mListener.goToTutorialList(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName());
+
+                    detailFragment.setVisibility(View.VISIBLE);
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.container2, TutorialListFragment.newInstance(tutorialGroups.get(i).getId(), true))
+                            .commit();
+
+                    // mListener.goToTutorialList(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName());
                 }
             });
             return view;
         }
     }
-
 }
