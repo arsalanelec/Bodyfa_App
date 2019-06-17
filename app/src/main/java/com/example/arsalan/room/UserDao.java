@@ -24,11 +24,12 @@ public interface UserDao {
     @Query("SELECT * FROM User")
     LiveData<List<User>> loadAllList();
 
+
     @Query("SELECT * FROM User WHERE id = :id")
     LiveData<User> getUserById(long id);
 
     @Query("SELECT * From User WHERE userName = :userName")
-    LiveData<User> getUserByUserName(long  userName);
+    LiveData<User> getUserByUserName(String  userName);
 
     @Query("SELECT * From User WHERE trainerId = :trainerId")
     LiveData<List<User>> getUserByTrainer(long  trainerId);

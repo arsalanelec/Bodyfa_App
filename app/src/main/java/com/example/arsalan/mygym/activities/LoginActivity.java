@@ -70,6 +70,7 @@ import static com.example.arsalan.mygym.MyKeys.EXTRA_CURRENT_LANG;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_EXIT_ACCOUNT;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_OBJ_USER;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_ROLE_CHOICE;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_NAME;
 import static com.example.arsalan.mygym.MyKeys.KEY_BUNDLE_OBJ;
 import static com.example.arsalan.mygym.MyKeys.KEY_CURRENT_LANG;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_ATHLETE;
@@ -390,7 +391,7 @@ public class LoginActivity extends AppCompatActivity implements
                                                 Intent intent = new Intent();
                                                 intent.setClass(mContext, MainActivity.class);
                                                 intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
-                                                intent.putExtra(EXTRA_OBJ_USER, user);
+                                                intent.putExtra(EXTRA_USER_NAME, user.getUserName());
                                                 startActivity(intent);
                                             })
                                             .show();
@@ -410,7 +411,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                                             Intent i = new Intent();
                                             i.setClass(mContext, MainActivity.class);
-                                            i.putExtra(MyKeys.EXTRA_OBJ_USER, user);
+                                            i.putExtra(EXTRA_USER_NAME, user.getUserName());
                                             i.putExtra(MyKeys.EXTRA_OBJ_TRAINER, trainer);
                                             i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
                                             startActivity(i);
@@ -443,7 +444,7 @@ public class LoginActivity extends AppCompatActivity implements
                                                     });
                                                     Intent i = new Intent();
                                                     i.setClass(mContext, MainActivity.class);
-                                                    i.putExtra(MyKeys.EXTRA_OBJ_USER, user);
+                                                    i.putExtra(EXTRA_USER_NAME, user.getUserName());
                                                     i.putExtra(MyKeys.EXTRA_OBJ_GYM, gym);
                                                     i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
                                                     startActivity(i);
@@ -459,7 +460,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 } else if (bundle.getString(MyKeys.KEY_BUNDLE_ROLE).equals(MyKeys.KEY_ROLE_ATHLETE)) { //پروفایل ورزشکار
                                     Intent i = new Intent();
                                     i.setClass(mContext, MainActivity.class);
-                                    i.putExtra(MyKeys.EXTRA_OBJ_USER, user);
+                                    i.putExtra(EXTRA_USER_NAME, user.getUserName());
                                     i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
                                     startActivity(i);
                                     finish();
@@ -473,7 +474,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 if (userLiveData != null) {
                                     Intent i = new Intent();
                                     i.setClass(mContext, MainActivity.class);
-                                    i.putExtra(MyKeys.EXTRA_OBJ_USER, userLiveData.getValue());
+                                    i.putExtra(EXTRA_USER_NAME, userLiveData.getValue().getUserName());
                                     switch (userLiveData.getValue().getRoleName()) {
                                         case MyKeys.KEY_ROLE_ATHLETE:
                                             i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
@@ -520,7 +521,7 @@ public class LoginActivity extends AppCompatActivity implements
                             if (user != null) {
                                 Intent i = new Intent();
                                 i.setClass(mContext, MainActivity.class);
-                                i.putExtra(MyKeys.EXTRA_OBJ_USER, user);
+                                i.putExtra(EXTRA_USER_NAME, user.getUserName());
                                 switch (user.getRoleName()) {
                                     case MyKeys.KEY_ROLE_ATHLETE:
                                         i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
@@ -569,7 +570,7 @@ public class LoginActivity extends AppCompatActivity implements
             if (user != null) {
                 Intent i = new Intent();
                 i.setClass(mContext, MainActivity.class);
-                i.putExtra(MyKeys.EXTRA_OBJ_USER, user);
+                i.putExtra(EXTRA_USER_NAME, user.getUserName());
                 switch (user.getRoleName()) {
                     case MyKeys.KEY_ROLE_ATHLETE:
                         i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
@@ -693,7 +694,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         Intent intent = new Intent();
         intent.setClass(LoginActivity.this, MainActivity.class);
-        intent.putExtra(EXTRA_OBJ_USER, user);
+        intent.putExtra(EXTRA_USER_NAME, user.getUserName());
         switch (user.getRoleName()) {
             case MyKeys.KEY_ROLE_ATHLETE:
                 intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
@@ -803,20 +804,10 @@ public class LoginActivity extends AppCompatActivity implements
                                     Intent intent = new Intent();
                                     intent.setClass(LoginActivity.this, MainActivity.class);
                                     intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
-                                    intent.putExtra(EXTRA_OBJ_USER, user);
+                                    intent.putExtra(EXTRA_USER_NAME, user.getUserName());
                                     startActivity(intent);
                                 })
                                 .show();
-                   // }
-                /*else {
-                        Intent i = new Intent();
-                        i.setClass(LoginActivity.this, MainActivity.class);
-                        i.putExtra(EXTRA_OBJ_USER, user);
-                        i.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
-                        startVideoRecorderActivity(i);
-
-                        LoginActivity.this.finish();
-                    }*/
                 } else {
                     Log.d("setRoleWeb", "onResponse: error:" +response.code()+" msg:"+ response.message());
                 }

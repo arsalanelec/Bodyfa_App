@@ -98,18 +98,6 @@ public class TutorialListFragment extends Fragment {
         tutorialList = new ArrayList<>();
         adapter = new AdapterTutorialList(tutorialList);
         mBind.lstTutorial.setAdapter(adapter);
-        mBind.btnGeneral.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) mBind.btnVip.setChecked(false);
-            }
-        });
-        mBind.btnVip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) mBind.btnGeneral.setChecked(false);
-            }
-        });
         if (mCatId != 0) getTutorialWeb(mCatId);
 
         mBind.fab.setVisibility((mCanSendTutorial) ? View.VISIBLE : View.GONE);

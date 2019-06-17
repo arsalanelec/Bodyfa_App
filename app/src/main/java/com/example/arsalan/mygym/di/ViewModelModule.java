@@ -22,6 +22,7 @@ import com.example.arsalan.mygym.viewModels.TrainerWorkoutPlanReqVm;
 import com.example.arsalan.mygym.viewModels.TransactionsViewModel;
 import com.example.arsalan.mygym.viewModels.TutorialListViewModel;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
+import com.example.arsalan.mygym.viewModels.UserViewModel;
 import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
 
 import dagger.Binds;
@@ -120,6 +121,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NewsDetailViewModel.class)
     abstract ViewModel bindNewsDetailViewModel(NewsDetailViewModel newsDetailViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserViewModel.class)
+    abstract ViewModel bindUserViewModel(UserViewModel userViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(MyViewModelFactory factory);

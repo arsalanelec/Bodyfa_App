@@ -20,8 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 import androidx.viewpager.widget.PagerAdapter;
@@ -141,7 +144,7 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         });
 
         mGalleryPager = v.findViewById(R.id.vpGallery);
-        TabLayout tabLayout = v.findViewById(R.id.tablayout);
+        TabLayout tabLayout = v.findViewById(R.id.tablayoutGallery);
         mGalleryPager.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -186,11 +189,11 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(GalleryViewModel.class);
-        viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentAthlete.getId());
+        viewModel.init( mCurrentAthlete.getId());
         viewModel.getGalleryItemList().observe(this, galleryItems -> {
 
             Log.d("onActivityCreated", "observe: ");
-            mGalleryItemList.removeAll(mGalleryItemList);
+            mGalleryItemList.clear();
             mGalleryItemList.addAll(galleryItems);
             mGalleryAdapter.notifyDataSetChanged();
             // waitingFL.setVisibility(View.GONE);
@@ -220,7 +223,7 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
     @Override
     public void webServiceOnSuccess(Bundle bundle) {
         if (waitingDialog != null && waitingDialog.isShowing()) waitingDialog.dismiss();
-        viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentAthlete.getId());
+        viewModel.init( mCurrentAthlete.getId());
 
     }
 
@@ -342,6 +345,25 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         // TODO: Update argument type and name
         void changeUserTrainer(long trainerId);
     }
+    private class galleryAdapter extends FragmentStatePagerAdapter{
+        List<GalleryItem> galleryItemList;
+
+        public galleryAdapter(@NonNull FragmentManager fm,List<GalleryItem> galleryItems) {
+            super(fm);
+            this.galleryItemList=galleryItems;
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return GalleryPageFragment.newInstance(galleryItemList.get(position).getPictureUrl(),"");
+        }
+
+        @Override
+        public int getCount() {
+            return galleryItemList.size();
+        }
+    }
 
     public class GalleryPagerAdapter extends PagerAdapter {
         List<GalleryItem> galleryItemList;
@@ -358,7 +380,7 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
 
         @Override
         public boolean isViewFromObject(View view, Object o) {
-            return o == view;
+            return o.equals(view);
         }
 
         @Override
@@ -390,7 +412,10 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
             });*/
             return image;
         }
-
+        @Override
+        public int getItemPosition(Object object){
+            return PagerAdapter.POSITION_NONE;
+        }
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);

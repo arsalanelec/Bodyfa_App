@@ -212,7 +212,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-         viewModel= ViewModelProviders.of(this,mFactory).get(NewsDetailViewModel.class);
+        viewModel= ViewModelProviders.of(this,mFactory).get(NewsDetailViewModel.class);
         viewModel.init(mUserId,mNewsId);
         viewModel.getNews().observe(this,news->{
             if(news!=null) {
@@ -224,12 +224,12 @@ public class NewsDetailFragment extends Fragment implements Injectable {
                 mBind.flWaiting.setVisibility(View.GONE);
             }else {
                 mBind.txtError.setVisibility(View.VISIBLE);
+                mBind.pbWaiting2.setVisibility(View.GONE);
             }
 
         });
 
         viewModel.getNextNews().observe(this,nextNews->{
-
             if(nextNews!=null) {
                 mBind.imgBtnNext.setVisibility(View.VISIBLE);
                 mNextNewsId =nextNews;
@@ -239,7 +239,6 @@ public class NewsDetailFragment extends Fragment implements Injectable {
         });
 
         viewModel.getPrevNewsId().observe(this,prevNewsId->{
-
             if(prevNewsId!=null) {
                 mBind.imgBtnPrevious.setVisibility(View.VISIBLE);
                 mPrevNewsId =prevNewsId;

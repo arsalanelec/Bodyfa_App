@@ -195,7 +195,7 @@ public class DashBoardTrainerFragment extends Fragment implements WebServiceResu
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(GalleryViewModel.class);
-        viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mUser.getId());
+        viewModel.init( mUser.getId());
         viewModel.getGalleryItemList().observe(this, galleryItems -> {
             Log.d("onActivityCreated", "observe: ");
             mGalleryItemList.removeAll(mGalleryItemList);
@@ -228,7 +228,7 @@ public class DashBoardTrainerFragment extends Fragment implements WebServiceResu
     public void webServiceOnSuccess(Bundle bundle) {
         if (waitingDialog != null && waitingDialog.isShowing()) waitingDialog.dismiss();
         if (getActivity() != null)
-            viewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mUser.getId());
+            viewModel.init(mUser.getId());
 
         /*MyWebService.getGalleryWeb(
                 "Bearer "+((MyApplication2)getActivity().getApplication()).getCurrentToken().getToken()

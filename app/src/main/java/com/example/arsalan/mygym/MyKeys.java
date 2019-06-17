@@ -20,6 +20,7 @@ public class MyKeys {
     public final static String EXTRA_ATHLETE_ID = "EXTRA_ATHLETE_ID";
 
     public final static String EXTRA_USER_ID = "EXTRA_USER_ID";
+    public final static String EXTRA_USER_NAME = "EXTRA_USER_NAME";
     public final static String EXTRA_PARTY_ID = "EXTRA_PARTY_ID";
     public final static String EXTRA_PARTY_NAME = "EXTRA_PARTY_NAME";
     public final static String EXTRA_PARTY_THUMB = "EXTRA_PARTY_THUMB";

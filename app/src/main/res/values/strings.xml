@@ -298,7 +298,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="add_credit">+افزایش اعتبار</string>
     <string name="rial">Rial</string>
-    <string name="your_credit">اعتبار شما:</string>
+    <string name="your_credit">your credit:</string>
     <string name="AMOUNT_IS_WRONG">مقدار وارد شده باید بیش از 1000 ریال باشد.</string>
     <string name="PAYMENT_SUCCESS">پرداخت با موفقیت انجام شد!</string>
     <string name="PAYMENT_FAIL">پرداخت انجام نشد!</string>

@@ -18,6 +18,10 @@ import android.widget.AdapterView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
@@ -32,6 +36,7 @@ import com.example.arsalan.mygym.models.ProgressRequestBody;
 import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.webservice.MyWebService;
 import com.example.arsalan.mygym.webservice.WebServiceResultImplementation;
+import com.example.arsalan.room.UserDao;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -41,13 +46,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
+import javax.inject.Inject;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -63,6 +68,8 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
 
     private static final String ARG_PARAM1 = "param1";
     private final static String TAG = "EditProfileFragment";
+    @Inject
+    UserDao mUserDao;
     private User mUser;
     private OnFragmentInteractionListener mListener;
     private SimpleDraweeView avatar;
@@ -99,37 +106,53 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
 
         FragmentProfileEditBinding bind = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_edit, container, false);
         bind.setUser(mUser);
+        Log.d(TAG, "onCreateView: birthday is:" + mUser.getBirthdayDateFa());
 
         List<Integer> days = new ArrayList<>();
         for (int i = 1; i < 32; i++) days.add(i);
         bind.spDateDay.setAdapter(new MySpinnerAdapter(days));
-
         List<Integer> months = new ArrayList<>();
         for (int i = 1; i <= 12; i++) months.add(i);
 
         bind.spDateMont.setAdapter(new MySpinnerAdapter(months));
 
         List<Integer> years = new ArrayList<>();
-        for (int i = 1397; i > 1307; i--) years.add(i);
+        for (int i = 1397; i > 1300; i--) years.add(i);
         bind.spDateYear.setAdapter(new MySpinnerAdapter(years));
 
+        if (mUser.getBirthdayDateFa() != null && !mUser.getBirthdayDateFa().isEmpty()) {
+            String[] strArr = mUser.getBirthdayDateFa().split("/");
+            try {
+                Log.d(TAG, "onCreateView: mathch" + Arrays.toString(strArr));
 
-        //استانها
+                int birthDay = Integer.parseInt(strArr[2]);
+                int birthMonth = Integer.parseInt(strArr[1]);
+                int birthYear = Integer.parseInt(strArr[0]);
+                bind.spDateDay.setSelection(birthDay - 1);
+                bind.spDateMont.setSelection(birthMonth - 1);
+                for (int i = 0; i < bind.spDateYear.getCount(); i++) {
+                    if ((int) bind.spDateYear.getItemAtPosition(i) == birthYear) {
+                        bind.spDateYear.setSelection(i);
+                        break;
+                    }
+                }
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+//استانها
         bind.spProvince.setAdapter(new AdapterProvinceSp());
         if (mUser.getCityId() > 0) {
             for (int i = 0; i < bind.spProvince.getAdapter().getCount(); i++) {
-                Log.d(TAG, "onItemSelected: i:" + bind.spProvince.getItemIdAtPosition(i) + " id:" + CityNState.getProvinceByCityId(mUser.getCityId()).getId());
-
                 if (bind.spProvince.getItemIdAtPosition(i) == CityNState.getProvinceByCityId(mUser.getCityId()).getId()) {
                     bind.spProvince.setSelection(i);
                     bind.spCity.setAdapter(new AdapterCitySp(CityNState.getProvinceByCityId(mUser.getCityId()).getId()));
                     for (int j = 0; j < bind.spCity.getAdapter().getCount(); j++) {
-                        Log.d(TAG, "onCreateView: j:" + bind.spCity.getItemIdAtPosition(j) + " id:" + mUser.getCityId());
                         if (bind.spCity.getItemIdAtPosition(j) == mUser.getCityId()) {
                             bind.spCity.setSelection(j);
                             break;
                         }
-
                     }
                     break;
                 }
@@ -205,13 +228,17 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
                     bind.etWeight.setText("0");
                 }
 
-
+                mUser.setName(bind.etName.getText().toString());
+                mUser.setGender(bind.rbMale.isChecked());
+                mUser.setWeight(bind.etWeight.getText().toString());
+                mUser.setCityId(bind.spCity.getSelectedItemId());
+                mUser.setBirthdayDateFa(String.format("%04d/%02d/%02d", (int) bind.spDateYear.getSelectedItem(), (int) bind.spDateMont.getSelectedItem(), (int) bind.spDateDay.getSelectedItem()));
                 RequestBody userIdReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(mUser.getId()));
-                RequestBody nameReq = RequestBody.create(MediaType.parse("text/plain"), bind.etName.getText().toString());
-                RequestBody genderReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(bind.rbMale.isChecked()));
-                RequestBody weightReq = RequestBody.create(MediaType.parse("text/plain"), bind.etWeight.getText().toString());
-                RequestBody cityReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(bind.spCity.getSelectedItemId()));
-                RequestBody birthDayReq = RequestBody.create(MediaType.parse("text/plain"), bind.spDateYear.getSelectedItem() + "/" + bind.spDateMont.getSelectedItem() + "/" + bind.spDateDay.getSelectedItem());
+                RequestBody nameReq = RequestBody.create(MediaType.parse("text/plain"), mUser.getName());
+                RequestBody genderReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(mUser.isGender()));
+                RequestBody weightReq = RequestBody.create(MediaType.parse("text/plain"), mUser.getWeight());
+                RequestBody cityReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(mUser.getCityId()));
+                RequestBody birthDayReq = RequestBody.create(MediaType.parse("text/plain"), mUser.getBirthdayDateFa());
 
                 Map<String, RequestBody> requestBodyMap = new HashMap<>();
                 requestBodyMap.put("UserId", userIdReq);
@@ -309,6 +336,7 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
     public void webServiceOnSuccess(Bundle bundle) {
         if (waitingDialog != null)
             waitingDialog.dismiss();
+        mUserDao.saveUser(mUser);
         Log.d(TAG, "webServiceOnSuccess: usrname:" + mUser.getUserName() + " name:" + mUser.getName());
         MyWebService.getProfileDetail(mUser.getUserName(), ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), (AppCompatActivity) getActivity(), new WebServiceResultImplementation() {
             @Override

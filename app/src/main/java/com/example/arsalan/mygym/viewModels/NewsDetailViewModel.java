@@ -22,11 +22,9 @@ public class NewsDetailViewModel extends ViewModel {
     public NewsDetailViewModel(NewsDetailRepository newsRepo) {
         this.newsRepo = newsRepo;
         inputLiveData = new MutableLiveData<>();
-        news=Transformations.switchMap(inputLiveData,input -> {
-            return newsRepo.getNewsDetail(input.userId, input.newsId);
-        });
-        nextNewsId=Transformations.switchMap(inputLiveData,input->newsRepo.getNextNewsDetail(input.newsId));
+        news=Transformations.switchMap(inputLiveData,input -> newsRepo.getNewsDetail(input.userId, input.newsId));
         prevNewsId=Transformations.switchMap(inputLiveData,input->newsRepo.getPrevNewsDetail(input.newsId));
+        nextNewsId=Transformations.switchMap(inputLiveData,input->newsRepo.getNextNewsDetail(input.newsId));
 
     }
 

@@ -194,7 +194,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
             }
         });
         galleryViewModel = ViewModelProviders.of(this, factory).get(GalleryViewModel.class);
-        galleryViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mTrainerId);
+        galleryViewModel.init( mTrainerId);
         galleryViewModel.getGalleryItemList().observe(this, galleryItems -> {
             Log.d("onActivityCreated", "observe: ");
             mGalleryItemList.removeAll(mGalleryItemList);

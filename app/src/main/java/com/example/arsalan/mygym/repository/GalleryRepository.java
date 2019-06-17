@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.arsalan.mygym.models.GalleryItem;
 import com.example.arsalan.mygym.models.RetGalleryList;
+import com.example.arsalan.mygym.models.Token;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.room.GalleryItemDao;
@@ -24,21 +25,22 @@ import retrofit2.Response;
 public class GalleryRepository {
     private final GalleryItemDao galleryItemDao;
     private final Executor executor;
-
+private final Token mToken;
     @Inject
-    public GalleryRepository(GalleryItemDao galleryItemDao, Executor executor) {
+    public GalleryRepository(GalleryItemDao galleryItemDao, Executor executor, Token token) {
         this.galleryItemDao = galleryItemDao;
         this.executor = executor;
+        mToken=token;
     }
 
-    public LiveData<List<GalleryItem>> getGalleryItem(String token, long userId) {
-        refreshGalleryItemList(token, userId);
+    public LiveData<List<GalleryItem>> getGalleryItem( long userId) {
+        refreshGalleryItemList( userId);
         // return a LiveData directly from the database.
         // return galleryItemDao.getGalleryItemListByCity(cityId);
         return galleryItemDao.loadAllListById(userId);
     }
 
-    private void refreshGalleryItemList(String token, long userId) {
+    private void refreshGalleryItemList( long userId) {
         boolean galleryItemExist = (galleryItemDao.loadAllList().getValue() != null && galleryItemDao.loadAllList().getValue().size() > 0);
         if (!galleryItemExist) {
             Log.d("refreshGalleryItemList", "!galleryItemExist");
@@ -47,7 +49,7 @@ public class GalleryRepository {
 
                 ApiInterface apiService =
                         ApiClient.getClient().create(ApiInterface.class);
-                Call<RetGalleryList> call = apiService.getMyGallery(token, userId);
+                Call<RetGalleryList> call = apiService.getMyGallery(mToken.getTokenBearer(), userId);
                 try {
                     Response<RetGalleryList> response = call.execute();
                     if (response.isSuccessful()) {

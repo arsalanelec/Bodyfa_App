@@ -2,6 +2,7 @@ package com.example.arsalan.mygym.viewModels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.arsalan.mygym.models.GalleryItem;
@@ -15,17 +16,17 @@ public class GalleryViewModel extends ViewModel {
     private GalleryRepository galleryItemRepo;
     private LiveData<List<GalleryItem>> galleryItemList;
 
-    private MutableLiveData<Integer> galleryItemTypeLD = new MutableLiveData<>();
+    private MutableLiveData<Long> galleryItemTypeLD = new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public GalleryViewModel(GalleryRepository galleryItemRepo) {
         this.galleryItemRepo = galleryItemRepo;
-        // galleryItemList = Transformations.switchMap(galleryItemTypeLD, cityId -> this.galleryItemRepo.getGalleryItem(cityId));
+         galleryItemList = Transformations.switchMap(galleryItemTypeLD, userId -> this.galleryItemRepo.getGalleryItem(userId));
     }
 
-    public void init(String token, long userId) {
+    public void init(long userId) {
         //if (this.galleryItemList!=null)return;
-        galleryItemList = galleryItemRepo.getGalleryItem(token, userId);
+      galleryItemTypeLD.setValue(userId);
     }
 
     public LiveData<List<GalleryItem>> getGalleryItemList() {

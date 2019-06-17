@@ -59,7 +59,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("/api/users/getprofile")
-    Call<RetUserProfile> getProfile(@Header("Authorization") String token, @Part("username") RequestBody username);
+    Call<RetUserProfile> getProfile(@Header("Authorization") String token, @Part("userName") RequestBody username);
 
 
     @Multipart

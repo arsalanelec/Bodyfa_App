@@ -1,6 +1,5 @@
 package com.example.arsalan.mygym.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,8 +33,7 @@ public class TutorialFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private boolean mCanSendVideo;
 
     private View detailFragment;
 
@@ -47,16 +45,14 @@ public class TutorialFragment extends Fragment {
      * Use this mFactory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param canSendVideo Parameter 1.
      * @return A new instance of fragment TutorialFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TutorialFragment newInstance(String param1, String param2) {
+    public static TutorialFragment newInstance(boolean canSendVideo) {
         TutorialFragment fragment = new TutorialFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(ARG_PARAM1, canSendVideo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,8 +61,7 @@ public class TutorialFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mCanSendVideo = getArguments().getBoolean(ARG_PARAM1);
         }
     }
 
@@ -141,7 +136,7 @@ public class TutorialFragment extends Fragment {
                     detailFragment.setVisibility(View.VISIBLE);
                     getFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.container2, TutorialListFragment.newInstance(tutorialGroups.get(i).getId(), true))
+                            .replace(R.id.container2, TutorialListFragment.newInstance(tutorialGroups.get(i).getId(), mCanSendVideo))
                             .commit();
 
                     // mListener.goToTutorialList(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName());

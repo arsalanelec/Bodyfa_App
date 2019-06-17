@@ -21,8 +21,8 @@ public class GalleryItem implements Parcelable {
     @PrimaryKey
     @SerializedName("GalleryId")
     long id;
-    String thumbUrl;
-    String pictureUrl;
+    private String thumbUrl;
+    private String pictureUrl;
     long userId;
 
     protected GalleryItem(Parcel in) {

@@ -72,6 +72,7 @@ import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
+import com.example.arsalan.mygym.viewModels.UserViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
 import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
 import com.google.android.material.navigation.NavigationView;
@@ -105,6 +106,7 @@ import static com.example.arsalan.mygym.MyKeys.EXTRA_OBJ_USER;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_ROLE_CHOICE;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_TRAINER_ID;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_NAME;
 import static com.example.arsalan.mygym.MyKeys.KEY_CURRENT_LANG;
 import static com.example.arsalan.mygym.MyKeys.KEY_PLAN_BODY;
 import static com.example.arsalan.mygym.MyKeys.KEY_PLAN_ID;
@@ -156,6 +158,7 @@ public class MainActivity extends AppCompatActivity
     private Bundle eBundle;
     private UserCreditViewModel mUserCreditViewModel;
     private UserCredit mCredit;
+    private String mUserName;
 
     public MainActivity() {
         mContext = this;
@@ -207,47 +210,77 @@ public class MainActivity extends AppCompatActivity
         }
 
         final ViewPager viewPager = findViewById(R.id.viewpager);
+        ImageView imgThumb = navigationView.getHeaderView(0).findViewById(R.id.img_thumb);
+        SwipeableButton switchBtn = toolbar.findViewById(R.id.btnSwitch);
+        TextView userNameTV = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
+        ImageButton goToInboxBtn = findViewById(R.id.btnChatlist);
 
-        mCurrentUser = eBundle.getParcelable(EXTRA_OBJ_USER);
+        Pushe.initialize(this, true);
+        mUserName = eBundle.getString(EXTRA_USER_NAME, "");
+        //get current user
+        UserViewModel userViewModel = ViewModelProviders.of(this, mFactory).get(UserViewModel.class);
+        userViewModel.init(mUserName);
+        userViewModel.getTrainer().observe(this, user -> {
+            if (user != null) {
+                mCurrentUser = user;
+                initPushe();
+                Log.d(TAG, "onCreate: birthday:"+user.getBirthdayDateFa());
+                //جاگذاری نام و تصویر کاربر در هدر
+                userNameTV.setText(mCurrentUser.getName());
+                Glide.with(this)
+                        .load(MyConst.BASE_CONTENT_URL + mCurrentUser.getThumbUrl())
+                        .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(imgThumb);
+                if (!mCurrentUser.isConfirmed()) goToInboxBtn.setVisibility(View.GONE);
+                goToInboxBtn.setOnClickListener(b -> {
+                    Intent intent = new Intent();
+                    intent.setClass(MainActivity.this, ChatListActivity.class);
+                    intent.putExtra(EXTRA_USER_ID, mCurrentUser.getId());
+                    startActivity(intent);
+                });
+                mUserCreditViewModel = ViewModelProviders.of(this, mFactory).get(UserCreditViewModel.class);
+                mUserCreditViewModel.init(mCurrentUser.getId());
+                mUserCreditViewModel.getCredit().observe(this, credit -> {
+                    if (credit != null) {
+                        mCredit = credit;
+                        TextView creditTv = navigationView.getHeaderView(0).findViewById(R.id.txtUserCredit);
+                        creditTv.setText(credit.getCreditFromatted());
+                    }
+                });
+                if (!mPrivateView) {
+                    if (mGeneratVpga == null) {
+                        mGeneratVpga = new ViewPagerOmoomiAdapter(getSupportFragmentManager());
+                        //switchBtn.setText(getText(R.string.dashboard));
+
+                    }
+                    viewPager.setAdapter(mGeneratVpga);
+                } else if (roleName.equals(KEY_ROLE_ATHLETE)) {
+                    // switchBtn.setText(getText(R.string.general));
+                    if (mPrivateVpa == null) {
+                        mPrivateVpa = new ViewPagerVarzeshkarAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser);
+                    }
+                    viewPager.setAdapter(mPrivateVpa);
+
+                } else if (roleName.equals(KEY_ROLE_TRAINER)) {
+                    // switchBtn.setText(getText(R.string.general));
+                    if (mPrivateVpa == null) {
+                        mPrivateVpa = new ViewPagerTrainerAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser, mCurrentTrainer);
+                    }
+                    viewPager.setAdapter(mPrivateVpa);
+                }
+
+                TabLayout tabs = findViewById(R.id.tablayout);
+                tabs.setupWithViewPager(viewPager);
+
+            }
+        });
         if (roleName.equals(KEY_ROLE_TRAINER)) {
             mCurrentTrainer = eBundle.getParcelable(EXTRA_OBJ_TRAINER);
         } else if (roleName.equals(KEY_ROLE_GYM)) {
             mCurrentGym = eBundle.getParcelable(EXTRA_OBJ_GYM);
         }
 
-        Pushe.initialize(this, true);
-        if (Pushe.isPusheInitialized(this)) {
-            String pushehId = Pushe.getPusheId(this);
-            addEditPushehId(pushehId);
-            Toast.makeText(MainActivity.this, "Pusheh Id: " + pushehId, Toast.LENGTH_LONG).show();
-            Log.d(getClass().getSimpleName(), "onCreate: pushe initialized!:" + pushehId);
-            Pushe.subscribe(this, "Trainer");
-            Pushe.subscribe(this, "Gym");
-//            Pushe.sendSimpleNotifToUser(this, pushehId, "Hi", "It is a notification from app to itself");
-            try {
-                Pushe.sendCustomJsonToUser(this, pushehId, "{\"key\": \"It is a json from app to itself\"}");
-            } catch (co.ronash.pushe.j.c c) {
-                Log.e("Pushe-AS-Sample", c.getMessage());
-                c.printStackTrace();
-            }
-        } else {
-            Log.d(TAG, "onCreate: Pushe Not Initialized");
-        }
-
-        //جاگذاری نام و تصویر کاربر در هدر
-        TextView userNameTV = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
-        userNameTV.setText(mCurrentUser.getName());
-
-        ImageView imgThumb = navigationView.getHeaderView(0).findViewById(R.id.img_thumb);
-
-        Glide.with(this)
-                .load(MyConst.BASE_CONTENT_URL + mCurrentUser.getThumbUrl())
-                .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
-                .apply(RequestOptions.circleCropTransform())
-                .into(imgThumb);
-        //
-
-        SwipeableButton switchBtn = toolbar.findViewById(R.id.btnSwitch);
 
         if (mPrivateView) switchBtn.setChecked(true);
         switchBtn.setOnSwipedListener(new Function0<Unit>() {
@@ -304,7 +337,7 @@ public class MainActivity extends AppCompatActivity
                             Intent intent = new Intent();
                             intent.setClass(mContext, MainActivity.class);
                             intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
-                            intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                            intent.putExtra(EXTRA_USER_NAME, mUserName);
                             intent.putExtra(EXTRA_OBJ_TRAINER, mCurrentTrainer);
                             finish();
                             startActivity(intent);
@@ -319,7 +352,7 @@ public class MainActivity extends AppCompatActivity
                         Intent intent = new Intent();
                         intent.setClass(mContext, MainActivity.class);
                         intent.putExtra(EXTRA_ROLE_CHOICE, mCurrentUser.getRoleName());
-                        intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                        intent.putExtra(EXTRA_USER_NAME, mUserName);
                         finish();
                         startActivity(intent);
                     }
@@ -359,7 +392,7 @@ public class MainActivity extends AppCompatActivity
                             Intent intent = new Intent();
                             intent.setClass(mContext, MainActivity.class);
                             intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
-                            intent.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                            intent.putExtra(EXTRA_USER_NAME, mUserName);
                             intent.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
                             finish();
                             startActivity(intent);
@@ -374,117 +407,10 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-        ImageButton goToInboxBtn = findViewById(R.id.btnChatlist);
-        if (!mCurrentUser.isConfirmed()) goToInboxBtn.setVisibility(View.GONE);
-        goToInboxBtn.setOnClickListener(b -> {
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this, ChatListActivity.class);
-            intent.putExtra(EXTRA_USER_ID, mCurrentUser.getId());
-            startActivity(intent);
-        });
-/*
-        switchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-
-            }
-        });
-*/
         Log.d(TAG, "onCreate: stack count:" + getSupportFragmentManager().getBackStackEntryCount());
         //check and choose current view pager
-        if (!mPrivateView) {
-            if (mGeneratVpga == null) {
-                mGeneratVpga = new ViewPagerOmoomiAdapter(getSupportFragmentManager());
-                //switchBtn.setText(getText(R.string.dashboard));
 
-            }
-            viewPager.setAdapter(mGeneratVpga);
-        } else if (roleName.equals(KEY_ROLE_ATHLETE)) {
-            // switchBtn.setText(getText(R.string.general));
-            if (mPrivateVpa == null) {
-                mPrivateVpa = new ViewPagerVarzeshkarAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser);
-            }
-            viewPager.setAdapter(mPrivateVpa);
 
-        } else if (roleName.equals(KEY_ROLE_TRAINER)) {
-            // switchBtn.setText(getText(R.string.general));
-            if (mPrivateVpa == null) {
-                mPrivateVpa = new ViewPagerTrainerAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser, mCurrentTrainer);
-            }
-            viewPager.setAdapter(mPrivateVpa);
-        }
-
-        TabLayout tabs = findViewById(R.id.tablayout);
-        if (tabs == null) {
-            Log.d(TAG, "onCreate: tabs:Null");
-            finish();
-        }
-        if (viewPager == null) {
-            Log.d(TAG, "onCreate: viewPager:Null");
-            finish();
-        }
-        tabs.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.d(TAG, "onPageScrolled: page:" + position);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-/*
-        for (
-                int i = 0; i < tabs.getTabCount(); i++) {
-            TabLayout.Tab tab = tabs.getTabAt(i);
-            tab.setCustomView(getCustomTabView(tab.getText()));
-            TextView tv = (TextView) tab.getCustomView().findViewById(R.id.textView);
-            tv.setTextColor(ContextCompat.getColor(this, tab.isSelected() ? R.color.colorPrimary : R.color.colorAccent));
-            if (tab.isSelected())
-                tab.getCustomView().setBackgroundResource(R.drawable.white_rect_back);
-        }*/
-
-/*        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getCustomView() != null) {
-                    tab.getCustomView().setBackgroundResource(R.drawable.white_rect_back);
-                    TextView tv = (TextView) tab.getCustomView().findViewById(R.id.textView);
-                    tv.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                if (tab.getCustomView() != null) {
-                    tab.getCustomView().setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-                    TextView tv = (TextView) tab.getCustomView().findViewById(R.id.textView);
-                    tv.setTextColor(Color.WHITE);
-                }
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });*/
-        mUserCreditViewModel = ViewModelProviders.of(this, mFactory).get(UserCreditViewModel.class);
-        mUserCreditViewModel.init(mCurrentUser.getId());
-        mUserCreditViewModel.getCredit().observe(this, credit -> {
-            if (credit != null) {
-                mCredit = credit;
-                TextView creditTv = navigationView.getHeaderView(0).findViewById(R.id.txtUserCredit);
-                creditTv.setText(credit.getCreditFromatted());
-            }
-        });
         navigationView.getHeaderView(0).findViewById(R.id.btnAddCredit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -492,6 +418,26 @@ public class MainActivity extends AppCompatActivity
                 dialog.show(getSupportFragmentManager(), "");
             }
         });
+    }
+
+    private void initPushe() {
+        if (Pushe.isPusheInitialized(this)) {
+            String pushehId = Pushe.getPusheId(this);
+            addEditPushehId(pushehId);
+            Toast.makeText(MainActivity.this, "Pusheh Id: " + pushehId, Toast.LENGTH_LONG).show();
+            Log.d(getClass().getSimpleName(), "onCreate: pushe initialized!:" + pushehId);
+            Pushe.subscribe(this, "Trainer");
+            Pushe.subscribe(this, "Gym");
+//            Pushe.sendSimpleNotifToUser(this, pushehId, "Hi", "It is a notification from app to itself");
+            try {
+                Pushe.sendCustomJsonToUser(this, pushehId, "{\"key\": \"It is a json from app to itself\"}");
+            } catch (co.ronash.pushe.j.c c) {
+                Log.e("Pushe-AS-Sample", c.getMessage());
+                c.printStackTrace();
+            }
+        } else {
+            Log.d(TAG, "onCreate: Pushe Not Initialized");
+        }
     }
 
     private void addShortcut(boolean addPrivateGeneralIcon) {
@@ -802,8 +748,8 @@ public class MainActivity extends AppCompatActivity
             dialog.show(getSupportFragmentManager(), "");
             MutableLiveData<Integer> status = new MutableLiveData<>(-1);
             return status;
-        }else {
-            WorkoutPlanReq workoutPlanReq=new WorkoutPlanReq();
+        } else {
+            WorkoutPlanReq workoutPlanReq = new WorkoutPlanReq();
             workoutPlanReq.setId(SystemClock.currentThreadTimeMillis());
             workoutPlanReq.setParentUserId(trainedId);
             workoutPlanReq.setAthleteId(mCurrentUser.getId());
@@ -862,7 +808,8 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Fragment getItem(int position) {
             if (position == 0) return NewsListFragment.newInstance(mCurrentUser.getId());
-            if (position == 1) return TutorialFragment.newInstance("", "");
+            if (position == 1)
+                return TutorialFragment.newInstance(!mCurrentUser.getRoleName().equalsIgnoreCase(KEY_ROLE_ATHLETE));
             if (position == 2)
                 return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
             if (position == 3) return GymListFragment.newInstance("", "");

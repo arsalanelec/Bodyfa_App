@@ -1,9 +1,10 @@
 package com.example.arsalan.mygym.models;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -66,16 +67,16 @@ public class User implements Parcelable {
     private String roleName;
     @SerializedName("IsConfirmed")
     private boolean isConfirmed;
-
     @SerializedName("TrainerUserId")
     private long trainerId;
-
     @SerializedName("RegisterDateFa")
     private String registerDate;
+    @SerializedName("BirthDateFa")
+    private String birthdayDateFa;
+
 
     public User() {
     }
-
 
     protected User(Parcel in) {
         id = in.readLong();
@@ -95,6 +96,7 @@ public class User implements Parcelable {
         isConfirmed = in.readByte() != 0;
         trainerId = in.readLong();
         registerDate = in.readString();
+        birthdayDateFa = in.readString();
     }
 
     @Override
@@ -116,6 +118,7 @@ public class User implements Parcelable {
         dest.writeByte((byte) (isConfirmed ? 1 : 0));
         dest.writeLong(trainerId);
         dest.writeString(registerDate);
+        dest.writeString(birthdayDateFa);
     }
 
     @Override
@@ -135,12 +138,16 @@ public class User implements Parcelable {
         }
     };
 
-    public boolean  isConfirmed() {
+    public boolean isConfirmed() {
         return isConfirmed;
     }
 
     public String getRoleName() {
         return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public boolean isMale() {
@@ -151,113 +158,108 @@ public class User implements Parcelable {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getPictureUrl() {
         return PictureUrl;
-    }
-
-    public String getThumbUrl() {
-        return ThumbUrl;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public long getCityId() {
-        return cityId;
     }
 
     public void setPictureUrl(String pictureUrl) {
         PictureUrl = pictureUrl;
     }
 
+    public String getThumbUrl() {
+        return ThumbUrl;
+    }
+
     public void setThumbUrl(String thumbUrl) {
         ThumbUrl = thumbUrl;
     }
 
-    public void setGender(boolean gender) {
-        this.gender = gender;
+    public int getRoleId() {
+        return roleId;
     }
 
     public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
 
-    public void setIsConfirmed(boolean isConfirmed) {
-        this.isConfirmed = isConfirmed;
-    }
-
-    public void setRegisterDate(String registerDate) {
-        this.registerDate = registerDate;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public String getUserName() {
+        return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
+    public String getAge() {
+        return age;
+    }
+
     public void setAge(String age) {
         this.age = age;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
+    public String getWeight() {
+        return weight;
+    }
+
     public void setWeight(String weight) {
         this.weight = weight;
+    }
+
+    public long getCityId() {
+        return cityId;
     }
 
     public void setCityId(long cityId) {
         this.cityId = cityId;
     }
 
+    public void setIsConfirmed(boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
+    }
 
     public boolean isGender() {
         return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
     }
 
     public long getTrainerId() {
@@ -268,12 +270,20 @@ public class User implements Parcelable {
         this.trainerId = trainerId;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
     public String getRegisterDate() {
         return registerDate;
+    }
+
+    public void setRegisterDate(String registerDate) {
+        this.registerDate = registerDate;
+    }
+
+    public String getBirthdayDateFa() {
+        return birthdayDateFa;
+    }
+
+    public void setBirthdayDateFa(String birthdayDateFa) {
+        this.birthdayDateFa = birthdayDateFa;
     }
 
     @Override

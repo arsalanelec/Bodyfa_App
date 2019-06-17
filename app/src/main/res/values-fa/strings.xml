@@ -341,5 +341,6 @@
     <string name="to_continue_select_a_trainer">برای ادامه مربی مورد نظر را انتخاب کنید…</string>
     <string name="plan_list">لیست برنامه ها:</string>
     <string name="request_list">لیست درخواست ها:</string>
+    <string name="your_credit">اعتبار شما:</string>
 
 </resources>
