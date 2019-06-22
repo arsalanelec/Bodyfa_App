@@ -16,20 +16,30 @@ public class NewsListViewModel extends ViewModel {
     private NewsListRepository newsRepo;
     private LiveData<List<NewsHead>> newsList;
 
-    private MutableLiveData<Integer> newsTypeLD=new MutableLiveData<>();
+    private MutableLiveData<NewsMapSource> newsSource =new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public NewsListViewModel(NewsListRepository newRepo) {
         this.newsRepo = newRepo;
-        newsList = Transformations.switchMap(newsTypeLD, newType -> newsRepo.getNewsList(newType));
+        newsList = Transformations.switchMap(newsSource, source -> newsRepo.getNewsList(source.publisherId,source.newsType));
     }
 
-    public void init(int newsType) {
+    public void init(long publisherId,int newsType) {
         //if (this.newsList!=null)return;
-        this.newsTypeLD.setValue(newsType);
+        this.newsSource.setValue(new NewsMapSource(publisherId,newsType));
     }
     public LiveData<List<NewsHead>> getNewsList() {
         return this.newsList;
     }
 
+    private class NewsMapSource{
+        long publisherId;
+        int newsType;
+
+        public NewsMapSource(long publisherId, int newsType) {
+            this.publisherId = publisherId;
+            this.newsType = newsType;
+        }
+
+    }
 }

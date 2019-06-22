@@ -34,7 +34,6 @@ import dagger.android.AndroidInjectionModule;
         , AppModule.class
         , NetModule.class
         , MainActivityModule.class
-        , PrivateMainActivityModule.class
         , LoginActivityModule.class
         , WorkoutPlanActivityModule.class
         , EditProfileActivityModule.class

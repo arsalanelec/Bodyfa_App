@@ -1,7 +1,8 @@
 package com.example.arsalan.mygym.repository;
 
-import androidx.lifecycle.LiveData;
 import android.util.Log;
+
+import androidx.lifecycle.LiveData;
 
 import com.example.arsalan.mygym.models.GalleryItem;
 import com.example.arsalan.mygym.models.RetGalleryList;
@@ -25,49 +26,43 @@ import retrofit2.Response;
 public class GalleryRepository {
     private final GalleryItemDao galleryItemDao;
     private final Executor executor;
-private final Token mToken;
+    private final Token mToken;
+
     @Inject
     public GalleryRepository(GalleryItemDao galleryItemDao, Executor executor, Token token) {
         this.galleryItemDao = galleryItemDao;
         this.executor = executor;
-        mToken=token;
+        mToken = token;
     }
 
-    public LiveData<List<GalleryItem>> getGalleryItem( long userId) {
-        refreshGalleryItemList( userId);
+    public LiveData<List<GalleryItem>> getGalleryItem(long userId) {
+        refreshGalleryItemList(userId);
         // return a LiveData directly from the database.
         // return galleryItemDao.getGalleryItemListByCity(cityId);
         return galleryItemDao.loadAllListById(userId);
     }
 
-    private void refreshGalleryItemList( long userId) {
-        boolean galleryItemExist = (galleryItemDao.loadAllList().getValue() != null && galleryItemDao.loadAllList().getValue().size() > 0);
-        if (!galleryItemExist) {
-            Log.d("refreshGalleryItemList", "!galleryItemExist");
+    private void refreshGalleryItemList(long userId) {
+        executor.execute(() -> {
 
-            executor.execute(() -> {
+            ApiInterface apiService =
+                    ApiClient.getClient().create(ApiInterface.class);
+            Call<RetGalleryList> call = apiService.getMyGallery(mToken.getTokenBearer(), userId);
+            try {
+                Response<RetGalleryList> response = call.execute();
+                if (response.isSuccessful()) {
+                    Log.d("refreshGalleryItemList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
+                    galleryItemDao.deleteAllListById(userId);
+                    Log.d("refreshGalleryItemList", "run: newDao save:" + galleryItemDao.saveList(response.body().getRecords()).length);
 
-                ApiInterface apiService =
-                        ApiClient.getClient().create(ApiInterface.class);
-                Call<RetGalleryList> call = apiService.getMyGallery(mToken.getTokenBearer(), userId);
-                try {
-                    Response<RetGalleryList> response = call.execute();
-                    if (response.isSuccessful()) {
-                        Log.d("refreshGalleryItemList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
-                        galleryItemDao.deleteAllListById(userId);
-                        Log.d("refreshGalleryItemList", "run: newDao save:" + galleryItemDao.saveList(response.body().getRecords()).length);
+                } else {
+                    Log.d("refreshGalleryItemList", "run: response.error");
 
-                    } else {
-                        Log.d("refreshGalleryItemList", "run: response.error");
-
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            });
-        }
 
-
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

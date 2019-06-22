@@ -52,6 +52,7 @@ import com.example.arsalan.mygym.dialog.SelectTrainerJoinTimeDialog;
 import com.example.arsalan.mygym.fragments.AthleteMealPlanListFragment;
 import com.example.arsalan.mygym.fragments.AthleteWorkoutPlanListFragment;
 import com.example.arsalan.mygym.fragments.DashBoardAthleteFragment;
+import com.example.arsalan.mygym.fragments.DashBoardProfileFragment;
 import com.example.arsalan.mygym.fragments.GymListFragment;
 import com.example.arsalan.mygym.fragments.HomeFragment;
 import com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment;
@@ -220,11 +221,13 @@ public class MainActivity extends AppCompatActivity
         //get current user
         UserViewModel userViewModel = ViewModelProviders.of(this, mFactory).get(UserViewModel.class);
         userViewModel.init(mUserName);
-        userViewModel.getTrainer().observe(this, user -> {
+        userViewModel.getUserLive().observe(this, user -> {
+
             if (user != null) {
+                if(mCurrentUser!=null && user.toString().equals(mCurrentUser.toString()))return;
                 mCurrentUser = user;
                 initPushe();
-                Log.d(TAG, "onCreate: birthday:"+user.getBirthdayDateFa());
+                Log.d(TAG, "onCreate: birthday:" + user.getBirthdayDateFa());
                 //جاگذاری نام و تصویر کاربر در هدر
                 userNameTV.setText(mCurrentUser.getName());
                 Glide.with(this)
@@ -791,7 +794,7 @@ public class MainActivity extends AppCompatActivity
      * view pager adapter for general view
      */
     private class ViewPagerOmoomiAdapter extends FragmentStatePagerAdapter {
-        private final String[] titles = {getString(R.string.meal_and_workout_news), getString(R.string.tutorials), getString(R.string.trainers), getString(R.string.gyms)};
+        private final String[] titles = {getString(R.string.dashboard),getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers), getString(R.string.gyms)};
 
 
         public ViewPagerOmoomiAdapter(FragmentManager fm) {
@@ -807,14 +810,20 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0) return NewsListFragment.newInstance(mCurrentUser.getId());
-            if (position == 1)
-                return TutorialFragment.newInstance(!mCurrentUser.getRoleName().equalsIgnoreCase(KEY_ROLE_ATHLETE));
-            if (position == 2)
-                return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
-            if (position == 3) return GymListFragment.newInstance("", "");
-
-            return new HomeFragment();
+            switch (position) {
+                case 0:
+                    return DashBoardProfileFragment.newInstance(mCurrentUser.getId());//DashBoardAthleteFragment.newInstance(mCurrentUser);
+                case 1:
+                    return NewsListFragment.newInstance(mCurrentUser.getId());
+                case 2:
+                    return TutorialFragment.newInstance(!mCurrentUser.getRoleName().equalsIgnoreCase(KEY_ROLE_ATHLETE));
+                case 3:
+                    return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
+                case 4:
+                    return GymListFragment.newInstance("", "");
+                default:
+                    return new HomeFragment();
+            }
         }
 
         @Override

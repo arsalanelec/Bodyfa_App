@@ -33,6 +33,11 @@ public class News {
     private
     int likeCnt;
 
+
+    @SerializedName("UserId")
+    private
+    long publisherId;
+
     @SerializedName("NewsTypeId")
     private int typeId;
 
@@ -140,6 +145,14 @@ public class News {
 
     public void setCommentCnt(int commentCnt) {
         this.commentCnt = commentCnt;
+    }
+
+    public long getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(long publisherId) {
+        this.publisherId = publisherId;
     }
 
     public String getPictureUrl() {

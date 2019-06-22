@@ -4,18 +4,14 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.arsalan.mygym.R;
-import com.example.arsalan.mygym.fragments.DashBoardTrainerFragment;
 import com.example.arsalan.mygym.fragments.HomeFragment;
-import com.example.arsalan.mygym.fragments.InboxFragment;
 import com.example.arsalan.mygym.fragments.MyAthleteListFragment;
 import com.example.arsalan.mygym.fragments.TrainerListFragment;
 import com.example.arsalan.mygym.fragments.TrainerOrderListFragment;
 import com.example.arsalan.mygym.fragments.TrainerPlansTabFragment;
-import com.example.arsalan.mygym.fragments.TutorialFragment;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.User;
 
@@ -33,7 +29,7 @@ public class ViewPagerTrainerAdapter extends FragmentStatePagerAdapter {
     public ViewPagerTrainerAdapter(FragmentManager fm, Context context,User user,Trainer trainer) {
         super(fm);
         mContext = context;
-        titles = new String[]{mContext.getString(R.string.dashboard), mContext.getString(R.string.my_athleths), mContext.getString(R.string.plans), mContext.getString(R.string.orders), mContext.getString(R.string.transactions)};//, mContext.getString(R.string.messages)};
+        titles = new String[]{ mContext.getString(R.string.my_athleths), mContext.getString(R.string.plans), mContext.getString(R.string.orders), mContext.getString(R.string.transactions)};//, mContext.getString(R.string.messages)};
     mCurrentUser=user;
     mCurrentTrainer=trainer;
     }
@@ -57,14 +53,12 @@ public class ViewPagerTrainerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return DashBoardTrainerFragment.newInstance(mCurrentUser);
-            case 1:
                 return MyAthleteListFragment.newInstance(mCurrentUser, mCurrentTrainer);
-            case 2:
+            case 1:
                 return TrainerPlansTabFragment.newInstance(mCurrentTrainer);
-            case 3:
+            case 2:
                 return  TrainerOrderListFragment.newInstance(mCurrentTrainer.getId());
-            case 4:
+            case 3:
                 return new TrainerListFragment();
             //case 5:
             //    return InboxFragment.newInstance(mCurrentUser);

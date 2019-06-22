@@ -25,6 +25,7 @@ public class MyKeys {
     public final static String EXTRA_PARTY_NAME = "EXTRA_PARTY_NAME";
     public final static String EXTRA_PARTY_THUMB = "EXTRA_PARTY_THUMB";
     public final static String EXTRA_IS_MY_TRAINER = "EXTRA_IS_MY_TRAINER";
+    public final static String EXTRA_IS_ATHLETE = "EXTRA_IS_ATHLETE";
 
     public final static String EXTRA_POSITION = "EXTRA_POSITION";
     public final static String EXTRA_GALLERY_ARRAY = "EXTRA_GALLERY_ARRAY";

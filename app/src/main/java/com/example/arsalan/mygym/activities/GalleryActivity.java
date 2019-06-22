@@ -57,7 +57,7 @@ public class GalleryActivity extends AppCompatActivity {
         mCurrentPosition = xtras.getInt(MyKeys.EXTRA_POSITION);
         mGalleryItems = xtras.getParcelableArrayList(EXTRA_GALLERY_ARRAY);
         mEditMode = xtras.getBoolean(EXTRA_EDIT_MODE, false);
-        mGalleryPager = findViewById(R.id.vpGallery);
+        mGalleryPager = findViewById(R.id.vp_gallery);
         TabLayout tabLayout = findViewById(R.id.tablayout);
         mGalleryPager.setOnTouchListener(new View.OnTouchListener() {
             @Override

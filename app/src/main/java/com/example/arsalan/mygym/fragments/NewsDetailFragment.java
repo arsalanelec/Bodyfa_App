@@ -61,6 +61,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
     private static final String ARG_USER_ID = "param1";
     private static final String ARG_NEWS_ID = "param2";
     private static final String TAG = "NewsDetailFragment";
+    private static final String ARG_NEWS_TYPE = "new type";
     @Inject
     MyViewModelFactory mFactory;
     @Inject
@@ -77,6 +78,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
     private Integer mNextNewsId;
     private NewsDetailViewModel viewModel;
     private Integer mPrevNewsId;
+    private int mCatType;
 
     public NewsDetailFragment() {
         // Required empty public constructor
@@ -90,11 +92,12 @@ public class NewsDetailFragment extends Fragment implements Injectable {
      * @param newsId Parameter 2.
      * @return A new instance of fragment NewsDetailFragment.
      */
-    public static NewsDetailFragment newInstance(long userId, long newsId) {
+    public static NewsDetailFragment newInstance(long userId, long newsId,int newsType) {
         NewsDetailFragment fragment = new NewsDetailFragment();
         Bundle args = new Bundle();
         args.putLong(ARG_USER_ID, userId);
         args.putLong(ARG_NEWS_ID, newsId);
+        args.putInt(ARG_NEWS_TYPE, newsType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -105,6 +108,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
         if (getArguments() != null) {
             mUserId = getArguments().getLong(ARG_USER_ID);
             mNewsId = getArguments().getLong(ARG_NEWS_ID);
+            mCatType = getArguments().getInt(ARG_NEWS_TYPE);
         }
     }
 
@@ -199,11 +203,11 @@ public class NewsDetailFragment extends Fragment implements Injectable {
            container.setVisibility(View.GONE);
         });
         mBind.imgBtnNext.setOnClickListener(b->{
-            viewModel.init(mUserId, mNextNewsId);
+            viewModel.init(mUserId, mNextNewsId,mCatType);
         });
 
         mBind.imgBtnPrevious.setOnClickListener(b->{
-            viewModel.init(mUserId, mPrevNewsId);
+            viewModel.init(mUserId, mPrevNewsId,mCatType);
         });
 
         return mBind.getRoot();
@@ -213,11 +217,12 @@ public class NewsDetailFragment extends Fragment implements Injectable {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel= ViewModelProviders.of(this,mFactory).get(NewsDetailViewModel.class);
-        viewModel.init(mUserId,mNewsId);
+        viewModel.init(mUserId,mNewsId,mCatType);
         viewModel.getNews().observe(this,news->{
             if(news!=null) {
                 Log.d("NewsDetailViewModel", "onActivityCreated: newsId:"+news.getId());
                 mBind.setNews(news);
+
                 getCommentWeb(news.getId());
                 mBind.image.setImageURI(MyConst.BASE_CONTENT_URL + news.getPictureUrl());
 

@@ -24,4 +24,10 @@ public interface NewsHeadDao {
 
     @Query("DELETE FROM NewsHead")
     void deleteAll();
+
+    @Query("DELETE FROM NewsHead WHERE typeId=:newsType")
+    void deleteByType(int newsType);
+
+    @Query("SELECT * From NewsHead WHERE publisherId= :publisherId")
+    LiveData<List<NewsHead>> getNewsListByPublisher(long publisherId);
 }

@@ -22,9 +22,10 @@ import com.example.arsalan.mygym.dialog.TrainerListDialog;
 import com.example.arsalan.mygym.dialog.TrainerWorkoutPlanListToSendDialog;
 import com.example.arsalan.mygym.dialog.TutorialVideoListDialog;
 import com.example.arsalan.mygym.fragments.AthleteMealPlanListFragment;
+import com.example.arsalan.mygym.fragments.AthleteProfileFragment;
 import com.example.arsalan.mygym.fragments.AthleteWorkoutPlanListFragment;
 import com.example.arsalan.mygym.fragments.DashBoardAthleteFragment;
-import com.example.arsalan.mygym.fragments.DashBoardTrainerFragment;
+import com.example.arsalan.mygym.fragments.DashBoardProfileFragment;
 import com.example.arsalan.mygym.fragments.EditProfileFragment;
 import com.example.arsalan.mygym.fragments.GymListFragment;
 import com.example.arsalan.mygym.fragments.InboxFragment;
@@ -56,7 +57,7 @@ public abstract class FragmentBuildersModule {
     abstract InboxFragment contributeInboxListFragment();
 
     @ContributesAndroidInjector
-    abstract DashBoardTrainerFragment contributeDashBoardTrainerFragment();
+    abstract DashBoardProfileFragment contributeDashBoardTrainerFragment();
 
     @ContributesAndroidInjector
     abstract DashBoardAthleteFragment contributeDashBoardAthleteFragment();
@@ -103,6 +104,9 @@ public abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract TrainerListDialog contributeTrainerListDialog();
+
+    @ContributesAndroidInjector
+    abstract AthleteProfileFragment contributeAthleteProfileFragment();
 
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public class RetNewsList {
     @SerializedName("Records")
     List<NewsHead> records;
-    @SerializedName("RecordCount")
+    @SerializedName("RecordsCount")
     int recordsCount;
     public RetNewsList() {
     }

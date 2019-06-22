@@ -8,12 +8,6 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-
-import com.example.arsalan.mygym.MyApplication;
-import com.example.arsalan.mygym.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -22,10 +16,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.example.arsalan.mygym.MyApplication;
+import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -43,6 +43,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_ATHLETE;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_MY_TRAINER;
+import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
+
 public class PostContentActivity extends AppCompatActivity {
 
     private final String TAG = "PostContentActivity";
@@ -52,6 +56,8 @@ public class PostContentActivity extends AppCompatActivity {
     private EditText contentET;
     private Context mContext;
     private EditText titleET;
+    private long mUserId;
+    private boolean mIsAthlete;
 
     public PostContentActivity() {
         mContext = this;
@@ -63,8 +69,13 @@ public class PostContentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_content);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (getIntent().getExtras() == null)
+            throw new RuntimeException(this.toString() + " should hav a user id in the intent!");
+        mUserId = getIntent().getLongExtra(EXTRA_USER_ID, 0);
+        mIsAthlete = getIntent().getBooleanExtra(EXTRA_IS_ATHLETE, true);
 
         cateSpn = (Spinner) findViewById(R.id.spnCategory);
+        if(mIsAthlete) cateSpn.setVisibility(View.GONE);
         contentET = findViewById(R.id.etContent);
         titleET = findViewById(R.id.etTitle);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -123,8 +134,8 @@ public class PostContentActivity extends AppCompatActivity {
 
                     ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
                     Call<RetroResult> call = apiService.sendContent("Bearer " + ((MyApplication) getApplication()).getCurrentToken().getToken()
-                            , ((MyApplication) getApplication()).getCurrentUser().getId()
-                            , ((StringWithTag) cateSpn.getSelectedItem()).tag
+                            , mUserId
+                            , mIsAthlete?5:((StringWithTag) cateSpn.getSelectedItem()).tag
                             , RequestBody.create(MediaType.parse("text/plain"), titleET.getText().toString())
 
                             , RequestBody.create(MediaType.parse("text/plain"), contentET.getText().toString())

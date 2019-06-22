@@ -290,8 +290,23 @@ public class User implements Parcelable {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", password='" + password + '\'' +
                 ", userName='" + userName + '\'' +
                 ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", age='" + age + '\'' +
+                ", address='" + address + '\'' +
+                ", weight='" + weight + '\'' +
+                ", cityId=" + cityId +
+                ", PictureUrl='" + PictureUrl + '\'' +
+                ", ThumbUrl='" + ThumbUrl + '\'' +
+                ", gender=" + gender +
+                ", roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                ", isConfirmed=" + isConfirmed +
+                ", trainerId=" + trainerId +
+                ", registerDate='" + registerDate + '\'' +
+                ", birthdayDateFa='" + birthdayDateFa + '\'' +
                 '}';
     }
 }

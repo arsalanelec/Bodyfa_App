@@ -49,7 +49,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
 
     private FrameLayout waitingFL;
 
-    private NewsListViewModel viewModel;
+    private NewsListViewModel newsListViewModel;
 
     @Inject
     MyViewModelFactory factory;
@@ -88,8 +88,8 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
-        viewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
+        newsListViewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
+        newsListViewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
             @Override
             public void onChanged(@Nullable List<NewsHead> newNewsList) {
                 Log.d("NewsListViewModel", "observe: cnt:"+newNewsList.size());
@@ -100,7 +100,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
                 mSwipeRefresh.setRefreshing(false);
             }
         });
-        viewModel.init(mNewsType);
+        newsListViewModel.init(0,mNewsType);
 
         Log.d(getClass().getSimpleName(), "onActivityCreated: ");
     }
@@ -110,7 +110,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_news, container, false);
-        final RecyclerView newsRV = v.findViewById(R.id.rvNews);
+        final RecyclerView newsRV = v.findViewById(R.id.rv_news);
         newsList = new ArrayList<>();
         /*for (int i = 0; i < 20; i++)
             newsList.add(new NewsHead());*/
@@ -134,7 +134,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
                 compoundButton.setEnabled(!b);
                 fitnessNewsTgl.setChecked(!b);
                 mNewsType=b ? 2 : 1;
-                viewModel.init(mNewsType);
+                newsListViewModel.init(0,mNewsType);
                 mSwipeRefresh.setRefreshing(true);
                 //waitingFL.setVisibility(View.VISIBLE);
 
@@ -210,13 +210,13 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     public void onRefresh() {
         mSwipeRefresh.setRefreshing(true);
 
-        viewModel.init(mNewsType);
+        newsListViewModel.init(0,mNewsType);
     }
 
     @Override
-    public void onNewsHeadClick(long newsId) {
+    public void onNewsHeadClick(long newsId,int catType) {
         Log.d(TAG, "onNewsHeadClick: ");
-        getFragmentManager().beginTransaction().replace(R.id.container,NewsDetailFragment.newInstance(mUserId,newsId),"").commit();
+        getFragmentManager().beginTransaction().replace(R.id.container,NewsDetailFragment.newInstance(mUserId,newsId,catType),"").commit();
         detailContainer.setVisibility(View.VISIBLE);
 
     }

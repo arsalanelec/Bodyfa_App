@@ -88,7 +88,7 @@ public class MyGymFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_my_gym, container, false);
-        RecyclerView newsRV = v.findViewById(R.id.rvNews);
+        RecyclerView newsRV = v.findViewById(R.id.rv_news);
         //لیست جدیدترین خبر ها
         List<NewsHead> newsList = new ArrayList<>();
         for (int i=0;i<20;i++)
@@ -96,7 +96,7 @@ public class MyGymFragment extends Fragment {
 
         AdapterNews adapter = new AdapterNews(getActivity(), newsList, new AdapterNews.OnAdapterNewsEventListener() {
             @Override
-            public void onNewsHeadClick(long newsId) {
+            public void onNewsHeadClick(long newsId,int catType) {
                 Intent i = new Intent();
                 i.setClass(getContext(), NewsDetailActivity.class);
                 i.putExtra(NewsDetailActivity.KEY_NEWS_ID,newsId);

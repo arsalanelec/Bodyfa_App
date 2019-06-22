@@ -4,23 +4,23 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
@@ -32,8 +32,10 @@ import com.example.arsalan.mygym.databinding.FragmentProfileEditBinding;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.CityNState;
 import com.example.arsalan.mygym.models.MyConst;
-import com.example.arsalan.mygym.models.ProgressRequestBody;
+import com.example.arsalan.mygym.models.RetStatusProgress;
 import com.example.arsalan.mygym.models.User;
+import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
+import com.example.arsalan.mygym.viewModels.UserViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
 import com.example.arsalan.mygym.webservice.WebServiceResultImplementation;
 import com.example.arsalan.room.UserDao;
@@ -41,21 +43,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_EDIT_MODE;
@@ -70,11 +62,17 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
     private final static String TAG = "EditProfileFragment";
     @Inject
     UserDao mUserDao;
+
+    @Inject
+    MyViewModelFactory mFactory;
+
     private User mUser;
     private OnFragmentInteractionListener mListener;
     private SimpleDraweeView avatar;
     private Uri resultUri;
     private ProgressDialog waitingDialog;
+    private FragmentProfileEditBinding mBind;
+    private UserViewModel userViewModel;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -104,21 +102,21 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        FragmentProfileEditBinding bind = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_edit, container, false);
-        bind.setUser(mUser);
+        mBind = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_edit, container, false);
+
         Log.d(TAG, "onCreateView: birthday is:" + mUser.getBirthdayDateFa());
 
         List<Integer> days = new ArrayList<>();
         for (int i = 1; i < 32; i++) days.add(i);
-        bind.spDateDay.setAdapter(new MySpinnerAdapter(days));
+        mBind.spDateDay.setAdapter(new MySpinnerAdapter(days));
         List<Integer> months = new ArrayList<>();
         for (int i = 1; i <= 12; i++) months.add(i);
 
-        bind.spDateMont.setAdapter(new MySpinnerAdapter(months));
+        mBind.spDateMont.setAdapter(new MySpinnerAdapter(months));
 
         List<Integer> years = new ArrayList<>();
         for (int i = 1397; i > 1300; i--) years.add(i);
-        bind.spDateYear.setAdapter(new MySpinnerAdapter(years));
+        mBind.spDateYear.setAdapter(new MySpinnerAdapter(years));
 
         if (mUser.getBirthdayDateFa() != null && !mUser.getBirthdayDateFa().isEmpty()) {
             String[] strArr = mUser.getBirthdayDateFa().split("/");
@@ -128,11 +126,11 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
                 int birthDay = Integer.parseInt(strArr[2]);
                 int birthMonth = Integer.parseInt(strArr[1]);
                 int birthYear = Integer.parseInt(strArr[0]);
-                bind.spDateDay.setSelection(birthDay - 1);
-                bind.spDateMont.setSelection(birthMonth - 1);
-                for (int i = 0; i < bind.spDateYear.getCount(); i++) {
-                    if ((int) bind.spDateYear.getItemAtPosition(i) == birthYear) {
-                        bind.spDateYear.setSelection(i);
+                mBind.spDateDay.setSelection(birthDay - 1);
+                mBind.spDateMont.setSelection(birthMonth - 1);
+                for (int i = 0; i < mBind.spDateYear.getCount(); i++) {
+                    if ((int) mBind.spDateYear.getItemAtPosition(i) == birthYear) {
+                        mBind.spDateYear.setSelection(i);
                         break;
                     }
                 }
@@ -142,15 +140,15 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
             }
         }
 //استانها
-        bind.spProvince.setAdapter(new AdapterProvinceSp());
+        mBind.spProvince.setAdapter(new AdapterProvinceSp());
         if (mUser.getCityId() > 0) {
-            for (int i = 0; i < bind.spProvince.getAdapter().getCount(); i++) {
-                if (bind.spProvince.getItemIdAtPosition(i) == CityNState.getProvinceByCityId(mUser.getCityId()).getId()) {
-                    bind.spProvince.setSelection(i);
-                    bind.spCity.setAdapter(new AdapterCitySp(CityNState.getProvinceByCityId(mUser.getCityId()).getId()));
-                    for (int j = 0; j < bind.spCity.getAdapter().getCount(); j++) {
-                        if (bind.spCity.getItemIdAtPosition(j) == mUser.getCityId()) {
-                            bind.spCity.setSelection(j);
+            for (int i = 0; i < mBind.spProvince.getAdapter().getCount(); i++) {
+                if (mBind.spProvince.getItemIdAtPosition(i) == CityNState.getProvinceByCityId(mUser.getCityId()).getId()) {
+                    mBind.spProvince.setSelection(i);
+                    mBind.spCity.setAdapter(new AdapterCitySp(CityNState.getProvinceByCityId(mUser.getCityId()).getId()));
+                    for (int j = 0; j < mBind.spCity.getAdapter().getCount(); j++) {
+                        if (mBind.spCity.getItemIdAtPosition(j) == mUser.getCityId()) {
+                            mBind.spCity.setSelection(j);
                             break;
                         }
                     }
@@ -158,22 +156,22 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
                 }
             }
         } else {
-            bind.spProvince.setSelection(16); //فارس
-            bind.spCity.setAdapter(new AdapterCitySp(17));
-            for (int j = 0; j < bind.spCity.getAdapter().getCount(); j++) {
-                if (bind.spCity.getItemIdAtPosition(j) == 262) { //شیراز
-                    bind.spCity.setSelection(j);
+            mBind.spProvince.setSelection(16); //فارس
+            mBind.spCity.setAdapter(new AdapterCitySp(17));
+            for (int j = 0; j < mBind.spCity.getAdapter().getCount(); j++) {
+                if (mBind.spCity.getItemIdAtPosition(j) == 262) { //شیراز
+                    mBind.spCity.setSelection(j);
                     break;
                 }
 
             }
         }
 
-        bind.spProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mBind.spProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (((AdapterCitySp) bind.spCity.getAdapter()).getProvinceId() != l)
-                    bind.spCity.setAdapter(new AdapterCitySp(l));
+                if (((AdapterCitySp) mBind.spCity.getAdapter()).getProvinceId() != l)
+                    mBind.spCity.setAdapter(new AdapterCitySp(l));
             }
 
             @Override
@@ -185,7 +183,7 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
 
 //        Log.d(TAG, "onCreateView: province:" + CityNState.getProvinceByCityId(mUser.getCityId()).getTitle() + " City:" + CityNState.getCity(mUser.getCityId()).getTitle());
 
-        avatar = bind.avatar;
+        avatar = mBind.avatar;
         avatar.setImageURI(MyConst.BASE_CONTENT_URL + mUser.getThumbUrl());
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,7 +200,7 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
                         });
             }
         });
-        bind.btnEditProfilePic.setOnClickListener(view -> CropImage.activity()
+        mBind.btnEditProfilePic.setOnClickListener(view -> CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setCropShape(CropImageView.CropShape.RECTANGLE)
                 .setActivityTitle(getString(R.string.choose_profile_photo))
@@ -214,108 +212,61 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
                 .start(getContext(), EditProfileFragment.this));
 
 
-        bind.rbMale.setChecked(mUser.isMale());
-        bind.rbFemale.setChecked(!mUser.isMale());
+        mBind.rbMale.setChecked(mUser.isMale());
+        mBind.rbFemale.setChecked(!mUser.isMale());
 
-        bind.btnSubmit.setOnClickListener(new View.OnClickListener() {
-            public MultipartBody.Part thumbBody;
-            public MultipartBody.Part imageBody;
+        mBind.btnSubmit.setOnClickListener(new View.OnClickListener() {
+
 
             @Override
             public void onClick(View view) {
 
-                if (bind.etWeight.getText().toString().isEmpty()) {
-                    bind.etWeight.setText("0");
+                if (mBind.etWeight.getText().toString().isEmpty()) {
+                    mBind.etWeight.setText("0");
                 }
 
-                mUser.setName(bind.etName.getText().toString());
-                mUser.setGender(bind.rbMale.isChecked());
-                mUser.setWeight(bind.etWeight.getText().toString());
-                mUser.setCityId(bind.spCity.getSelectedItemId());
-                mUser.setBirthdayDateFa(String.format("%04d/%02d/%02d", (int) bind.spDateYear.getSelectedItem(), (int) bind.spDateMont.getSelectedItem(), (int) bind.spDateDay.getSelectedItem()));
-                RequestBody userIdReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(mUser.getId()));
-                RequestBody nameReq = RequestBody.create(MediaType.parse("text/plain"), mUser.getName());
-                RequestBody genderReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(mUser.isGender()));
-                RequestBody weightReq = RequestBody.create(MediaType.parse("text/plain"), mUser.getWeight());
-                RequestBody cityReq = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(mUser.getCityId()));
-                RequestBody birthDayReq = RequestBody.create(MediaType.parse("text/plain"), mUser.getBirthdayDateFa());
+                mUser.setName(mBind.etName.getText().toString());
+                mUser.setGender(mBind.rbMale.isChecked());
+                mUser.setWeight(mBind.etWeight.getText().toString());
+                mUser.setCityId(mBind.spCity.getSelectedItemId());
+                mUser.setBirthdayDateFa(String.format("%04d/%02d/%02d", (int) mBind.spDateYear.getSelectedItem(), (int) mBind.spDateMont.getSelectedItem(), (int) mBind.spDateDay.getSelectedItem()));
+                waitingDialog.show();
+                LiveData<RetStatusProgress> status = userViewModel.save(mUser, resultUri, getContext().getCacheDir().getPath());
+                status.observe(EditProfileFragment.this, s -> {
+                    if (s.getStatus() == MyWebService.STATUS_WAITING) {
+                        waitingDialog.setProgress(s.getProgress());
+                    } else if (s.getStatus() == MyWebService.STATUS_SUCCESS) {
+                        waitingDialog.dismiss();
+                        mListener.onSuccessfulEdited(mUser);
 
-                Map<String, RequestBody> requestBodyMap = new HashMap<>();
-                requestBodyMap.put("UserId", userIdReq);
-                requestBodyMap.put("name", nameReq);
-                requestBodyMap.put("gender", genderReq);
-                requestBodyMap.put("weight", weightReq);
-                requestBodyMap.put("BirthDateFa", birthDayReq);
-                requestBodyMap.put("cityId", cityReq);
-                try {
-                    if (resultUri != null) {
-                        File imageFile = new File(resultUri.getPath());
-                        Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(resultUri.getPath()), 128, 128);
-                        //create a file to write bitmap data
-                        File thumbFile = new File(getContext().getCacheDir(), "thumb.jpg");
-                        thumbFile.createNewFile();
-                        //Convert bitmap to byte array
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        thumbImage.compress(Bitmap.CompressFormat.JPEG, 60 /*ignored for PNG*/, bos);
-                        byte[] bitmapData = bos.toByteArray();
-                        //write the bytes in file
-                        FileOutputStream fos = new FileOutputStream(thumbFile);
-                        fos.write(bitmapData);
-                        fos.flush();
-                        fos.close();
-                        final RequestBody requestThumbFile =
-                                RequestBody.create(
-                                        MediaType.parse("image/jpg"),
-                                        thumbFile);
-                        thumbBody =
-                                MultipartBody.Part.createFormData("ThumbUrl", thumbFile.getName(), requestThumbFile);
+                    } else {
+                        waitingDialog.dismiss();
+                        Toast.makeText(getContext(), R.string.error_accord_try_again, Toast.LENGTH_SHORT).show();
 
-
-                        // create RequestBody instance from file
-                        Log.d(TAG, "onClick: mediatype:" + MimeTypeMap.getFileExtensionFromUrl(resultUri.getPath()));
-
-
-                        waitingDialog = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
-                        waitingDialog.setMessage(getString(R.string.uploading_picture_wait));
-                        waitingDialog.setProgress(0);
-                        waitingDialog.setMax(100);
-                        waitingDialog.setIndeterminate(false);
-                        waitingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        waitingDialog.show();
-                        final ProgressRequestBody requestFile = new ProgressRequestBody(MediaType.parse("image/jpg"), imageFile, new ProgressRequestBody.UploadCallbacks() {
-                            @Override
-                            public void onProgressUpdate(int percentage, String tag) {
-                                Log.d("Send Video", "onProgressUpdate: completed:" + percentage + "%");
-                                waitingDialog.setProgress(percentage);
-                            }
-
-                            @Override
-                            public void onError(String tag) {
-                                waitingDialog.dismiss();
-                            }
-
-                            @Override
-                            public void onFinish(String tag) {
-
-                                waitingDialog.setIndeterminate(true);
-                            }
-                        }
-                                , "Video Clip");
-                        imageBody =
-                                MultipartBody.Part.createFormData("PictureUrl", imageFile.getName(), requestFile);
                     }
-
-
-                    MyWebService.editProfile(getActivity(), requestBodyMap, EditProfileFragment.this, resultUri != null ? imageBody : null, resultUri != null ? thumbBody : null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-
-                }
-
-
+                });
             }
         });
-        return bind.getRoot();
+        waitingDialog = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
+        waitingDialog.setMessage(getString(R.string.uploading_picture_wait));
+        waitingDialog.setProgress(0);
+        waitingDialog.setMax(100);
+        waitingDialog.setIndeterminate(false);
+        waitingDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+
+        return mBind.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        userViewModel = ViewModelProviders.of(getActivity(), mFactory).get(UserViewModel.class);
+        userViewModel.init(mUser.getUserName());
+        userViewModel.getUserLive().observe(this, user -> {
+            mBind.setUser(user);
+        });
+
     }
 
     @Override
@@ -336,7 +287,7 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
     public void webServiceOnSuccess(Bundle bundle) {
         if (waitingDialog != null)
             waitingDialog.dismiss();
-        mUserDao.saveUser(mUser);
+        // mUserDao.saveUser(mUser);
         Log.d(TAG, "webServiceOnSuccess: usrname:" + mUser.getUserName() + " name:" + mUser.getName());
         MyWebService.getProfileDetail(mUser.getUserName(), ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), (AppCompatActivity) getActivity(), new WebServiceResultImplementation() {
             @Override

@@ -22,14 +22,13 @@ public class NewsDetailViewModel extends ViewModel {
     public NewsDetailViewModel(NewsDetailRepository newsRepo) {
         this.newsRepo = newsRepo;
         inputLiveData = new MutableLiveData<>();
-        news=Transformations.switchMap(inputLiveData,input -> newsRepo.getNewsDetail(input.userId, input.newsId));
-        prevNewsId=Transformations.switchMap(inputLiveData,input->newsRepo.getPrevNewsDetail(input.newsId));
-        nextNewsId=Transformations.switchMap(inputLiveData,input->newsRepo.getNextNewsDetail(input.newsId));
-
+        news = Transformations.switchMap(inputLiveData, input -> newsRepo.getNewsDetail(input.userId, input.newsId));
+        prevNewsId = Transformations.switchMap(inputLiveData, input -> newsRepo.getPrevNewsDetail(input.newsId,input.catType));
+        nextNewsId = Transformations.switchMap(inputLiveData, input -> newsRepo.getNextNewsDetail(input.newsId,input.catType));
     }
 
-    public void init(long userId, long newsId) {
-        inputLiveData.setValue(new Input(userId,newsId));
+    public void init(long userId, long newsId, int catType) {
+        inputLiveData.setValue(new Input(userId, newsId, catType));
     }
 
     public LiveData<News> getNews() {
@@ -47,10 +46,12 @@ public class NewsDetailViewModel extends ViewModel {
     private class Input {
         private long userId;
         private long newsId;
+        private int catType;
 
-        public Input(long userId, long newsId) {
+        public Input(long userId, long newsId, int catType) {
             this.userId = userId;
             this.newsId = newsId;
+            this.catType = catType;
         }
 
         public long getUserId() {
@@ -67,6 +68,14 @@ public class NewsDetailViewModel extends ViewModel {
 
         public void setNewsId(int newsId) {
             this.newsId = newsId;
+        }
+
+        public int getCatType() {
+            return catType;
+        }
+
+        public void setCatType(int catType) {
+            this.catType = catType;
         }
     }
 }

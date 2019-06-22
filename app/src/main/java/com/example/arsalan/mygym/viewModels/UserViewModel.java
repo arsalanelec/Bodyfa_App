@@ -1,5 +1,9 @@
 package com.example.arsalan.mygym.viewModels;
 
+import android.net.Uri;
+
+import com.example.arsalan.mygym.models.RetResponseStatus;
+import com.example.arsalan.mygym.models.RetStatusProgress;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.repository.TrainerListRepository;
@@ -15,6 +19,7 @@ import androidx.lifecycle.ViewModel;
 public class UserViewModel extends ViewModel {
     private UserRepository repository;
     private LiveData<User> userLiveData;
+    private LiveData<RetStatusProgress> statusLiveData;
 
     private MutableLiveData<String> userName =new MutableLiveData<>();
 
@@ -28,7 +33,11 @@ public class UserViewModel extends ViewModel {
         //if (this.trainer!=null)return;
         this.userName.setValue(userName);
     }
-    public LiveData<User> getTrainer() {
+    public  LiveData<RetStatusProgress> save(User user, Uri imageUri, String imagePath){
+        return repository.uploadUser(user, imageUri, imagePath);
+    }
+    public LiveData<User> getUserLive() {
         return this.userLiveData;
     }
+
 }

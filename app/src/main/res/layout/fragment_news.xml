@@ -14,7 +14,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvNews"
+            android:id="@+id/rv_news"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layoutAnimation="@anim/layout_animation_fall_down" />

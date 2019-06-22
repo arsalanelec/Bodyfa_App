@@ -25,6 +25,10 @@ public class NewsHead {
     private
     int visitcnt;
 
+    @SerializedName("UserId")
+    private
+    long publisherId;
+
     @SerializedName("LikeCount")
     private
     int likeCnt;
@@ -116,5 +120,13 @@ public class NewsHead {
 
     public void setThumbUrl(String thumbUrl) {
         this.thumbUrl = thumbUrl;
+    }
+
+    public long getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(long publisherId) {
+        this.publisherId = publisherId;
     }
 }

@@ -4,25 +4,19 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.fragments.AthleteMealPlanListFragment;
 import com.example.arsalan.mygym.fragments.AthleteWorkoutPlanListFragment;
-import com.example.arsalan.mygym.fragments.DashBoardAthleteFragment;
 import com.example.arsalan.mygym.fragments.HomeFragment;
-import com.example.arsalan.mygym.fragments.InboxFragment;
 import com.example.arsalan.mygym.fragments.MyGymFragment;
-import com.example.arsalan.mygym.fragments.MyTrainerFragment;
 import com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment;
 import com.example.arsalan.mygym.models.User;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
@@ -32,7 +26,7 @@ public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
     public ViewPagerVarzeshkarAdapter(FragmentManager fm, Context context, User user) {
         super(fm);
         mContext = context;
-        titles = new String[]{mContext.getString(R.string.my_dashboard), mContext.getString(R.string.my_gym), mContext.getString(R.string.my_trainers), mContext.getString(R.string.meal_plan), mContext.getString(R.string.workout_plan)};//, mContext.getString(R.string.messages)};
+        titles = new String[]{ mContext.getString(R.string.my_gym), mContext.getString(R.string.my_trainers), mContext.getString(R.string.meal_plan), mContext.getString(R.string.workout_plan)};//, mContext.getString(R.string.messages)};
         mCurrentUser = user;
     }
 
@@ -54,15 +48,14 @@ public class ViewPagerVarzeshkarAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
+
             case 0:
-                return DashBoardAthleteFragment.newInstance(mCurrentUser);
-            case 1:
                 return new MyGymFragment();
-            case 2:
+            case 1:
                 return MyTrainerMembershipFragment.newInstance(mCurrentUser.getId());//MyTrainerFragment.newInstance(mCurrentUser.getId(),mCurrentUser.getTrainerId(),true);
-            case 3:
+            case 2:
                 return AthleteMealPlanListFragment.newInstance(mCurrentUser);
-            case 4:
+            case 3:
                 return AthleteWorkoutPlanListFragment.newInstance(mCurrentUser);
            // case 5:
            //     return InboxFragment.newInstance(mCurrentUser);

@@ -58,7 +58,7 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: newId:" + newsHead.getId());
-                eventListener.onNewsHeadClick(newsHead.getId());
+                eventListener.onNewsHeadClick(newsHead.getId(),newsHead.getTypeId());
                 /*Intent i = new Intent();
                 i.setClass(h.itemView.getContext(), NewsDetailActivity.class);
                 i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsHead.getId());
@@ -94,6 +94,6 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
         }
     }
     public interface OnAdapterNewsEventListener{
-        void onNewsHeadClick(long newsId);
+        void onNewsHeadClick(long newsId,int catType);
     }
 }

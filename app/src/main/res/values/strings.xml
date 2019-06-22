@@ -350,5 +350,10 @@
     <string name="to_continue_select_a_trainer">To continue please select a trainer…</string>
     <string name="plan_list">Plan List</string>
     <string name="request_list">Request list:</string>
+    <string name="name">Name</string>
+    <string name="news">News</string>
+    <string name="there_is_no_news_to_show">there is no news to show!</string>
+    <string name="wite_a_title_for_your_news">یک عنوان برای مطلب خود بنویسید...</string>
+    <string name="send_a_news">Send a News</string>
 
 </resources>

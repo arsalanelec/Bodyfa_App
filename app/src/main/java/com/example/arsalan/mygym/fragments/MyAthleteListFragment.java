@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,11 +36,10 @@ import javax.inject.Inject;
 
 
 public class MyAthleteListFragment extends Fragment implements Injectable{
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_TRAINER = "param2";
     private static final String ARG_USER = "param1";
-
+    private static final String TAG = "MyAthleteListFragment";
 
     private List<TrainerAthlete> mAthleteList;
     private OnFragmentInteractionListener mListener;
@@ -48,7 +48,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
     private Trainer mCurrentTrainer;
     private User mCurrentUser;
     private TextView athleteCnt;
-
+    private View mAthleteContainer;
     private AthleteListViewModel acceptedAthleteListViewModel;
 
     @Inject
@@ -89,12 +89,19 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
 
         athleteCnt = v.findViewById(R.id.txtAthleteCount);
         athleteCnt.setVisibility(View.INVISIBLE);
-
+        mAthleteContainer = v.findViewById(R.id.container_athlete_profile);
         RecyclerView rv = v.findViewById(R.id.rv_trainers);
         mAthleteList = new ArrayList<>();
         mAdapter = new AdapterAthletes(mAthleteList, new AdapterAthletes.OnItemClickListener() {
             @Override
             public void onItemClick(TrainerAthlete athlete, View view) {
+                Log.d(TAG, "onItemClick: athlete id:"+athlete.getAthleteId()+" userName:"+athlete.getAthleteUsername());
+                Fragment athleteProfileFragment= AthleteProfileFragment.newInstance(athlete.getAthleteId(),athlete.getAthleteUsername());
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container_athlete_profile,athleteProfileFragment)
+                        .commit();
+                mAthleteContainer.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -144,6 +151,25 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         }*/
     }
 
+    @Override
+    //Pressed return button - returns to the results menu
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.d(TAG, "onKey: back presssed!");
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mAthleteContainer.getVisibility()==View.VISIBLE){
+                    mAthleteContainer.setVisibility(View.GONE);
+                    //your code
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
     @Override
     public void onDetach() {
         super.onDetach();

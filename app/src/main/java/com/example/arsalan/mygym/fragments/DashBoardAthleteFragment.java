@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,19 +25,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.activities.EditProfileActivity;
+import com.example.arsalan.mygym.adapters.GalleryPagerAdapter;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.GalleryItem;
-import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.ProgressRequestBody;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.User;
@@ -143,7 +138,7 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
             }
         });
 
-        mGalleryPager = v.findViewById(R.id.vpGallery);
+        mGalleryPager = v.findViewById(R.id.vp_gallery);
         TabLayout tabLayout = v.findViewById(R.id.tablayoutGallery);
         mGalleryPager.setOnTouchListener(new View.OnTouchListener() {
 
@@ -365,61 +360,6 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         }
     }
 
-    public class GalleryPagerAdapter extends PagerAdapter {
-        List<GalleryItem> galleryItemList;
 
-        public GalleryPagerAdapter(List<GalleryItem> galleryItemList) {
-            this.galleryItemList = galleryItemList;
-        }
-
-        @Override
-        public int getCount() {
-            if (galleryItemList == null) return 0;
-            return galleryItemList.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object o) {
-            return o.equals(view);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
-
-            ImageView image = new ImageView(container.getContext());
-            CircularProgressDrawable loadingDrawable = new CircularProgressDrawable(container.getContext());
-            loadingDrawable.setStrokeWidth(5f);
-            loadingDrawable.setCenterRadius(30f);
-
-            Glide.with(getContext())
-                    .load(MyConst.BASE_CONTENT_URL + galleryItemList.get((getCount() - 1) - position).getPictureUrl())
-                    .apply(new RequestOptions().placeholder(loadingDrawable).centerCrop())
-                    .into(image);
-
-            container.addView(image);
-/*            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), GalleryActivity.class);
-                    intent.putExtra(EXTRA_POSITION, position);
-                    intent.putExtra(EXTRA_GALLERY_ARRAY, galleryItemList);
-                    intent.putExtra(EXTRA_EDIT_MODE, true);
-                    startVideoRecorderActivity(intent);
-
-
-                }
-            });*/
-            return image;
-        }
-        @Override
-        public int getItemPosition(Object object){
-            return PagerAdapter.POSITION_NONE;
-        }
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-    }
 }
 
