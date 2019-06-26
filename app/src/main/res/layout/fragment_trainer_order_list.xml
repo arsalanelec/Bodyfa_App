@@ -3,17 +3,31 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragments.TrainerOrderListFragment">
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    android:id="@+id/swipeLay"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ExpandableListView
-        android:id="@+id/exListView"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:headerDividersEnabled="false"
-        android:layoutDirection="ltr"
-        android:choiceMode="multipleChoice"
-        />
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ExpandableListView
+                android:id="@+id/exListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:choiceMode="multipleChoice"
+                android:headerDividersEnabled="false"
+                android:layoutDirection="ltr" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <FrameLayout
+            android:id="@+id/container_athlete_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:rotation="180"
+            android:background="@color/gray_light"
+            />
+    </FrameLayout>
 </layout>

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +48,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 import androidx.viewpager.widget.PagerAdapter;
@@ -133,10 +135,22 @@ public class MyTrainerFragment extends Fragment implements Injectable {
 
         mHonorList = new ArrayList<>();
         mHonorAdapter = new AdapterHonors(mHonorList);
-        GridLayoutManager linearLayout = new GridLayoutManager(getContext(), 3, RecyclerView.VERTICAL, false);
+       // GridLayoutManager linearLayout = new GridLayoutManager(getContext(), 3, RecyclerView.HORIZONTAL, false);
+        LinearLayoutManager linearLayout = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         bind.rvHonor.setLayoutManager(linearLayout);
         bind.rvHonor.setAdapter(mHonorAdapter);
         bind.rvHonor.setVisibility(View.GONE);
+        bind.rvHonor.setOnTouchListener((v1, motionEvent) -> {
+            Log.d("setOnTouchListener", "onTouch: " + motionEvent.toString());
+            if (
+                    motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
+                            v1 instanceof ViewPager
+            ) {
+                ((ViewPager) v1).requestDisallowInterceptTouchEvent(true);
+            }
+            return false;
+        });
+
         //if the athlete is not a memever of the trainer then cant send message to him/her
         if(!mIsMyTrainer) {
             bind.btnSendMessage.setVisibility(View.GONE);

@@ -67,6 +67,7 @@ public class TrainerWorkoutPlanReqRepository {
                         Response<RetTrainerWorkoutPlanReqList> response = call.execute();
                         if (response.isSuccessful()) {
                             planRequestDao.deleteAll();
+                            Log.d(TAG, "run: ");
                             Log.d(TAG, "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
                             Log.d(TAG, "run: newDao save:"+ planRequestDao.saveList(response.body().getRecords()).length);
 

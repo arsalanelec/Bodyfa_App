@@ -115,7 +115,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
         /*for (int i = 0; i < 20; i++)
             newsList.add(new NewsHead());*/
 
-        adapter = new AdapterNews(getActivity(), newsList,this::onNewsHeadClick);
+        adapter = new AdapterNews(newsList,this::onNewsHeadClick);
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         // newsRV.setLayoutAnimation(animation);
         newsRV.setAdapter(adapter);

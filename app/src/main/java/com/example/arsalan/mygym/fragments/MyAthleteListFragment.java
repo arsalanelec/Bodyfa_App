@@ -96,7 +96,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
             @Override
             public void onItemClick(TrainerAthlete athlete, View view) {
                 Log.d(TAG, "onItemClick: athlete id:"+athlete.getAthleteId()+" userName:"+athlete.getAthleteUsername());
-                Fragment athleteProfileFragment= AthleteProfileFragment.newInstance(athlete.getAthleteId(),athlete.getAthleteUsername());
+                Fragment athleteProfileFragment= AthleteProfileFragment.newInstance(athlete.getAthleteId(),athlete.getAthleteName());
                 getFragmentManager()
                         .beginTransaction()
                         .replace(R.id.container_athlete_profile,athleteProfileFragment)

@@ -180,7 +180,11 @@
                 android:id="@+id/rvHonor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/item_honor_grid" />
+                android:orientation="horizontal"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                app:spanCount="2"
+                tools:listitem="@layout/item_honor_grid"
+                android:requiresFadingEdge="horizontal"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layOrderButtons"

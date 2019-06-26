@@ -18,6 +18,10 @@ public class Comment {
     long newsId;
     String commentDateFa;
     String commentTimeFa;
+
+    @SerializedName("CommentDateTs")
+            long commentDateTs;
+
     String comment;
     public Comment() {
     }
@@ -44,5 +48,37 @@ public class Comment {
 
     public String getComment() {
         return comment;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public void setNewsId(long newsId) {
+        this.newsId = newsId;
+    }
+
+    public void setCommentDateFa(String commentDateFa) {
+        this.commentDateFa = commentDateFa;
+    }
+
+    public void setCommentTimeFa(String commentTimeFa) {
+        this.commentTimeFa = commentTimeFa;
+    }
+
+    public long getCommentDateTs() {
+        return commentDateTs;
+    }
+
+    public void setCommentDateTs(long commentDateTs) {
+        this.commentDateTs = commentDateTs;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

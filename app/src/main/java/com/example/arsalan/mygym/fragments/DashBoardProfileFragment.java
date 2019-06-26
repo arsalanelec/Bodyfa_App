@@ -22,19 +22,25 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.arsalan.mygym.R;
-import com.example.arsalan.mygym.activities.PostContentActivity;
-import com.example.arsalan.mygym.adapters.AdapterNews;
+import com.example.arsalan.mygym.adapters.AdapterDashboardNews;
 import com.example.arsalan.mygym.adapters.GalleryPagerAdapter;
+import com.example.arsalan.mygym.databinding.ItemMyNewsGridBinding;
+import com.example.arsalan.mygym.databinding.ItemMyNewsLinearBinding;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.GalleryItem;
+import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.ProgressRequestBody;
 import com.example.arsalan.mygym.models.User;
@@ -65,8 +71,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_ATHLETE;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
 
 
 public class DashBoardProfileFragment extends Fragment implements WebServiceResultImplementation, Injectable {
@@ -78,7 +82,7 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
     @Inject
     MyViewModelFactory factory;
     private List<NewsHead> newsList;
-    private AdapterNews adapter;
+    private AdapterDashboardNews adapter;
     private User mUser;
     private TextView mNameTV;
     private SimpleDraweeView pictureImg;
@@ -192,7 +196,12 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
 
         newsRV = v.findViewById(R.id.rv_news);
         newsList = new ArrayList<>();
-        adapter = new AdapterNews(getActivity(), newsList, new AdapterNews.OnAdapterNewsEventListener() {
+
+        LinearLayoutManager linearLayout = new LinearLayoutManager(getActivity());
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, RecyclerView.VERTICAL, false);
+        newsRV.setLayoutManager(linearLayout);
+        newsRV.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        adapter = new AdapterDashboardNews( newsList,AdapterDashboardNews.LAYOUT_TYPE_LINEAR, new AdapterDashboardNews.OnAdapterNewsEventListener() {
             @Override
             public void onNewsHeadClick(long newsId, int catType) {
                 /*Intent i = new Intent();
@@ -205,8 +214,21 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
             }
         });
 
-        newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         newsRV.setAdapter(adapter);
+
+        ImageButton linearLayoutBtn = v.findViewById(R.id.btn_layout_linear);
+        linearLayoutBtn.setOnClickListener(b->{
+            newsRV.setLayoutManager(linearLayout);
+            adapter.setLayoutType(AdapterDashboardNews.LAYOUT_TYPE_LINEAR);
+            adapter.notifyDataSetChanged();
+        });
+
+        ImageButton gridLayoutBtn = v.findViewById(R.id.btn_layout_grid);
+        gridLayoutBtn.setOnClickListener(b->{
+            newsRV.setLayoutManager(gridLayoutManager);
+            adapter.setLayoutType(AdapterDashboardNews.LAYOUT_TYPE_GRID);
+            adapter.notifyDataSetChanged();
+        });
 
         mGalleryPager = v.findViewById(R.id.vp_gallery);
         TabLayout tabLayout = v.findViewById(R.id.tablayout_trainer_dashboard);
@@ -265,6 +287,7 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
                     newsList.addAll(newNewsList);
                     adapter.notifyDataSetChanged();
                     noNewsTv.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
+                    newsRV.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
                 }
             }
         });
@@ -439,6 +462,7 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
         }
 
     }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

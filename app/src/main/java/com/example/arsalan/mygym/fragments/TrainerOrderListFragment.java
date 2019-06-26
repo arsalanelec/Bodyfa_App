@@ -3,6 +3,7 @@ package com.example.arsalan.mygym.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,14 @@ import com.example.arsalan.mygym.databinding.RowWorkoutPlanReqBinding;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.dialog.TrainerWorkoutPlanListToSendDialog;
 import com.example.arsalan.mygym.models.MyConst;
+import com.example.arsalan.mygym.models.PlanProp;
 import com.example.arsalan.mygym.models.TrainerAthlete;
 import com.example.arsalan.mygym.models.WorkoutPlanReq;
 import com.example.arsalan.mygym.viewModels.AthleteListViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerWorkoutPlanReqVm;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +63,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     private List<WorkoutPlanReq> mRequestList;
     private List<TrainerAthlete> mAthletes;
     private ExtendViewAdapter mAdapter;
-    private FragmentTrainerOrderListBinding bind;
+    private FragmentTrainerOrderListBinding mBind;
     private TrainerWorkoutPlanReqVm workoutPlanReqVm;
     private AthleteListViewModel athletesViewModel;
 
@@ -96,14 +100,14 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_trainer_order_list, container, false);
+        mBind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_trainer_order_list, container, false);
 
 
         mAdapter = new ExtendViewAdapter(mRequestList,mAthletes);
-        bind.exListView.setAdapter(mAdapter);
-        bind.swipeLay.setOnRefreshListener(this);
-        bind.swipeLay.setRefreshing(true);
-        View v = bind.getRoot();
+        mBind.exListView.setAdapter(mAdapter);
+        mBind.swipeLay.setOnRefreshListener(this);
+        mBind.swipeLay.setRefreshing(true);
+        View v = mBind.getRoot();
         v.setRotation(180);
         return v;
     }
@@ -121,8 +125,8 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
             }
             mAdapter.notifyDataSetChanged();
 
-            bind.exListView.expandGroup(0);
-            bind.swipeLay.setRefreshing(false);
+            mBind.exListView.expandGroup(0);
+            mBind.swipeLay.setRefreshing(false);
         });
 
         athletesViewModel = ViewModelProviders.of(this, mFactory).get(AthleteListViewModel.class);
@@ -135,8 +139,8 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
             }
             mAdapter.notifyDataSetChanged();
 
-            bind.exListView.expandGroup(2);
-            bind.swipeLay.setRefreshing(false);
+            mBind.exListView.expandGroup(2);
+            mBind.swipeLay.setRefreshing(false);
         });
 
     }
@@ -165,7 +169,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
     public interface OnRequestRowClickListener {
         void onCancelClick(long requestId, int type);
-
+        void onItemClick(long athleteId,String athleteName);
         void onSubmitClick(long requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl, int type);
     }
 
@@ -271,7 +275,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                 case 0:    //WorkoutPlan
                 {
                     RowWorkoutPlanReqBinding bind;
-                    if (convertView == null) {
+                    if (convertView == null || !(convertView.getTag() instanceof RowWorkoutPlanReqBinding)) {
                         bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.row_workout_plan_req, parent, false);
                         convertView = bind.getRoot();
                     } else {
@@ -279,9 +283,17 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                     }
                     WorkoutPlanReq temp = (WorkoutPlanReq) getChild(groupPosition, childPosition);
                     Log.d(TAG, "getChildView: id:" + temp.getId() + " date" + temp.getRequestDateEnTs());
-                    //bind data
+                    Gson gson=new Gson();
+                    PlanProp planProp=new PlanProp();
+                    try {
+                        planProp=gson.fromJson(temp.getDescriptions(), PlanProp.class);
+                    }catch (JsonParseException e){
+                        e.printStackTrace();
+                    }
+                    //mBind data
                     bind.setWorkoutReq(temp);
-                    bind.setOnDeleteClick(this);
+                    bind.setPlanProp(planProp);
+                    bind.setOnClickListener(this);
                     bind.setTypeOfRequest(TYPE_WORKOUT);
 
                     //Load Thumbnails
@@ -297,16 +309,17 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                 case 2:    //Membership Request
                 {
                     RowTrainerMembershipReqBinding bind;
-                    if (convertView == null) {
+                    if (convertView == null  || !(convertView.getTag() instanceof RowTrainerMembershipReqBinding)) {
                         bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.row_trainer_membership_req, parent, false);
                         convertView = bind.getRoot();
                     } else {
                         bind = ((RowTrainerMembershipReqBinding) convertView.getTag());
                     }
                     TrainerAthlete athlete = (TrainerAthlete) getChild(groupPosition, childPosition);
-                    //bind data
+                    //mBind data
                     bind.setAthlete(athlete);
                     bind.setOnDeleteClick(this);
+
                     bind.setTypeOfRequest(TYPE_MEMBERSHIP);
                     //Load Thumbnails
                     Glide.with(getContext())
@@ -361,6 +374,17 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         }
 
         @Override
+        public void onItemClick(long athleteId,String athleteName) {
+            Fragment athleteProfileFragment= AthleteProfileFragment.newInstance(athleteId,athleteName);
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container_athlete_profile,athleteProfileFragment)
+                    .commit();
+            mBind.containerAthleteProfile.setVisibility(View.VISIBLE);
+        }
+
+
+        @Override
         public void onSubmitClick(long requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl, int type) {
             switch (type) {
                 case TYPE_WORKOUT:
@@ -382,4 +406,25 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
 
     }
+
+    @Override
+    //Pressed return button - returns to the results menu
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.d(TAG, "onKey: back presssed!");
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mBind.containerAthleteProfile.getVisibility()==View.VISIBLE){
+                    mBind.containerAthleteProfile.setVisibility(View.GONE);
+                    //your code
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
 }

@@ -46,7 +46,7 @@
         />
 
     <TextView
-        android:id="@+id/txt1"
+        android:id="@+id/txt_send_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/iran_sans_mobile"
@@ -85,8 +85,8 @@
         android:fontFamily="@font/iran_sans_mobile"
         android:text="77"
         android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/txt1"
-        app:layout_constraintTop_toTopOf="@+id/txt1" />
+        app:layout_constraintStart_toEndOf="@+id/txt_send_to"
+        app:layout_constraintTop_toTopOf="@+id/txt_send_to" />
 
     <TextView
         android:id="@+id/txt3"

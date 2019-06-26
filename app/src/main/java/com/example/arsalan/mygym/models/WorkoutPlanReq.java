@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import static com.example.arsalan.mygym.MyUtil.getStringFormatOfDate;
+import static com.example.arsalan.mygym.MyUtil.getLargStringFormatOfDate;
+import static com.example.arsalan.mygym.MyUtil.getShortStringFormatOfDate;
 
 @Entity
 public class WorkoutPlanReq {
@@ -284,7 +285,7 @@ public class WorkoutPlanReq {
     }
 
     public String getSendDatePersianString(){
-       return getStringFormatOfDate(requestDateEnTs);
+       return getShortStringFormatOfDate(requestDateEnTs);
     }
 
     public String getStatusFarsi() {

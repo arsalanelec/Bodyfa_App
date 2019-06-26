@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <data>
@@ -7,18 +7,21 @@
         name="workoutReq"
         type="com.example.arsalan.mygym.models.WorkoutPlanReq" />
     <variable
-        name="onDeleteClick"
+        name="planProp"
+        type="com.example.arsalan.mygym.models.PlanProp" />
+    <variable
+        name="onClickListener"
         type="com.example.arsalan.mygym.fragments.TrainerOrderListFragment.OnRequestRowClickListener" />
     <variable
         name="typeOfRequest"
         type="Integer" />
 </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:layoutDirection="ltr"
-        >
+        android:layoutDirection="ltr">
 
         <Button
             android:id="@+id/btnSubmit"
@@ -28,17 +31,16 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-           android:text="@string/submit"
             android:background="@drawable/purple_rect_back"
             android:foreground="?attr/selectableItemBackground"
+            android:onClick="@{()->onClickListener.onSubmitClick(workoutReq.id,workoutReq.parentUserId,workoutReq.athleteId,workoutReq.athleteName,workoutReq.athleteThumbUrl,typeOfRequest)}"
+            android:text="@string/submit"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_cancel"
-            app:layout_constraintTop_toTopOf="parent"
 
-            android:onClick="@{()->onDeleteClick.onSubmitClick(workoutReq.id,workoutReq.parentUserId,workoutReq.athleteId,workoutReq.athleteName,workoutReq.athleteThumbUrl,typeOfRequest)}"/>
-            <!--( int requestId,long parentId,long athleteId,String athleteName,String athleteThumbUrl)-->
-
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--( int requestId,long parentId,long athleteId,String athleteName,String athleteThumbUrl)-->
 
 
         <ImageButton
@@ -51,36 +53,40 @@
             android:layout_marginBottom="8dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
+            android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
+            android:onClick="@{()->onClickListener.onCancelClick(workoutReq.id,typeOfRequest)}"
             android:src="@drawable/ic_close_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:clickable="true"
-            android:onClick="@{()->onDeleteClick.onCancelClick(workoutReq.id,typeOfRequest)}"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:placeholderImage="@drawable/avatar"
             app:roundAsCircle="true"
             app:roundingBorderColor="@color/colorAccent"
-            app:roundingBorderWidth="2dp" />
+            app:roundingBorderWidth="2dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:onClick="@{()->onClickListener.onItemClick(workoutReq.athleteId,workoutReq.athleteName)}"/>
 
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-
             android:layout_marginTop="8dp"
+
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:fontFamily="@font/iran_sans_mobile"
             android:lines="1"
@@ -96,15 +102,15 @@
             android:id="@+id/txtDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:drawableStart="@drawable/ic_access_time_24dp"
             android:fontFamily="@font/iran_sans_mobile"
             android:text="@{workoutReq.sendDatePersianString}"
             android:textSize="10sp"
+            android:textColor="@color/gray_dark"
             android:visibility="visible"
-            app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txtDescription"
@@ -116,10 +122,26 @@
 
             android:fontFamily="@font/iran_sans_mobile"
             android:text="@{workoutReq.title}"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:visibility="visible"
-            app:layout_constraintEnd_toStartOf="@+id/txtDate"
+            app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
             app:layout_constraintStart_toEndOf="@+id/btnSubmit"
             app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="12sp"
+            android:text="@{String.format(@string/txt_request_workout_plan_description,planProp.weight,planProp.height,planProp.waist,planProp.bloodTypeString)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
+            app:layout_constraintStart_toEndOf="@+id/btnSubmit"
+            app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

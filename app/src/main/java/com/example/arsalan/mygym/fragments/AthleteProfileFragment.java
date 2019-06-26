@@ -90,11 +90,11 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
         // Required empty public constructor
     }
 
-    public static AthleteProfileFragment newInstance(long userId,String userName) {
+    public static AthleteProfileFragment newInstance(long userId, String name) {
         AthleteProfileFragment fragment = new AthleteProfileFragment();
         Bundle args = new Bundle();
         args.putLong(ARG_USER_ID, userId);
-        args.putString(ARG_USER_NAME, userName);
+        args.putString(ARG_USER_NAME, name);
         fragment.setArguments(args);
         return fragment;
     }
@@ -114,12 +114,12 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_athlete_profile, container, false);
         mNameTV = v.findViewById(R.id.txtName);
-        ImageButton backBtn=v.findViewById(R.id.img_btn_back);
-        backBtn.setOnClickListener(b->container.setVisibility(View.GONE));
+        ImageButton backBtn = v.findViewById(R.id.img_btn_back);
+        backBtn.setOnClickListener(b -> container.setVisibility(View.GONE));
 
         newsRV = v.findViewById(R.id.rv_news);
         newsList = new ArrayList<>();
-        adapter = new AdapterNews(getActivity(), newsList, new AdapterNews.OnAdapterNewsEventListener() {
+        adapter = new AdapterNews( newsList, new AdapterNews.OnAdapterNewsEventListener() {
             @Override
             public void onNewsHeadClick(long newsId, int catType) {
                 /*Intent i = new Intent();
@@ -179,20 +179,23 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
                     newsList.addAll(newNewsList);
                     adapter.notifyDataSetChanged();
                     noNewsTv.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
+                    newsRV.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
                 }
             }
         });
 
-        mUserViewModel = ViewModelProviders.of(this, factory).get(UserViewModel.class);
-        mUserViewModel.init(mUserName);
+       // mUserViewModel = ViewModelProviders.of(this, factory).get(UserViewModel.class);
+        //mUserViewModel.init(mUserName);
 
-        mUserViewModel.getUserLive().observe(AthleteProfileFragment.this, user -> {
-            mUser = user;
-            mNameTV.setText(user.getName());
-            // MyWebService.getNewsWeb(mUserId, user.getRoleName().equalsIgnoreCase("athlete") ? 5 : 2, newsList, adapter, getContext(), newsRV, DashBoardProfileFragment.this);
-            newsListViewModel.init(user.getId(),0);
+        //mUserViewModel.getUserLive().observe(AthleteProfileFragment.this, user -> {
+         //   if (user != null) {
+         //       mUser = user;
+                mNameTV.setText(mUserName);
+                // MyWebService.getNewsWeb(mUserId, user.getRoleName().equalsIgnoreCase("athlete") ? 5 : 2, newsList, adapter, getContext(), newsRV, DashBoardProfileFragment.this);
+                newsListViewModel.init(mUserId, 0);
+        //    }
 
-        });
+       // });
 
         galleryViewModel = ViewModelProviders.of(this, factory).get(GalleryViewModel.class);
         galleryViewModel.init(mUserId);
@@ -206,7 +209,6 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
 
         Log.d(getClass().getSimpleName(), "onActivityCreated: ");
     }
-
 
 
     @Override

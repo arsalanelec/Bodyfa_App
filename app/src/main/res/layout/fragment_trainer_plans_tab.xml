@@ -172,5 +172,6 @@
         android:id="@+id/lstWorkoutPlan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:divider="@null"
         tools:listitem="@layout/item_listview_trainer_plan" />
 </LinearLayout>

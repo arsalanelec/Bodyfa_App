@@ -13,20 +13,23 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
     <TextView
         android:id="@+id/txt_no_news"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
-        android:text="@string/there_is_no_news_to_show"
-        android:gravity="center"
-        android:padding="16dp"
-        android:textSize="18sp"
         android:background="@color/gray_light"
-        android:textColor="@color/gray_dark"
+        android:gravity="center"
         android:minHeight="100dp"
-        android:visibility="invisible"/>
+        android:padding="16dp"
+        android:text="@string/there_is_no_news_to_show"
+        android:textColor="@color/gray_dark"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/rv_news"
+        app:layout_constraintStart_toStartOf="@+id/rv_news"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_gallery"
@@ -190,6 +193,7 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/btn_layout_linear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -197,6 +201,7 @@
                 android:src="@drawable/ic_list_bulleted_24dp" />
 
             <ImageButton
+                android:id="@+id/btn_layout_grid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

@@ -31,4 +31,5 @@ public class TrainerListViewModel extends ViewModel {
     public LiveData<List<Trainer>> getTrainerList() {
         return this.trainerList;
     }
+
 }

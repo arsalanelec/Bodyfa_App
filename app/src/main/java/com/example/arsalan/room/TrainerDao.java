@@ -32,4 +32,6 @@ public interface TrainerDao {
 
     @Query("DELETE FROM Trainer")
     void deleteAll();
+    @Query("SELECT * FROM Trainer ORDER BY point DESC")
+    LiveData<List<Trainer>> loadAllListOrderByRate();
 }

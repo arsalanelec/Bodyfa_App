@@ -101,16 +101,13 @@ public class TrainerListFragment extends Fragment implements Injectable {
         detailFragment = v.findViewById(R.id.container_trainer);
         RecyclerView rv = v.findViewById(R.id.rv_trainers);
         trainerList = new ArrayList<>();
-        adapter = new AdapterTrainers( new AdapterTrainers.OnItemClickListener() {
-            @Override
-            public void onItemClick(Trainer trainer, View view) {
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.container_trainer, MyTrainerFragment.newInstance(mUserId, trainer.getId(), false))
-                        .commit();
-                detailFragment.setVisibility(View.VISIBLE);
-                //mListener.onGoToTrainerPage(trainer.getId(),false);
-            }
+        adapter = new AdapterTrainers((trainer, view) -> {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container_trainer, MyTrainerFragment.newInstance(mUserId, trainer.getId(), false))
+                    .commit();
+            detailFragment.setVisibility(View.VISIBLE);
+            //mListener.onGoToTrainerPage(trainer.getId(),false);
         });
         adapter.addAll(trainerList);
         rv.setAdapter(adapter);
@@ -127,7 +124,7 @@ public class TrainerListFragment extends Fragment implements Injectable {
         byMedalBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                waitingFL.setVisibility(View.VISIBLE);
+              //  waitingFL.setVisibility(View.VISIBLE);
                 byRankBtn.setChecked(!b);
                 /*getTrainerWeb(0, 0, b ? 1 : 2, new OnGetTrainerListner() {
                     @Override
@@ -147,7 +144,7 @@ public class TrainerListFragment extends Fragment implements Injectable {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 byMedalBtn.setChecked(!b);
-                compoundButton.setEnabled(!b);
+              //  compoundButton.setEnabled(!b);
             }
         });
 
@@ -160,14 +157,15 @@ public class TrainerListFragment extends Fragment implements Injectable {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, factory).get(TrainerListViewModel.class);
+        viewModel.init(3);
         viewModel.getTrainerList().observe(this, trainerList -> {
             Log.d("onActivityCreated", "observe: ");
-            this.trainerList.removeAll(this.trainerList);
+            this.trainerList.clear();
             this.trainerList.addAll(trainerList);
             adapter.addAll(trainerList);
             waitingFL.setVisibility(View.GONE);
         });
-        viewModel.init(2);
+
 
         Log.d(getClass().getSimpleName(), "onActivityCreated: ");
     }

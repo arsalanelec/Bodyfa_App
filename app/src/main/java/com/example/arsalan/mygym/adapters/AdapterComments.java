@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.arsalan.mygym.MyUtil;
 import com.example.arsalan.mygym.models.Comment;
 import com.example.arsalan.mygym.R;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class AdapterComments extends RecyclerView.Adapter<AdapterComments.VH> {
     List<Comment> commentList;
+
 
     public AdapterComments(List<Comment> commentList) {
         this.commentList = commentList;
@@ -30,7 +32,7 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.VH> {
     public void onBindViewHolder(@NonNull VH holder, int position) {
         Comment c = commentList.get(position);
         holder.senderNameTV.setText(c.getSenderName());
-        holder.dateTV.setText(c.getCommentDateFa());
+        holder.dateTV.setText(MyUtil.getLargStringFormatOfDate(c.getCommentDateTs()));
         holder.commentTv.setText(c.getComment());
     }
 

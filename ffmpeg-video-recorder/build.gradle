@@ -37,12 +37,12 @@ version = libraryVersion
 
 // TODO: Take a look at http://ph0b.com/android-studio-gradle-and-ndk-integration/
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.0'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode versionCode
         versionName libraryVersion
 
@@ -50,8 +50,8 @@ android {
         // manually rather than using gradle.
         // https://github.com/bytedeco/javacpp-presets/wiki/The-UnsatisfiedLinkError-X-File-(a-real-experience)
         // Compile the *.so files extracted from javacpp-presets:ffmpeg:3.1.2-1.2:android-*.jar
-      //  ndk { abiFilters 'armeabi', 'armeabi-v7a', 'x86' }
-        ndk { abiFilters  'armeabi-v7a'  }
+        //  ndk { abiFilters 'armeabi', 'armeabi-v7a', 'x86' }
+        ndk { abiFilters 'armeabi-v7a' }
     }
 
     buildTypes {
@@ -71,15 +71,15 @@ configurations {
 }
 
 dependencies {
-    compile 'androidx.appcompat:appcompat:1.0.2'
-    compile 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     //noinspection GradleDynamicVersion
-    compile 'androidx.annotation:annotation:1.0.2'
-    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     // Needed for nested builders
     compileOnly 'com.google.auto.value:auto-value:1.5.2'
-    annotationProcessor  'com.google.auto.value:auto-value:1.5.2'
-    compile 'com.google.guava:guava:24.1-jre'
+    annotationProcessor 'com.google.auto.value:auto-value:1.5.2'
+    implementation 'com.google.guava:guava:24.1-jre'
 
     compile group: 'org.bytedeco', name: 'javacpp', version: '1.4.1'
     compile group: 'org.bytedeco', name: 'javacv', version: '1.4.1'

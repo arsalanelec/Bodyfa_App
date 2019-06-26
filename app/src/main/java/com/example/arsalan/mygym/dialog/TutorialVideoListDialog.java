@@ -150,8 +150,8 @@ public class TutorialVideoListDialog extends DialogFragment implements Injectabl
                 waitingPB.setVisibility(View.GONE);
                 gridView.setVisibility(View.VISIBLE);
             } else {
-                Toast.makeText(getContext(), R.string.noting_to_show, Toast.LENGTH_SHORT).show();
                 dismiss();
+                Toast.makeText(getActivity(), R.string.noting_to_show, Toast.LENGTH_LONG).show();
             }
 
             // waitingFL.setVisibility(View.GONE);

@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.arsalan.mygym.activities.NewsDetailActivity;
 import com.example.arsalan.mygym.models.CityNState;
 import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.Province;
@@ -94,13 +93,13 @@ public class MyGymFragment extends Fragment {
         for (int i=0;i<20;i++)
             newsList.add(new NewsHead());
 
-        AdapterNews adapter = new AdapterNews(getActivity(), newsList, new AdapterNews.OnAdapterNewsEventListener() {
+        AdapterNews adapter = new AdapterNews(newsList, new AdapterNews.OnAdapterNewsEventListener() {
             @Override
             public void onNewsHeadClick(long newsId,int catType) {
                 Intent i = new Intent();
-                i.setClass(getContext(), NewsDetailActivity.class);
-                i.putExtra(NewsDetailActivity.KEY_NEWS_ID,newsId);
-              startActivity(i);
+                //i.setClass(getContext(), NewsDetailActivity.class);
+                //i.putExtra(NewsDetailActivity.KEY_NEWS_ID,newsId);
+              //startActivity(i);
             }
         });
         newsRV.setAdapter(adapter);

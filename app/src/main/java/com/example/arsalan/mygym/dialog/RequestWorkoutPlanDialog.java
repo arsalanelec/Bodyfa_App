@@ -3,31 +3,37 @@ package com.example.arsalan.mygym.dialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+
 import com.example.arsalan.mygym.R;
+import com.example.arsalan.mygym.databinding.DialogRequestWorkoutPlanBinding;
 import com.example.arsalan.mygym.di.Injectable;
+import com.example.arsalan.mygym.models.PlanProp;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+
+import java.lang.reflect.Field;
 
 import javax.inject.Inject;
 
@@ -45,14 +51,12 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String ARG_PARAM3 = "param3";
-
-    private long mUserId;
-    private long mTrainerId;
-
-    private int mCredit;
-    private OnFragmentInteractionListener mListener;
     @Inject
     MyViewModelFactory mFactory;
+    private long mUserId;
+    private long mTrainerId;
+    private int mCredit;
+    private OnFragmentInteractionListener mListener;
     private UserCreditViewModel mCreditVm;
     private int mAmount;
 
@@ -67,7 +71,7 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
      * @param userId Parameter 1.
      * @return A new instance of fragment RequestWorkoutPlanDialog.
      */
-    public static RequestWorkoutPlanDialog newInstance(long userId, long trainerId,int amount) {
+    public static RequestWorkoutPlanDialog newInstance(long userId, long trainerId, int amount) {
         RequestWorkoutPlanDialog fragment = new RequestWorkoutPlanDialog();
         Bundle args = new Bundle();
         args.putLong(ARG_PARAM1, userId);
@@ -91,12 +95,9 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.dialog_request_workout_plan, container, false);
-        EditText titleEt = v.findViewById(R.id.etTitle);
-        EditText descriptionEt = v.findViewById(R.id.etDescription);
-        TextInputLayout titleLay = v.findViewById(R.id.layTitle);
-        TextInputLayout descLay = v.findViewById(R.id.layDescription);
-        titleEt.addTextChangedListener(new TextWatcher() {
+        DialogRequestWorkoutPlanBinding bind = DataBindingUtil.inflate(inflater, R.layout.dialog_request_workout_plan, container, false);
+
+        bind.etTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -110,40 +111,47 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
-                    titleLay.setError("");
+                    bind.layTitle.setError("");
                 }
             }
         });
-        descriptionEt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        bind.npBelly.setVisibility(View.GONE);
+        bind.npBelly.setFormatter(i -> i + " cm");
+        bind.npBelly.setMaxValue(250);
+        bind.npBelly.setMinValue(40);
+        bind.npBelly.setValue(70);
+        bind.npBelly.setVisibility(View.VISIBLE);
 
-            }
+        setNumPickerFormat(bind.npBelly);
+        setDividerColor(bind.npBelly, getResources().getColor(R.color.yellow));
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+        bind.npBlood.setMaxValue(7);
+        bind.npBlood.setMinValue(0);
+        bind.npBlood.setDisplayedValues(new String[]{"A+","A-","B+","B-","AB+","AB-","O-","O+"});
+        setNumPickerFormat(bind.npBlood);
+        setDividerColor(bind.npBlood, getResources().getColor(R.color.yellow));
 
-            }
+        bind.npHeight.setMaxValue(240);
+        bind.npHeight.setMinValue(80);
+        bind.npHeight.setFormatter(i -> i + " cm");
+        bind.npHeight.setValue(170);
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    descLay.setError("");
-                }
-            }
-        });
-        Button subminBtn = v.findViewById(R.id.btnSubmit);
-        subminBtn.setOnClickListener(b -> {
+        setNumPickerFormat(bind.npHeight);
+        setDividerColor(bind.npHeight, getResources().getColor(R.color.yellow));
+
+        bind.npWeight.setFormatter(i -> i + " kg");
+        bind.npWeight.setMaxValue(250);
+        bind.npWeight.setMinValue(25);
+        bind.npWeight.setValue(65);
+        setNumPickerFormat(bind.npWeight);
+        setDividerColor(bind.npWeight, getResources().getColor(R.color.yellow));
+        bind.btnSubmit.setOnClickListener(b -> {
             boolean hasError = false;
-            if (titleEt.getText().length() == 0) {
-                titleLay.setError(getString(R.string.title_is_empty));
+            if (bind.etTitle.getText().length() == 0) {
+                bind.layTitle.setError(getString(R.string.title_is_empty));
                 hasError = true;
             }
-            if (descriptionEt.getText().length() == 0) {
-                descLay.setError(getString(R.string.field_cant_empty));
 
-                hasError = true;
-            }
             if (hasError) return;
             ProgressDialog progress = new ProgressDialog(getContext());
             progress.setMessage(getString(R.string.please_wait_a_moment));
@@ -151,7 +159,15 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
             progress.setIndeterminate(true);
             progress.setCancelable(false);
             progress.show();
-            mListener.requestWorkoutPlanFromWeb(mTrainerId, titleEt.getText().toString(), descriptionEt.getText().toString(),mAmount).observe(this, new Observer<Integer>() {
+
+            PlanProp planProp=new PlanProp();
+            planProp.setBloodType(bind.npBlood.getValue());
+            planProp.setHeight(bind.npHeight.getValue());
+            planProp.setWeight(bind.npWeight.getValue());
+            planProp.setWaist(bind.npBelly.getValue());
+            Gson gson=new Gson();
+
+            mListener.requestWorkoutPlanFromWeb(mTrainerId, bind.etTitle.getText().toString(), gson.toJson(planProp), mAmount).observe(this, new Observer<Integer>() {
                 @Override
                 public void onChanged(Integer status) {
 
@@ -166,10 +182,45 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
                 }
             });
         });
-        ImageButton cancelBtn = v.findViewById(R.id.btn_cancel);
-        cancelBtn.setOnClickListener(b -> dismiss());
 
-        return v;
+
+        bind.btnCancel.setOnClickListener(b -> dismiss());
+
+        return bind.getRoot();
+    }
+    private void setDividerColor(NumberPicker picker, int color) {
+
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+    private void setNumPickerFormat(NumberPicker numberPicker) {
+        try {
+            Field f = null;
+            f = NumberPicker.class.getDeclaredField("mInputText");
+            f.setAccessible(true);
+            EditText inputText = (EditText) f.get( numberPicker);
+            inputText.setFilters(new InputFilter[0]);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -216,6 +267,6 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        LiveData<Integer> requestWorkoutPlanFromWeb(long trainedId, String title, String description,int amount);
+        LiveData<Integer> requestWorkoutPlanFromWeb(long trainedId, String title, String description, int amount);
     }
 }

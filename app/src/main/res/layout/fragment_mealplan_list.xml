@@ -27,8 +27,6 @@
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:divider="@color/gray_light"
-        android:dividerHeight="2dp"
         tools:context=".dialog.MealPlanListDialog"
         tools:listitem="@layout/item_listview_trainer_plan" />
 

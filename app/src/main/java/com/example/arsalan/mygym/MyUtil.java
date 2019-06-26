@@ -33,13 +33,27 @@ public class MyUtil {
      * @param date
      * @return
      */
-    public static String getStringFormatOfDate(long date) {
+    public static String getLargStringFormatOfDate(long date) {
 
         PersianDate pdate = new PersianDate(date * 1000L);
         PersianDateFormat pdformater1 = new PersianDateFormat("H:i:s y/m/d");
         String out = pdformater1.format(pdate);
 
-        Log.d(TAG, "getStringFormatOfDate: s:" + out+  "date:"+date);
+        Log.d(TAG, "getLargStringFormatOfDate: s:" + out+  "date:"+date);
+        return out;
+    }
+
+    /**
+     * convert time in milisecond to persian date string
+     * @param date
+     * @return
+     */
+    public static String getShortStringFormatOfDate(long date) {
+
+        PersianDate pdate = new PersianDate(date * 1000L);
+        PersianDateFormat pdformater1 = new PersianDateFormat("y/m/d");
+        String out = pdformater1.format(pdate);
+        Log.d(TAG, "getLargStringFormatOfDate: s:" + out+  "date:"+date);
         return out;
     }
 

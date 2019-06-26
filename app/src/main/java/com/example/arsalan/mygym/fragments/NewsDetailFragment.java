@@ -22,6 +22,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterComments;
@@ -43,6 +44,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -170,7 +173,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
         mCommentList = new ArrayList<>();
 
         mAdapter = new AdapterComments(mCommentList);
-        mBind.rvComments.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBind.rvComments.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL,true));
         mBind.rvComments.setAdapter(mAdapter);
 
         mBind.imgBtnCommentSubmit.setOnClickListener(b->{
@@ -179,8 +182,9 @@ public class NewsDetailFragment extends Fragment implements Injectable {
                 mBind.tilComment.requestFocus();
                 return;
             }
-
             sendCommentWeb(mNewsId, "" + mBind.etComment.getText().toString());
+            mBind.etComment.setText(""); //clear editText
+
         });
         mBind.etComment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -284,7 +288,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
             public void onResponse(Call<RetCommentList> call, Response<RetCommentList> response) {
                 mBind.pbWaiting.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
-                    mCommentList.removeAll(mCommentList);
+                    mCommentList.clear();
                     mCommentList.addAll(response.body().getRecords());
                     mAdapter.notifyDataSetChanged();
                     if(mCommentList.size()>0){
@@ -310,7 +314,9 @@ public class NewsDetailFragment extends Fragment implements Injectable {
         final ProgressDialog waitingDialog = new ProgressDialog(getContext());
         waitingDialog.setMessage(getString(R.string.please_wait_a_moment));
         waitingDialog.show();
-        Call<RetroResult> call = apiService.sendNewsComment(mToken.getTokenBearer(),mUserId , newId, comment);
+        RequestBody commentReq = RequestBody.create(MediaType.parse("text/plain"), comment);
+
+        Call<RetroResult> call = apiService.sendNewsComment(mToken.getTokenBearer(),mUserId , newId, commentReq);
         call.enqueue(new Callback<RetroResult>() {
             @Override
             public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
@@ -318,6 +324,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
                 if (response.isSuccessful() && response.body() != null)
                     Log.d("sendCommentWeb", "onResponse: record:" + response.body().getResult());
                 if (response.body().getResult().equals("OK")) {
+                    getCommentWeb(newId);
                     Snackbar.make(mBind.imgBtnCommentSubmit, R.string.your_comment_submited, Snackbar.LENGTH_LONG)
                             .setAction(R.string.ok, new View.OnClickListener() {
                                 @Override

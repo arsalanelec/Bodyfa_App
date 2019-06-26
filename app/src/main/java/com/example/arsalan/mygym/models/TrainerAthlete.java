@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import static com.example.arsalan.mygym.MyUtil.getStringFormatOfDate;
+import static com.example.arsalan.mygym.MyUtil.getLargStringFormatOfDate;
 
 @Entity
 public class TrainerAthlete {
@@ -266,10 +266,10 @@ public class TrainerAthlete {
     }
 
     public String getRequestDatePersianString(){
-        return getStringFormatOfDate(registerDateTs);
+        return getLargStringFormatOfDate(registerDateTs);
     }
     public String getRequestEndDatePersianString(){
-        return getStringFormatOfDate(toDateTs);
+        return getLargStringFormatOfDate(toDateTs);
     }
 
     public long getParentUsername() {

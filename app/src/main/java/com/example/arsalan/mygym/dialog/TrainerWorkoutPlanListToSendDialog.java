@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
     private static final String ARG_ATHLETE_ID = "athleteid";
     private static final String ARG_ATHLETE_NAME = "athletename";
     private static final String ARG_ATHLETE_THUMB = "Athletethumb";
-
+    private static final String TAG = "TrainerWorkoutPlanListD";
 
     private TrainerWorkoutListViewModel workoutListViewModel;
 
@@ -193,7 +194,8 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
         workoutListViewModel = ViewModelProviders.of(this, factory).get(TrainerWorkoutListViewModel.class);
         workoutListViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mTrainerId);
         workoutListViewModel.getWorkoutPlanItemList().observe(this, newWorkoutPlans -> {
-            mWorkoutPlanList.removeAll(mWorkoutPlanList);
+            Log.d(TAG, "onActivityCreated: trainedId:"+mTrainerId);
+            mWorkoutPlanList.clear();
             mWorkoutPlanList.addAll(newWorkoutPlans);
             mAdapter.notifyDataSetChanged();
         });

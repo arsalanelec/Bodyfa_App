@@ -214,6 +214,7 @@
     <string name="gym_incomplete_profile_dialog">Your profile is not active . Please enter the gym profile from the menu and complete and send the information , you have been asked and wait for confirmation</string>
     <string name="meal_and_workout_news">News</string>
     <string name="tutorials">Tutorials</string>
+    <string name="txt_request_workout_plan_description">Weigth:%dkg Height:%dcm Waist:%dcm Blood Type:%s</string>
     <string name="BODYFA_EULA">شرایط و ضوابط
 
 در بادیفا هدف ما حمایت از کاربران ما در  تناسب اندام خود و ارائه بهترین تجربه ممکن است. برای رسیدن به این هدف، شرایط و ضوابط  را به روز می کنیم که به وضوح حقوق، مسئولیت ها، سیاست حفظ حریم خصوصی ما و جزئیات بیشتر در مورد خدمات ما را مشخص می کند
@@ -355,5 +356,6 @@
     <string name="there_is_no_news_to_show">there is no news to show!</string>
     <string name="wite_a_title_for_your_news">یک عنوان برای مطلب خود بنویسید...</string>
     <string name="send_a_news">Send a News</string>
+    <string name="add_a_photo">Add a Photo</string>
 
 </resources>

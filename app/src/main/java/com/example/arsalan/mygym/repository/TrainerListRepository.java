@@ -36,7 +36,7 @@ public class TrainerListRepository {
         refreshTrainerListByCity(cityId);
         // return a LiveData directly from the database.
        // return trainerDao.getTrainerListByCity(cityId);
-        return trainerDao.loadAllList();
+        return trainerDao.loadAllListOrderByRate();
     }
 
     public LiveData<Trainer> getTrainerById(long id) {
@@ -58,7 +58,7 @@ public class TrainerListRepository {
                         if (response.isSuccessful()) {
                             Log.d("refreshTrainerListCity", "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
                             trainerDao.deleteAll();
-                            Log.d("refreshTrainerListCity", "run: newDao save:"+ trainerDao.saveList(response.body().getRecords()).length);
+                            Log.d("refreshTrainerListCity", "run: TrainerDao save:"+ trainerDao.saveList(response.body().getRecords()).length);
 
                         } else {
                             Log.d("refreshTrainerListCity", "run: response.error");

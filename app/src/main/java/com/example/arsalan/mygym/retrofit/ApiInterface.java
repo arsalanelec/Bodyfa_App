@@ -102,7 +102,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("/api/users/SendNewsComment")
-    Call<RetroResult> sendNewsComment(@Header("Authorization") String token, @Part("UserId") long userId, @Part("NewsId") long newsId, @Part("Comment") String Comment);
+    Call<RetroResult> sendNewsComment(@Header("Authorization") String token, @Part("UserId") long userId, @Part("NewsId") long newsId, @Part("Comment") RequestBody comment);
 
     @Multipart
     @POST("/api/users/GetTutorialSubCategories")
@@ -240,7 +240,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("api/Trainer/GetMyAthleteWorkoutPlanRequests")
-    Call<RetTrainerWorkoutPlanReqList> getTrainerWorkoutPlanRequests(@Header("Authorization") String token, @Part("UserId") long userId);
+    Call<RetTrainerWorkoutPlanReqList> getTrainerWorkoutPlanRequests(@Header("Authorization") String token, @Part("ParentUserId") long userId);
 
     @Multipart
     @POST("api/Trainer/CancelAthleteWorkoutPlanRequest")

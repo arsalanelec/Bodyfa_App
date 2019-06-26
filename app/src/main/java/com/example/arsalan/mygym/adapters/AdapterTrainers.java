@@ -32,7 +32,9 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
         trainerSortedList = new SortedList<Trainer>(Trainer.class, new SortedList.Callback<Trainer>() {
             @Override
             public int compare(Trainer o1, Trainer o2) {
-                return o1.getName().compareTo(o2.getName());
+                if(o1.getPoint()<o2.getPoint())return 1;
+                if(o1.getPoint()>o2.getPoint())return -1;
+                return 0;//o1.getName().compareTo(o2.getName());
             }
 
             @Override

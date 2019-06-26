@@ -18,6 +18,9 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import static com.example.arsalan.mygym.MyUtil.getLargStringFormatOfDate;
+import static com.example.arsalan.mygym.MyUtil.getShortStringFormatOfDate;
+
 /**
  * Created by Arsalan on 10-02-2018.
  */
@@ -79,7 +82,7 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
                     .into(thumbImg);
 
             nameTV.setText(trainerAthlete.getAthleteName());
-            registerDateTV.setText(trainerAthlete.getRegisterDate());
+            registerDateTV.setText(getShortStringFormatOfDate(trainerAthlete.getFromDateTs()));
             //  h.honorTV.setText(t.getTitle());
 /*
             ViewCompat.setTransitionName(thumbImg, user.getName());

@@ -38,6 +38,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
@@ -175,7 +176,6 @@ public class MainActivity extends AppCompatActivity
             throw new RuntimeException("the intent bundle should not be empty!");
         }
         final String roleName = eBundle.getString(EXTRA_ROLE_CHOICE);
-
         mPrivateView = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PIRVATE_VIEW, false);
         setTheme(PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_THEME_ID, R.style.AppTheme_NoActionBar));
 
@@ -194,13 +194,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         Menu menu = navigationView.getMenu();
 
         if (((MyApplication) getApplication()).getCurrentUser().getRoleId() == 2) { //مربی
             MenuItem item1 = menu.add(R.id.menuGroup1, nav_trainer_account, 3, getString(R.string.trainer_profile));
             item1.setIcon(R.drawable.ic_person_add_black_24dp); // add icon with drawable resource
-
             MenuItem item2 = menu.add(R.id.menuGroup1, nav_trainer_honors, 4, getString(R.string.medals));
             item2.setIcon(R.drawable.ic_person_add_black_24dp); // add icon with drawable resource
 

@@ -3,6 +3,7 @@ package com.example.arsalan.mygym.models;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.arsalan.mygym.MyUtil;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -20,6 +21,10 @@ public class NewsHead {
     @SerializedName("NewsDateFa")
     private
     String date;
+
+    @SerializedName("NewsDateTs")
+    private
+    long dateTs;
 
     @SerializedName("ViewCount")
     private
@@ -39,11 +44,12 @@ public class NewsHead {
     private  String UserThumbUrl;
 
     @SerializedName("CommentCount")
-
     private
     int commentCnt;
+
     @SerializedName("ThumbUrl")
     private String thumbUrl;
+
 
 
 
@@ -129,4 +135,18 @@ public class NewsHead {
     public void setPublisherId(long publisherId) {
         this.publisherId = publisherId;
     }
+
+
+    public long getDateTs() {
+        return dateTs;
+    }
+
+    public String  getPersianDate() {
+        return MyUtil.getShortStringFormatOfDate(dateTs);
+    }
+
+    public void setDateTs(long dateTs) {
+        this.dateTs = dateTs;
+    }
+
 }

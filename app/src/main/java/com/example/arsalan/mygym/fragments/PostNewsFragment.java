@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -63,11 +64,11 @@ public class PostNewsFragment extends Fragment {
     private long mUserId;
     private boolean mIsAthlete;
     private Spinner mCateSpn;
-    private TextInputEditText contentET;
-    private TextInputEditText titleET;
+    private TextInputEditText mContentET;
+    private TextInputEditText mTitleET;
     private Uri resultUri;
     private ImageView mImage;
-
+    private Button mAddImageButton;
 
     public PostNewsFragment() {
         // Required empty public constructor
@@ -100,11 +101,15 @@ public class PostNewsFragment extends Fragment {
 
         mCateSpn = v.findViewById(R.id.spnCategory);
         if (mIsAthlete) mCateSpn.setVisibility(View.GONE);
-        contentET = v.findViewById(R.id.et_content);
-        titleET = v.findViewById(R.id.et_title);
+        mContentET = v.findViewById(R.id.et_content);
+        mTitleET = v.findViewById(R.id.et_title);
+        mAddImageButton=v.findViewById(R.id.btn_add_image);
+        mAddImageButton.setVisibility(View.VISIBLE);
+        TextView sendToTypeTv=v.findViewById(R.id.txt_send_to);
+        sendToTypeTv.setVisibility(mIsAthlete?View.GONE:View.VISIBLE);
         TextInputLayout titleTil = v.findViewById(R.id.til_title);
         TextInputLayout contentTil = v.findViewById(R.id.til_content);
-        titleET.addTextChangedListener(new TextWatcher() {
+        mTitleET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -120,7 +125,7 @@ public class PostNewsFragment extends Fragment {
                 titleTil.setError("");
             }
         });
-        contentET.addTextChangedListener(new TextWatcher() {
+        mContentET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -143,12 +148,12 @@ public class PostNewsFragment extends Fragment {
                 Toast.makeText(getContext(), getString(R.string.choose_a_pic), Toast.LENGTH_LONG).show();
                 return;
             }
-            if (contentET.getText().toString().length() < 2) {
+            if (mContentET.getText().toString().length() < 2) {
 
                 contentTil.setError(getString(R.string.text_is_too_short));
                 return;
             }
-            if (titleET.getText().toString().length() < 6) {
+            if (mTitleET.getText().toString().length() < 6) {
                 titleTil.setError(getString(R.string.choose_longer_title));
                 return;
             }
@@ -193,9 +198,9 @@ public class PostNewsFragment extends Fragment {
                 Call<RetroResult> call = apiService.sendContent("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken()
                         , mUserId
                         , mIsAthlete ? 5 : ((StringWithTag) mCateSpn.getSelectedItem()).tag
-                        , RequestBody.create(MediaType.parse("text/plain"), titleET.getText().toString())
+                        , RequestBody.create(MediaType.parse("text/plain"), mTitleET.getText().toString())
 
-                        , RequestBody.create(MediaType.parse("text/plain"), contentET.getText().toString())
+                        , RequestBody.create(MediaType.parse("text/plain"), mContentET.getText().toString())
                         , imageBody
                         , thumbBody
                 );
@@ -242,21 +247,23 @@ public class PostNewsFragment extends Fragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCateSpn.setAdapter(spinnerAdapter);
         mImage = v.findViewById(R.id.image);
-        mImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setActivityTitle(getString(R.string.choose_content_pic))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(true)
-                        .setAspectRatio(1, 1)
-                        .setFixAspectRatio(true)
-                        .setRequestedSize(600, 600)
-                        .start(getContext(), PostNewsFragment.this);
-            }
-        });
+        mImage.setVisibility(View.GONE);
+
+        View.OnClickListener goToSelectImage = view -> CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setActivityTitle(getString(R.string.choose_content_pic))
+                .setAllowFlipping(false)
+                .setAllowRotation(true)
+                .setAspectRatio(1, 1)
+                .setFixAspectRatio(true)
+                .setRequestedSize(600, 600)
+                .start(getContext(), PostNewsFragment.this);
+
+        mImage.setOnClickListener(goToSelectImage);
+        mAddImageButton.setOnClickListener(goToSelectImage);
+
+
 
         ImageButton backBtn = v.findViewById(R.id.img_btn_back);
         backBtn.setOnClickListener(b->container.setVisibility(View.GONE));
@@ -270,8 +277,10 @@ public class PostNewsFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
                 Log.d(TAG, "onActivityResult: " + resultUri);
-
+                mAddImageButton.setVisibility(View.GONE);
                 mImage.setImageURI(resultUri);
+                mImage.setVisibility(View.VISIBLE);
+                mTitleET.requestFocus();
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }

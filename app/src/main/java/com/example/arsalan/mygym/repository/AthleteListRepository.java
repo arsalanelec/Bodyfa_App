@@ -97,7 +97,7 @@ public class AthleteListRepository {
                     if (response.isSuccessful()) {
                         acceptStatus.postValue(1);
 
-                        Log.d(TAG, "acceptMembershipRequest: response.isSuccessful:" + trainerAthleteDao.updateStatus(requestId, "confirmed"));
+                        Log.d(TAG, "acceptMembershipRequest: response.isSuccessful:" + trainerAthleteDao.updateStatus(requestId, "confirmed")+" requestId:"+requestId);
                     } else {
                         Log.d(TAG, "acceptMembershipRequest: response.error:" + response.raw().toString());
                         acceptStatus.postValue(-1);

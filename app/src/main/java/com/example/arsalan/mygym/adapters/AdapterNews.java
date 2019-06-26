@@ -22,20 +22,18 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
  */
 
 public class AdapterNews extends Adapter<AdapterNews.VH> {
-    private static final String TAG = "AdapterNews";
+    private static final String TAG = "AdapterDashboardNews";
     List<NewsHead> newsList;
-    Activity mActivity;
     OnAdapterNewsEventListener eventListener;
 
-    public AdapterNews(Activity activity, List<NewsHead> newsList,OnAdapterNewsEventListener onAdapterNewsEventListener) {
+    public AdapterNews(List<NewsHead> newsList,OnAdapterNewsEventListener onAdapterNewsEventListener) {
         this.newsList = newsList;
-        this.mActivity = activity;
         eventListener=onAdapterNewsEventListener;
     }
 
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mActivity).inflate(R.layout.item_news, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false);
         /*Animation animation = null;
         animation = AnimationUtils.loadAnimation(parent.getContext(), R.anim.wave);
         animation.setDuration(200);
@@ -48,10 +46,11 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
     public void onBindViewHolder(final VH h, int position) {
         final NewsHead newsHead = newsList.get(position);
         h.titleTV.setText(newsHead.getTitle());
+        h.titleTV.setSelected(true);
         h.viewCntTV.setText(String.valueOf(newsHead.getVisitcnt()));
         h.likeCntTV.setText(String.valueOf(newsHead.getLikeCnt()));
         h.commentCntTV.setText(String.valueOf(newsHead.getCommentCnt()));
-        h.dateTV.setText(newsHead.getDate());
+        h.dateTV.setText(newsHead.getPersianDate());
         h.thumb.setImageURI(MyConst.BASE_CONTENT_URL + newsHead.getThumbUrl());
         h.avatar.setImageURI(MyConst.BASE_CONTENT_URL + newsHead.getUserThumbUrl());
         h.itemView.setOnClickListener(new View.OnClickListener() {

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="news"
+            type="com.example.arsalan.mygym.models.NewsHead" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_light"
+        android:layoutDirection="rtl">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/img_thumb"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:placeholderImage="@drawable/arm_1x1" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/back_gray_round_rect"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="@{news.title}"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black_overlay"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <TextView
+                android:id="@+id/txtViewCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="@{String.valueOf(news.visitcnt)}"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+            <TextView
+                android:id="@+id/txt_send_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="بازدید |"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/txtViewCnt"
+                app:layout_constraintTop_toTopOf="@+id/txtViewCnt" />
+
+            <TextView
+                android:id="@+id/txtLikeCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="@{String.valueOf(news.likeCnt)}"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+
+
+            <TextView
+                android:id="@+id/txt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="پسندیده شده |"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/txtCommentCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="@{String.valueOf(news.commentCnt)}"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/txt3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="نظر |"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_access_time_white_12dp"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="@{news.persianDate}"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                 />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

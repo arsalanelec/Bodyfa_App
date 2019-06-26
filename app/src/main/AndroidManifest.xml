@@ -43,6 +43,9 @@
         <meta-data
             android:name="co.ronash.pushe.token"
             android:value="PUSHE_883298655158" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="true" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -91,16 +94,6 @@
         <activity
             android:name=".activities.ProfileGymActivity"
             android:label="@string/gym"
-            android:parentActivityName=".activities.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.arsalan.mygym.activities.MainActivity" />
-        </activity>
-        <activity
-            android:name=".activities.NewsDetailActivity"
-            android:label="@string/title_activity_news_detail"
             android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -243,7 +236,7 @@
             android:theme="@style/AppThemePrivate">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.arsalan.mygym.activities.PrivateMainActivity" />
+                android:value="com.example.arsalan.mygym.activities.MainActivity" />
         </activity>
         <activity android:name=".activities.TransactionListActivity">
             <meta-data

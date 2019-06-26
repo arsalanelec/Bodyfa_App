@@ -56,7 +56,8 @@ public class GalleryRepository {
                     Log.d("refreshGalleryItemList", "run: newDao save:" + galleryItemDao.saveList(response.body().getRecords()).length);
 
                 } else {
-                    Log.d("refreshGalleryItemList", "run: response.error");
+                    Log.d("refreshGalleryItemList", "run: response.error:"+response.message());
+
 
                 }
 
