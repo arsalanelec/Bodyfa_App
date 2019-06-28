@@ -14,360 +14,418 @@
             type="android.view.View.OnClickListener" />
     </data>
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layoutDirection="rtl">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtTrainerNotSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="شما هنوز مربی خودتان را نتخاب نکرده اید. برای اتنخاب مربی از 'داشبورد من' گزینه انتخاب مربی را فشار دهید."
+                    android:visibility="gone" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl">
+
+
+                    <FrameLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="@color/dark_gray"
+                        app:layout_constraintDimensionRatio="3:2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="بدون عکس!"
+                            android:textColor="@color/gray_dark"
+                            android:textSize="24dp" />
+                    </FrameLayout>
+
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/vp_gallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layoutDirection="ltr"
+                        app:layout_constraintDimensionRatio="3:2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+
+                        />
+
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tablayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@android:color/transparent"
+                        android:layoutDirection="ltr"
+                        app:layout_constraintBottom_toBottomOf="@+id/vp_gallery"
+                        app:tabBackground="@drawable/tab_selector"
+                        app:tabGravity="center"
+                        app:tabIndicatorHeight="0dp" />
+
+
+                    <ImageButton
+                        android:id="@+id/ib_back"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="TODO"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:paddingStart="4dp"
+
+                        android:paddingEnd="4dp"
+                        android:src="@drawable/ic_arrow_back_black_24dp"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/vp_gallery" />
+
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_gray_round_rect"
+                        android:ellipsize="marquee"
+                        android:fontFamily="@font/iran_sans_mobile"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:text="@{trainer.name}"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/ib_back"
+                        app:layout_constraintEnd_toStartOf="@+id/flRate"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/ib_back"
+                        app:layout_constraintTop_toTopOf="@+id/ib_back" />
+
+                    <FrameLayout
+                        android:id="@+id/flRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:onClick="@{(view)->onRateClick.onClick(view)}"
+                        android:padding="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/vp_gallery"
+                        app:layout_constraintTop_toTopOf="@+id/vp_gallery">
+
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            style="@style/CustomRatingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:clickable="false"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:rating="@{trainer.rate}"
+                            android:stepSize="0.5" />
+
+
+                    </FrameLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:id="@+id/btnSendMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/green_rect_back"
+                    android:drawableLeft="@drawable/ic_send_24dp"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="right"
+                    android:text="@string/send_message"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:text="@string/medals" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvHonor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:requiresFadingEdge="horizontal"
+                    android:scrollbarAlwaysDrawHorizontalTrack="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:spanCount="2"
+                    tools:listitem="@layout/item_honor_grid" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layOrderButtons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:layoutDirection="ltr"
+                    tools:visibility="gone">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvMealOrder"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="4dp"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintDimensionRatio="1:1.2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_max="100dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/imageView3"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="4dp"
+                                android:src="@drawable/ic_local_dining_black_24dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/meal_plan"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/txtMealPlanPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@{String.format(@string/priceInRial, trainer.mealPlanPrice)}"
+                                android:textSize="10sp" />
+
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/order"
+                                android:textColor="?attr/colorPrimaryDark"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvWorkoutOrder"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="4dp"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintDimensionRatio="1:1.2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/cvMealOrder"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_max="100dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="4dp"
+                                android:src="@drawable/ic_playlist_add_check_black_24dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/workout_plan"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/txtWorkoutPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@{String.format(@string/priceInRial, trainer.workoutPlanPrice)}"
+                                android:textSize="10sp" />
+
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/order"
+                                android:textColor="?attr/colorPrimaryDark"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvRegistrationOrder"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardCornerRadius="4dp"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintDimensionRatio="1:1.2"
+                        app:layout_constraintEnd_toStartOf="@+id/cvMealOrder"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_max="100dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="4dp"
+                                android:src="@drawable/ic_person_add_black_24dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/join"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/txtJoinFee"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@{String.format(@string/priceInRial, trainer.oneDayFee)}"
+                                android:textSize="10sp" />
+
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/order"
+                                android:textColor="?attr/colorPrimaryDark"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorPrimary"
+                    android:text="@string/news"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:elevation="2dp"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_news"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txt_no_news"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="@color/gray_light"
+                        android:gravity="center"
+                        android:minHeight="100dp"
+                        android:padding="16dp"
+                        android:text="@string/there_is_no_news_to_show"
+                        android:textColor="@color/gray_dark"
+                        android:textSize="18sp"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="@+id/rv_news"
+                        app:layout_constraintStart_toStartOf="@+id/rv_news"
+                        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/container_trainer_news"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
-            android:orientation="vertical"
-            >
+            android:visibility="gone"/>
+    </FrameLayout>
 
-            <TextView
-                android:id="@+id/txtTrainerNotSelected"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="شما هنوز مربی خودتان را نتخاب نکرده اید. برای اتنخاب مربی از 'داشبورد من' گزینه انتخاب مربی را فشار دهید."
-                android:visibility="gone" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layoutDirection="rtl">
-
-
-                <FrameLayout
-
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/dark_gray"
-                    app:layout_constraintDimensionRatio="3:2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/gray_dark"
-                        android:text="بدون عکس!"
-                        android:textSize="24dp"
-                        android:layout_gravity="center"/>
-                </FrameLayout>
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/vp_gallery"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:layoutDirection="ltr"
-                    app:layout_constraintDimensionRatio="3:2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-
-                    />
-
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tablayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layoutDirection="ltr"
-                    app:layout_constraintBottom_toBottomOf="@+id/vp_gallery"
-                    android:background="@android:color/transparent"
-                    app:tabBackground="@drawable/tab_selector"
-                    app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp" />
-
-
-                <ImageButton
-                    android:id="@+id/ib_back"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="TODO"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:paddingStart="4dp"
-
-                    android:paddingEnd="4dp"
-                    android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:visibility="visible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/vp_gallery" />
-
-                <TextView
-                    android:id="@+id/txtName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back_gray_round_rect"
-                    android:fontFamily="@font/iran_sans_mobile"
-                    android:text="@{trainer.name}"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/ib_back"
-                    app:layout_constraintStart_toEndOf="@+id/ib_back"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    app:layout_constraintEnd_toStartOf="@+id/flRate"
-                    app:layout_constraintTop_toTopOf="@+id/ib_back" />
-
-                <FrameLayout
-                    android:id="@+id/flRate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:onClick="@{(view)->onRateClick.onClick(view)}"
-                    android:padding="8dp"
-                    app:layout_constraintEnd_toEndOf="@+id/vp_gallery"
-                    app:layout_constraintTop_toTopOf="@+id/vp_gallery">
-
-                    <RatingBar
-                        android:id="@+id/ratingBar"
-                        style="@style/CustomRatingBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:clickable="false"
-                        android:isIndicator="true"
-                        android:numStars="5"
-                        android:rating="@{trainer.rate}"
-                        android:stepSize="0.5" />
-
-
-                </FrameLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <Button
-                android:id="@+id/btnSendMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/green_rect_back"
-                android:drawableLeft="@drawable/ic_send_24dp"
-                android:fontFamily="@font/iran_sans_mobile"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:gravity="right"
-                android:text="@string/send_message"
-                android:textColor="@color/colorAccent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/iran_sans_mobile"
-                android:text="@string/medals" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvHonor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:scrollbarAlwaysDrawHorizontalTrack="false"
-                app:spanCount="2"
-                tools:listitem="@layout/item_honor_grid"
-                android:requiresFadingEdge="horizontal"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layOrderButtons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:layoutDirection="ltr"
-                tools:visibility="gone">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cvMealOrder"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="4dp"
-                    app:cardUseCompatPadding="true"
-                    app:layout_constraintDimensionRatio="1:1.2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_max="100dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="4dp"
-                            android:src="@drawable/ic_local_dining_black_24dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/meal_plan"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/txtMealPlanPrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@{String.format(@string/priceInRial, trainer.mealPlanPrice)}"
-                            android:textSize="10sp" />
-
-                        <TextView
-
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/order"
-                            android:textColor="?attr/colorPrimaryDark"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cvWorkoutOrder"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="4dp"
-                    app:cardUseCompatPadding="true"
-                    app:layout_constraintDimensionRatio="1:1.2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/cvMealOrder"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_max="100dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="4dp"
-                            android:src="@drawable/ic_playlist_add_check_black_24dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/workout_plan"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/txtWorkoutPrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@{String.format(@string/priceInRial, trainer.workoutPlanPrice)}"
-                            android:textSize="10sp" />
-
-                        <TextView
-
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/order"
-                            android:textColor="?attr/colorPrimaryDark"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cvRegistrationOrder"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    app:cardCornerRadius="4dp"
-                    app:cardUseCompatPadding="true"
-                    app:layout_constraintDimensionRatio="1:1.2"
-                    app:layout_constraintEnd_toStartOf="@+id/cvMealOrder"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_max="100dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="4dp"
-                            android:src="@drawable/ic_person_add_black_24dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/join"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/txtJoinFee"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@{String.format(@string/priceInRial, trainer.oneDayFee)}"
-                            android:textSize="10sp" />
-
-                        <TextView
-
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/order"
-                            android:textColor="?attr/colorPrimaryDark"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </LinearLayout>
-    </ScrollView>
 </layout>

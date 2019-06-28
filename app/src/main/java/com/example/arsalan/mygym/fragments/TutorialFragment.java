@@ -136,7 +136,7 @@ public class TutorialFragment extends Fragment {
                     detailFragment.setVisibility(View.VISIBLE);
                     getFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.container2, TutorialListFragment.newInstance(tutorialGroups.get(i).getId(), mCanSendVideo))
+                            .replace(R.id.container2, TutorialListFragment.newInstance(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName(), mCanSendVideo))
                             .commit();
 
                     // mListener.goToTutorialList(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName());

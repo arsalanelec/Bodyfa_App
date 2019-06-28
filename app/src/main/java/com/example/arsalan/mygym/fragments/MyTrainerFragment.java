@@ -14,14 +14,27 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.activities.MessageRoomActivity;
+import com.example.arsalan.mygym.adapters.AdapterDashboardNews;
 import com.example.arsalan.mygym.databinding.FragmentMyTrainerBinding;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.dialog.RateDialog;
@@ -30,10 +43,12 @@ import com.example.arsalan.mygym.dialog.SelectTrainerJoinTimeDialog;
 import com.example.arsalan.mygym.models.GalleryItem;
 import com.example.arsalan.mygym.models.Honor;
 import com.example.arsalan.mygym.models.MyConst;
+import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.viewModels.GalleryViewModel;
 import com.example.arsalan.mygym.viewModels.HonorViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
+import com.example.arsalan.mygym.viewModels.NewsListViewModel;
 import com.example.arsalan.mygym.viewModels.TrainerViewModel;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 
@@ -41,18 +56,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import static com.example.arsalan.mygym.MyKeys.EXTRA_PARTY_ID;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_PARTY_NAME;
@@ -74,6 +77,8 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     private TrainerViewModel trainerViewModel;
     private HonorViewModel honorViewModel;
 
+    private List<NewsHead> newsList;
+    private AdapterDashboardNews adapter;
 
     private ArrayList<GalleryItem> mGalleryItemList;
     private GalleryPagerAdapter mGalleryAdapter;
@@ -90,7 +95,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     }
 
 
-    public static MyTrainerFragment newInstance(long athleteId,long trainerId,boolean isMyTrainer) {
+    public static MyTrainerFragment newInstance(long athleteId, long trainerId, boolean isMyTrainer) {
         MyTrainerFragment fragment = new MyTrainerFragment();
         Bundle args = new Bundle();
         args.putLong(ARG_ATHLETE, athleteId);
@@ -135,7 +140,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
 
         mHonorList = new ArrayList<>();
         mHonorAdapter = new AdapterHonors(mHonorList);
-       // GridLayoutManager linearLayout = new GridLayoutManager(getContext(), 3, RecyclerView.HORIZONTAL, false);
+        // GridLayoutManager linearLayout = new GridLayoutManager(getContext(), 3, RecyclerView.HORIZONTAL, false);
         LinearLayoutManager linearLayout = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         bind.rvHonor.setLayoutManager(linearLayout);
         bind.rvHonor.setAdapter(mHonorAdapter);
@@ -151,25 +156,43 @@ public class MyTrainerFragment extends Fragment implements Injectable {
             return false;
         });
 
+        newsList = new ArrayList<>();
+        bind.rvNews.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        adapter = new AdapterDashboardNews(newsList, AdapterDashboardNews.LAYOUT_TYPE_LINEAR, new AdapterDashboardNews.OnAdapterNewsEventListener() {
+            @Override
+            public void onNewsHeadClick(long newsId, int catType) {
+                /*Intent i = new Intent();
+                i.setClass(getContext(), NewsDetailActivity.class);
+                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsId);
+                startActivity(i);*/
+                getFragmentManager().beginTransaction().replace(R.id.container_trainer_news, NewsDetailFragment.newInstance(mTrainerId, newsId, catType), "").commit();
+                bind.containerTrainerNews.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        bind.rvNews.setAdapter(adapter);
+
+
         //if the athlete is not a memever of the trainer then cant send message to him/her
-        if(!mIsMyTrainer) {
+        if (!mIsMyTrainer) {
             bind.btnSendMessage.setVisibility(View.GONE);
         }
         // getHonorsWeb(mTrainerId);
 
         bind.cvRegistrationOrder.setOnClickListener(b -> {
             if (mTrainer != null) {
-                SelectTrainerJoinTimeDialog dialog = SelectTrainerJoinTimeDialog.newInstance(mAthleteId,mTrainer);
+                SelectTrainerJoinTimeDialog dialog = SelectTrainerJoinTimeDialog.newInstance(mAthleteId, mTrainer);
                 dialog.show(getFragmentManager(), "");
             }
         });
         bind.cvWorkoutOrder.setOnClickListener(b -> {
             if (mTrainer != null) {
-                RequestWorkoutPlanDialog dialog = RequestWorkoutPlanDialog.newInstance(mAthleteId, mTrainer.getId(),mTrainer.getWorkoutPlanPrice());
+                RequestWorkoutPlanDialog dialog = RequestWorkoutPlanDialog.newInstance(mAthleteId, mTrainer.getId(), mTrainer.getWorkoutPlanPrice());
                 dialog.show(getFragmentManager(), "");
             }
         });
-        bind.ibBack.setOnClickListener(b->container.setVisibility(View.GONE));
+        bind.ibBack.setOnClickListener(b -> container.setVisibility(View.GONE));
         return bind.getRoot();
     }
 
@@ -183,6 +206,22 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        NewsListViewModel newsListViewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
+        newsListViewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
+            @Override
+            public void onChanged(@Nullable List<NewsHead> newNewsList) {
+                if (newNewsList != null) {
+                    Log.d("NewsListViewModel", "observe: cnt:" + newNewsList.size());
+                    newsList.clear();
+                    newsList.addAll(newNewsList);
+                    adapter.notifyDataSetChanged();
+                    bind.txtNoNews.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
+                    bind.rvNews.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
+                }
+            }
+        });
+
         trainerViewModel = ViewModelProviders.of(this, factory).get(TrainerViewModel.class);
         trainerViewModel.init(mTrainerId);
         trainerViewModel.getTrainer().observe(this, trainer -> {
@@ -191,7 +230,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
                 bind.setTrainer(trainer);
                 bind.setOnRateClick(this::rateTheTrainer);
                 Log.d(getClass().getSimpleName(), "observe: trainer");
-
+                newsListViewModel.init(trainer.getId(),0);
                 bind.btnSendMessage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -207,8 +246,11 @@ public class MyTrainerFragment extends Fragment implements Injectable {
                 bind.txtTrainerNotSelected.setVisibility(View.GONE);
             }
         });
+
+
+
         galleryViewModel = ViewModelProviders.of(this, factory).get(GalleryViewModel.class);
-        galleryViewModel.init( mTrainerId);
+        galleryViewModel.init(mTrainerId);
         galleryViewModel.getGalleryItemList().observe(this, galleryItems -> {
             Log.d("onActivityCreated", "observe: ");
             mGalleryItemList.removeAll(mGalleryItemList);
@@ -231,7 +273,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         mCreditVm = ViewModelProviders.of(this, factory).get(UserCreditViewModel.class);
         mCreditVm.init(mAthleteId);
         mCreditVm.getCredit().observe(this, userCredit -> {
-            if(userCredit!=null) {
+            if (userCredit != null) {
                 mCredit = userCredit.getCredit();
                 Animation animation = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in);
                 animation.setDuration(200);

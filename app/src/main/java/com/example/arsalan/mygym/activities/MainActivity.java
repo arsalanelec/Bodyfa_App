@@ -81,6 +81,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.stfalcon.swipeablebutton.SwipeableButton;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -213,6 +214,25 @@ public class MainActivity extends AppCompatActivity
         SwipeableButton switchBtn = toolbar.findViewById(R.id.btnSwitch);
         TextView userNameTV = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         ImageButton goToInboxBtn = findViewById(R.id.btnChatlist);
+
+        Calendar c=Calendar.getInstance();
+        Log.d(TAG, "onCreate: current time:"+c.getTimeInMillis());
+        Boolean expired=PreferenceManager.getDefaultSharedPreferences(this).getBoolean("expired",false);
+        if(c.getTimeInMillis()>1564297902000L || expired){
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean("expired", true).apply();
+
+            new AlertDialog.Builder(this)
+                    .setTitle("اتمام دوره تست")
+                    .setMessage("این نسخه از اپلیکیشن جهت تست در اختیار شما قرار گرفته و اکنون دوره تست به اتمام رسیده.\n جهت دریافت نسخه اصلی به نشانی:\n www.BodyFa.ir مراجعه نمایید.\n با تشکر فراوان")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            MainActivity.this.finish();
+                        }
+                    })
+                    .create().show();
+        }
 
         Pushe.initialize(this, true);
         mUserName = eBundle.getString(EXTRA_USER_NAME, "");
@@ -792,7 +812,7 @@ public class MainActivity extends AppCompatActivity
      * view pager adapter for general view
      */
     private class ViewPagerOmoomiAdapter extends FragmentStatePagerAdapter {
-        private final String[] titles = {getString(R.string.dashboard),getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers), getString(R.string.gyms)};
+        private final String[] titles = {getString(R.string.dashboard),getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers)};//, getString(R.string.gyms)};
 
 
         public ViewPagerOmoomiAdapter(FragmentManager fm) {

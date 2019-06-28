@@ -127,7 +127,6 @@ public class NewsDetailFragment extends Fragment implements Injectable {
                 mBind.imgBtnIsLiked.setImageResource(mIsLiked ? R.drawable.ic_favorite_border_48dp : R.drawable.ic_favorite_48dp);
             }
         });
-
         mBind.image.setOnTouchListener(new View.OnTouchListener() {
 
             private GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
@@ -168,7 +167,7 @@ public class NewsDetailFragment extends Fragment implements Injectable {
             }
 
         });
-
+        mBind.txtToolbar.setSelected(true);
 
         mCommentList = new ArrayList<>();
 

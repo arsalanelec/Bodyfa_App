@@ -50,8 +50,10 @@ public class TutorialListFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "TutorialListFragment";
+    private static final String ARG_CAT_NAME = "param cat name";
     // TODO: Rename and change types of parameters
     private int mCatId;
+    private String  mCatName;
 
     private OnFragmentInteractionListener mListener;
     private List<Tutorial> tutorialList;
@@ -71,10 +73,11 @@ public class TutorialListFragment extends Fragment {
      * @param canSendTutorial Parameter 2.
      * @return A new instance of fragment TutorialFragment.
      */
-    public static TutorialListFragment newInstance(int catId, boolean canSendTutorial) {
+    public static TutorialListFragment newInstance(int catId,String catName, boolean canSendTutorial) {
         TutorialListFragment fragment = new TutorialListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, catId);
+        args.putString(ARG_CAT_NAME, catName);
         args.putBoolean(ARG_PARAM2, canSendTutorial);
         fragment.setArguments(args);
         return fragment;
@@ -86,6 +89,7 @@ public class TutorialListFragment extends Fragment {
         if (getArguments() != null) {
             mCatId = getArguments().getInt(ARG_PARAM1);
             mCanSendTutorial = getArguments().getBoolean(ARG_PARAM2);
+            mCatName = getArguments().getString(ARG_CAT_NAME);
             Log.d(TAG, "onCreate: catId:" + mCatId);
         }
     }
@@ -99,7 +103,7 @@ public class TutorialListFragment extends Fragment {
         adapter = new AdapterTutorialList(tutorialList);
         mBind.lstTutorial.setAdapter(adapter);
         if (mCatId != 0) getTutorialWeb(mCatId);
-
+        mBind.txtToolbar.setText(mCatName);
         mBind.fab.setVisibility((mCanSendTutorial) ? View.VISIBLE : View.GONE);
         mBind.fab.setOnClickListener(new View.OnClickListener() {
             @Override
