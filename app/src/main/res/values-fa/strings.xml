@@ -349,5 +349,12 @@
     <string name="wite_a_title_for_your_news">یک عنوان برای مطلب خود بنویسید...</string>
     <string name="send_a_news">ارسال خبر</string>
     <string name="add_a_photo">یک عکس اضافه کنید</string>
+    <string name="notification_description">دانلود آپدیت</string>
+    <string name="new_update_available">بروز رسانی جدید</string>
+    <string name="update">بروز رسانی</string>
+    <string name="you_need_to_update">نسخه فعلی اپلیکیشن شما منقضی شده است. برای ادامه استفاده از این اپلیکیشن لطفا بروز رسانی نمایید.\nبرخی از تغییرات:\n</string>
+    <string name="here_some_changes">برخی از تغییرات:\n</string>
+    <string name="exit">خروج</string>
+    <string name="waiting_for_update">در انتظار بروز رسانی…</string>
 
 </resources>

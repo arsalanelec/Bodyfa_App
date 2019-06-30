@@ -354,8 +354,15 @@
     <string name="name">Name</string>
     <string name="news">News</string>
     <string name="there_is_no_news_to_show">there is no news to show!</string>
-    <string name="wite_a_title_for_your_news">یک عنوان برای مطلب خود بنویسید...</string>
+    <string name="wite_a_title_for_your_news">Please Write a Title you this News…</string>
     <string name="send_a_news">Send a News</string>
     <string name="add_a_photo">Add a Photo</string>
+    <string name="notification_description">Dowloading Update</string>
+    <string name="new_update_available">New Update Available</string>
+    <string name="update">Update</string>
+    <string name="you_need_to_update">Your Current Application Version is Depricated. Please Update to Continue Using tis Application. Here Are Some Change\'s:</string>
+    <string name="here_some_changes">Here Are Some Chang\'s:</string>
+    <string name="exit">Exit</string>
+    <string name="waiting_for_update">Waiting for Update…</string>
 
 </resources>

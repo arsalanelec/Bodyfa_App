@@ -34,7 +34,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.ChatListActivity"
-            android:parentActivityName=".activities.MainActivity"></activity>
+            android:parentActivityName=".activities.MainActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

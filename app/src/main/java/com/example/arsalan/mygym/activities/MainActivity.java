@@ -2,12 +2,19 @@ package com.example.arsalan.mygym.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -38,7 +45,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.crashlytics.android.Crashlytics;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
@@ -64,8 +70,11 @@ import com.example.arsalan.mygym.fragments.TrainerPlansTabFragment;
 import com.example.arsalan.mygym.fragments.TutorialFragment;
 import com.example.arsalan.mygym.models.Gym;
 import com.example.arsalan.mygym.models.MyConst;
+import com.example.arsalan.mygym.models.RetGalleryList;
 import com.example.arsalan.mygym.models.RetResponseStatus;
+import com.example.arsalan.mygym.models.RetUpdate;
 import com.example.arsalan.mygym.models.RetroResult;
+import com.example.arsalan.mygym.models.Token;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.models.UserCredit;
@@ -81,6 +90,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.stfalcon.swipeablebutton.SwipeableButton;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -117,6 +127,7 @@ import static com.example.arsalan.mygym.MyKeys.KEY_PLAN_NAME;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_ATHLETE;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_GYM;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_TRAINER;
+import static com.example.arsalan.mygym.models.MyConst.BASE_CONTENT_URL;
 import static com.example.arsalan.mygym.webservice.MyWebService.STATUS_FAIL;
 
 public class MainActivity extends AppCompatActivity
@@ -149,6 +160,9 @@ public class MainActivity extends AppCompatActivity
 
     @Inject
     TrainerWorkoutPlanRequestDao mWorkoutReqDao;
+    @Inject
+    Token mToken;
+
     boolean doubleBackToExitPressedOnce = false;
     private PagerAdapter mGeneratVpga;
     private User mCurrentUser;
@@ -166,6 +180,8 @@ public class MainActivity extends AppCompatActivity
     public MainActivity() {
         mContext = this;
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,10 +231,10 @@ public class MainActivity extends AppCompatActivity
         TextView userNameTV = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         ImageButton goToInboxBtn = findViewById(R.id.btnChatlist);
 
-        Calendar c=Calendar.getInstance();
-        Log.d(TAG, "onCreate: current time:"+c.getTimeInMillis());
-        Boolean expired=PreferenceManager.getDefaultSharedPreferences(this).getBoolean("expired",false);
-        if(c.getTimeInMillis()>1564297902000L || expired){
+        Calendar c = Calendar.getInstance();
+        Log.d(TAG, "onCreate: current time:" + c.getTimeInMillis());
+        Boolean expired = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("expired", false);
+        if (c.getTimeInMillis() > 1564297902000L || expired) {
             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean("expired", true).apply();
 
             new AlertDialog.Builder(this)
@@ -242,14 +258,14 @@ public class MainActivity extends AppCompatActivity
         userViewModel.getUserLive().observe(this, user -> {
 
             if (user != null) {
-                if(mCurrentUser!=null && user.toString().equals(mCurrentUser.toString()))return;
+                if (mCurrentUser != null && user.toString().equals(mCurrentUser.toString())) return;
                 mCurrentUser = user;
                 initPushe();
                 Log.d(TAG, "onCreate: birthday:" + user.getBirthdayDateFa());
                 //جاگذاری نام و تصویر کاربر در هدر
                 userNameTV.setText(mCurrentUser.getName());
                 Glide.with(this)
-                        .load(MyConst.BASE_CONTENT_URL + mCurrentUser.getThumbUrl())
+                        .load(BASE_CONTENT_URL + mCurrentUser.getThumbUrl())
                         .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
                         .apply(RequestOptions.circleCropTransform())
                         .into(imgThumb);
@@ -439,7 +455,122 @@ public class MainActivity extends AppCompatActivity
                 dialog.show(getSupportFragmentManager(), "");
             }
         });
+        try {
+            int versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+            checkUpdate(mToken.getTokenBearer(), versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
+
+    public void checkUpdate(String token, long version) {
+        final int STATUS_NO_UPDATE = 0;
+        final int STATUS_NEW_UPDATE = 1;
+        final int STATUS_FORCE_UPDATE = 2;
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<RetUpdate> call = apiService.checkForUpdate(token, version);
+        call.enqueue(new Callback<RetUpdate>() {
+            @Override
+            public void onResponse(Call<RetUpdate> call, Response<RetUpdate> response) {
+                if (response.isSuccessful()) {
+                    Log.d(getClass().getSimpleName(), "onResponse: new Version:" + response.body().getRecord().getAppVersion());
+                    if(response.body().getRecord().getUpdateStatus()==STATUS_NEW_UPDATE) {
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle(R.string.new_update_available)
+                                .setMessage(getString(R.string.here_some_changes) + response.body().getRecord().getAppDescription())
+                                .setPositiveButton(getString(R.string.update), (dialogInterface, i) -> {
+                                    DownloadUpdate(BASE_CONTENT_URL + response.body().getRecord().getAppLink());
+                                    dialogInterface.dismiss();
+                                })
+                                .create().show();
+                    }else if (response.body().getRecord().getUpdateStatus()==STATUS_FORCE_UPDATE) {
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle(R.string.new_update_available)
+                                .setMessage(getString(R.string.you_need_to_update)+response.body().getRecord().getAppDescription())
+                                .setPositiveButton(getString(R.string.update), (dialogInterface, i) -> {
+                                    DownloadUpdate(BASE_CONTENT_URL+ response.body().getRecord().getAppLink());
+                                    dialogInterface.dismiss();
+                                    ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+                                    dialog.setTitle(R.string.waiting_for_update);
+                                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                            MainActivity.this.finish();
+                                        }
+                                    });
+
+                                    dialog.setCancelable(false);
+                                    dialog.show();
+
+                                })
+                                .setNegativeButton(R.string.exit,(dialog, i)->{
+                                    MainActivity.this.finish();
+                                })
+                                .setCancelable(false)
+                                .create().show();
+                    }
+                } else {
+                    Log.d(getClass().getSimpleName(), "onResponse: error:" + response.message());
+
+                }
+
+            }
+            @Override
+            public void onFailure(Call<RetUpdate> call, Throwable t) {
+                Log.d(getClass().getSimpleName(), "onFailure: "+t.getCause());
+            }
+        });
+    }
+
+    private void DownloadUpdate(String url) {
+        //get destination to update file and set Uri
+        //aplication with existing package from there. So for me, alternative solution is Download directory in external storage. If there is better
+        //solution, please inform us in comment
+        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
+        String fileName = "AppName.apk";
+        destination += fileName;
+        final Uri uri = Uri.parse("file://" + destination);
+
+        //Delete update file if exists
+        File file = new File(destination);
+        if (file.exists())
+            //file.delete() - test this, I think sometimes it doesnt work
+            file.delete();
+
+        //set downloadmanager
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setDescription(this.getString(R.string.notification_description));
+        request.setTitle(this.getString(R.string.app_name));
+
+        //set destination
+        request.setDestinationUri(uri);
+
+        // get download service and enqueue file
+        final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        final long downloadId = manager.enqueue(request);
+
+        //set BroadcastReceiver to install app when .apk is downloaded
+        BroadcastReceiver onComplete = new BroadcastReceiver() {
+            public void onReceive(Context ctxt, Intent intent) {
+                Intent install = new Intent(Intent.ACTION_VIEW);
+                install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                install.setDataAndType(uri,
+                        manager.getMimeTypeForDownloadedFile(downloadId));
+                startActivity(install);
+
+                unregisterReceiver(this);
+                finish();
+            }
+        };
+        //register receiver for when .apk download is compete
+        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
 
     private void initPushe() {
         if (Pushe.isPusheInitialized(this)) {
@@ -808,47 +939,47 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
-    /**
-     * view pager adapter for general view
-     */
-    private class ViewPagerOmoomiAdapter extends FragmentStatePagerAdapter {
-        private final String[] titles = {getString(R.string.dashboard),getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers)};//, getString(R.string.gyms)};
+/**
+ * view pager adapter for general view
+ */
+private class ViewPagerOmoomiAdapter extends FragmentStatePagerAdapter {
+    private final String[] titles = {getString(R.string.dashboard), getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers)};//, getString(R.string.gyms)};
 
 
-        public ViewPagerOmoomiAdapter(FragmentManager fm) {
-            super(fm);
-
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles[position];
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return DashBoardProfileFragment.newInstance(mCurrentUser.getId());//DashBoardAthleteFragment.newInstance(mCurrentUser);
-                case 1:
-                    return NewsListFragment.newInstance(mCurrentUser.getId());
-                case 2:
-                    return TutorialFragment.newInstance(!mCurrentUser.getRoleName().equalsIgnoreCase(KEY_ROLE_ATHLETE));
-                case 3:
-                    return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
-                case 4:
-                    return GymListFragment.newInstance("", "");
-                default:
-                    return new HomeFragment();
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return titles.length;
-        }
-
+    public ViewPagerOmoomiAdapter(FragmentManager fm) {
+        super(fm);
 
     }
+
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles[position];
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        switch (position) {
+            case 0:
+                return DashBoardProfileFragment.newInstance(mCurrentUser.getId());//DashBoardAthleteFragment.newInstance(mCurrentUser);
+            case 1:
+                return NewsListFragment.newInstance(mCurrentUser.getId());
+            case 2:
+                return TutorialFragment.newInstance(!mCurrentUser.getRoleName().equalsIgnoreCase(KEY_ROLE_ATHLETE));
+            case 3:
+                return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
+            case 4:
+                return GymListFragment.newInstance("", "");
+            default:
+                return new HomeFragment();
+        }
+    }
+
+    @Override
+    public int getCount() {
+        return titles.length;
+    }
+
+
+}
 }

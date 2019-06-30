@@ -22,6 +22,7 @@ import com.example.arsalan.mygym.models.RetTrainerWorkoutPlanReqList;
 import com.example.arsalan.mygym.models.RetTransactionList;
 import com.example.arsalan.mygym.models.RetTutorialList;
 import com.example.arsalan.mygym.models.RetTutorialVideoList;
+import com.example.arsalan.mygym.models.RetUpdate;
 import com.example.arsalan.mygym.models.RetUserList;
 import com.example.arsalan.mygym.models.RetUserProfile;
 import com.example.arsalan.mygym.models.RetWorkoutPlan;
@@ -315,6 +316,9 @@ public interface ApiInterface {
     Call<RetTrainerAthleteList> getAthleteMembershipRequests(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params);
 
 
+    @Multipart
+    @POST("/api/public/getAppVersion")
+    Call<RetUpdate> checkForUpdate(@Header("Authorization") String token, @Part("version") long version);
     @Streaming
     @GET
     Call<ResponseBody> downloadFileWithDynamicUrlAsync(@Url String fileUrl);
