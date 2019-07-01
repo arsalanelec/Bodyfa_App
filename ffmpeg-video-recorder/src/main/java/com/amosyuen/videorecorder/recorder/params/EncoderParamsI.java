@@ -131,7 +131,7 @@ public interface EncoderParamsI extends VideoFrameRateParamsI, Serializable {
         MJPEGB("Motion JPEG-B", avcodec.AV_CODEC_ID_MJPEGB),
         MPEG1VIDEO("MPEG-1 video", avcodec.AV_CODEC_ID_MPEG1VIDEO),
         MPEG2VIDEO("MPEG-2 video", avcodec.AV_CODEC_ID_MPEG2VIDEO),
-        MPEG2VIDEO_XVMC("MPEG-2 video XVMC", avcodec.AV_CODEC_ID_MPEG2VIDEO_XVMC),
+        //MPEG2VIDEO_XVMC("MPEG-2 video XVMC", avcodec.AV_CODEC_ID_MPEG2VIDEO_XVMC),
         MPEG4("MPEG-4 part 2", avcodec.AV_CODEC_ID_MPEG4),
         MSMPEG4V2("MPEG-4 part 2 Microsoft variant v2", avcodec.AV_CODEC_ID_MSMPEG4V2),
         MSMPEG4V3("MPEG-4 part 2 Microsoft variant v3", avcodec.AV_CODEC_ID_MSMPEG4V3),
