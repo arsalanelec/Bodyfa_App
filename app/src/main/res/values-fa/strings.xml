@@ -356,5 +356,6 @@
     <string name="here_some_changes">برخی از تغییرات:\n</string>
     <string name="exit">خروج</string>
     <string name="waiting_for_update">در انتظار بروز رسانی…</string>
+    <string name="request_permission_again">جهت دانلود فایل بروز رسانی ما نیاز به مجوز شما برای دسترسی به حافظه خارجی داریم.\nلطفا در دیالوگ بعدی این مجوز را تایید نمایید.</string>
 
 </resources>

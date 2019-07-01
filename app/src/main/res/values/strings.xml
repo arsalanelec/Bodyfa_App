@@ -364,5 +364,6 @@
     <string name="here_some_changes">Here Are Some Chang\'s:</string>
     <string name="exit">Exit</string>
     <string name="waiting_for_update">Waiting for Update…</string>
+    <string name="request_permission_again">To download the update we need your permission to use expternal storage. Please grant this permission on next dialog.</string>
 
 </resources>

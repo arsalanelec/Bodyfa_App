@@ -1,5 +1,6 @@
 package com.example.arsalan.mygym.activities;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
@@ -32,6 +33,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -70,7 +74,6 @@ import com.example.arsalan.mygym.fragments.TrainerPlansTabFragment;
 import com.example.arsalan.mygym.fragments.TutorialFragment;
 import com.example.arsalan.mygym.models.Gym;
 import com.example.arsalan.mygym.models.MyConst;
-import com.example.arsalan.mygym.models.RetGalleryList;
 import com.example.arsalan.mygym.models.RetResponseStatus;
 import com.example.arsalan.mygym.models.RetUpdate;
 import com.example.arsalan.mygym.models.RetroResult;
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private static final int REQUEST_ACT_MEALPLAN = 1;
     private static final int REQUEST_ACT_WORKOUTPLAN = 2;
+    private static final int MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE = 1;
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
     @Inject
@@ -176,11 +180,11 @@ public class MainActivity extends AppCompatActivity
     private UserCreditViewModel mUserCreditViewModel;
     private UserCredit mCredit;
     private String mUserName;
+    private String mDownloadLink;
 
     public MainActivity() {
         mContext = this;
     }
-
 
 
     @Override
@@ -478,21 +482,22 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Call<RetUpdate> call, Response<RetUpdate> response) {
                 if (response.isSuccessful()) {
                     Log.d(getClass().getSimpleName(), "onResponse: new Version:" + response.body().getRecord().getAppVersion());
-                    if(response.body().getRecord().getUpdateStatus()==STATUS_NEW_UPDATE) {
+                    if (response.body().getRecord().getUpdateStatus() == STATUS_NEW_UPDATE) {
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.new_update_available)
                                 .setMessage(getString(R.string.here_some_changes) + response.body().getRecord().getAppDescription())
                                 .setPositiveButton(getString(R.string.update), (dialogInterface, i) -> {
-                                    DownloadUpdate(BASE_CONTENT_URL + response.body().getRecord().getAppLink());
+                                    mDownloadLink=BASE_CONTENT_URL + response.body().getRecord().getAppLink();
+                                    DownloadUpdate(mDownloadLink);
                                     dialogInterface.dismiss();
                                 })
                                 .create().show();
-                    }else if (response.body().getRecord().getUpdateStatus()==STATUS_FORCE_UPDATE) {
+                    } else if (response.body().getRecord().getUpdateStatus() == STATUS_FORCE_UPDATE) {
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.new_update_available)
-                                .setMessage(getString(R.string.you_need_to_update)+response.body().getRecord().getAppDescription())
+                                .setMessage(getString(R.string.you_need_to_update) + response.body().getRecord().getAppDescription())
                                 .setPositiveButton(getString(R.string.update), (dialogInterface, i) -> {
-                                    DownloadUpdate(BASE_CONTENT_URL+ response.body().getRecord().getAppLink());
+                                    DownloadUpdate(BASE_CONTENT_URL + response.body().getRecord().getAppLink());
                                     dialogInterface.dismiss();
                                     ProgressDialog dialog = new ProgressDialog(MainActivity.this);
                                     dialog.setTitle(R.string.waiting_for_update);
@@ -508,7 +513,7 @@ public class MainActivity extends AppCompatActivity
                                     dialog.show();
 
                                 })
-                                .setNegativeButton(R.string.exit,(dialog, i)->{
+                                .setNegativeButton(R.string.exit, (dialog, i) -> {
                                     MainActivity.this.finish();
                                 })
                                 .setCancelable(false)
@@ -520,55 +525,99 @@ public class MainActivity extends AppCompatActivity
                 }
 
             }
+
             @Override
             public void onFailure(Call<RetUpdate> call, Throwable t) {
-                Log.d(getClass().getSimpleName(), "onFailure: "+t.getCause());
+                Log.d(getClass().getSimpleName(), "onFailure: " + t.getCause());
             }
         });
     }
 
+
     private void DownloadUpdate(String url) {
-        //get destination to update file and set Uri
-        //aplication with existing package from there. So for me, alternative solution is Download directory in external storage. If there is better
-        //solution, please inform us in comment
-        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
-        String fileName = "AppName.apk";
-        destination += fileName;
-        final Uri uri = Uri.parse("file://" + destination);
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
 
-        //Delete update file if exists
-        File file = new File(destination);
-        if (file.exists())
-            //file.delete() - test this, I think sometimes it doesnt work
-            file.delete();
-
-        //set downloadmanager
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setDescription(this.getString(R.string.notification_description));
-        request.setTitle(this.getString(R.string.app_name));
-
-        //set destination
-        request.setDestinationUri(uri);
-
-        // get download service and enqueue file
-        final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        final long downloadId = manager.enqueue(request);
-
-        //set BroadcastReceiver to install app when .apk is downloaded
-        BroadcastReceiver onComplete = new BroadcastReceiver() {
-            public void onReceive(Context ctxt, Intent intent) {
-                Intent install = new Intent(Intent.ACTION_VIEW);
-                install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                install.setDataAndType(uri,
-                        manager.getMimeTypeForDownloadedFile(downloadId));
-                startActivity(install);
-
-                unregisterReceiver(this);
-                finish();
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Log.d(TAG, "DownloadUpdate: ermission is not granted");
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.request_permission_again)
+                        .setPositiveButton(R.string.accept,(d,b)->{
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE);
+                            d.dismiss();
+                        })
+                        .create().show();
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE);
+                Log.d(TAG, "DownloadUpdate: request the permission");
+                // MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
             }
-        };
-        //register receiver for when .apk download is compete
-        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        } else {
+            // Permission has already been granted
+            Log.d(TAG, "DownloadUpdate: Permission has already been granted");
+            //get destination to update file and set Uri
+            //aplication with existing package from there. So for me, alternative solution is Download directory in external storage. If there is better
+            //solution, please inform us in comment
+            String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
+            String fileName = "AppName.apk";
+            destination += fileName;
+            final Uri uri = Uri.parse("file://" + destination);
+
+            //Delete update file if exists
+            File file = new File(destination);
+            if (file.exists())
+                //file.delete() - test this, I think sometimes it doesnt work
+                file.delete();
+
+            //set downloadmanager
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            request.setDescription(this.getString(R.string.notification_description));
+            request.setTitle(this.getString(R.string.app_name));
+
+            //set destination
+            request.setDestinationUri(uri);
+
+            // get download service and enqueue file
+            final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            final long downloadId = manager.enqueue(request);
+
+            //set BroadcastReceiver to install app when .apk is downloaded
+            BroadcastReceiver onComplete = new BroadcastReceiver() {
+                public void onReceive(Context ctxt, Intent intent) {
+                    Intent install = new Intent(Intent.ACTION_VIEW);
+                    install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+/*                    install.setDataAndType(uri,
+                            manager.getMimeTypeForDownloadedFile(downloadId));
+                    startActivity(install);*/
+                    Uri apkURI = FileProvider.getUriForFile(
+                            MainActivity.this,
+                            MainActivity.this.getApplicationContext()
+                                    .getPackageName() + ".provider", file);
+                    install.setDataAndType(apkURI, manager.getMimeTypeForDownloadedFile(downloadId));
+                    install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(install);
+                    unregisterReceiver(this);
+                    finish();
+                }
+            };
+            //register receiver for when .apk download is compete
+            registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        }
     }
 
 
@@ -939,47 +988,68 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
-/**
- * view pager adapter for general view
- */
-private class ViewPagerOmoomiAdapter extends FragmentStatePagerAdapter {
-    private final String[] titles = {getString(R.string.dashboard), getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers)};//, getString(R.string.gyms)};
+    /**
+     * view pager adapter for general view
+     */
+    private class ViewPagerOmoomiAdapter extends FragmentStatePagerAdapter {
+        private final String[] titles = {getString(R.string.dashboard), getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers)};//, getString(R.string.gyms)};
 
 
-    public ViewPagerOmoomiAdapter(FragmentManager fm) {
-        super(fm);
+        public ViewPagerOmoomiAdapter(FragmentManager fm) {
+            super(fm);
 
-    }
+        }
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return titles[position];
-    }
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles[position];
+        }
 
-    @Override
-    public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return DashBoardProfileFragment.newInstance(mCurrentUser.getId());//DashBoardAthleteFragment.newInstance(mCurrentUser);
-            case 1:
-                return NewsListFragment.newInstance(mCurrentUser.getId());
-            case 2:
-                return TutorialFragment.newInstance(!mCurrentUser.getRoleName().equalsIgnoreCase(KEY_ROLE_ATHLETE));
-            case 3:
-                return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
-            case 4:
-                return GymListFragment.newInstance("", "");
-            default:
-                return new HomeFragment();
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return DashBoardProfileFragment.newInstance(mCurrentUser.getId());//DashBoardAthleteFragment.newInstance(mCurrentUser);
+                case 1:
+                    return NewsListFragment.newInstance(mCurrentUser.getId());
+                case 2:
+                    return TutorialFragment.newInstance(!mCurrentUser.getRoleName().equalsIgnoreCase(KEY_ROLE_ATHLETE));
+                case 3:
+                    return TrainerListFragment.newInstance(mCurrentUser.getId(), mCurrentUser.getTrainerId());
+                case 4:
+                    return GymListFragment.newInstance("", "");
+                default:
+                    return new HomeFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return titles.length;
         }
     }
 
     @Override
-    public int getCount() {
-        return titles.length;
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    DownloadUpdate(mDownloadLink);
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
     }
-
-
-}
 }
