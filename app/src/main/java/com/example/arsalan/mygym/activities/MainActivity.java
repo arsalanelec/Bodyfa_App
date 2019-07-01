@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -480,8 +481,7 @@ public class MainActivity extends AppCompatActivity
         call.enqueue(new Callback<RetUpdate>() {
             @Override
             public void onResponse(Call<RetUpdate> call, Response<RetUpdate> response) {
-                if (response.isSuccessful()) {
-                    Log.d(getClass().getSimpleName(), "onResponse: new Version:" + response.body().getRecord().getAppVersion());
+                if (response.isSuccessful() && response.body().getRecord()!=null) {
                     if (response.body().getRecord().getUpdateStatus() == STATUS_NEW_UPDATE) {
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.new_update_available)
@@ -601,14 +601,20 @@ public class MainActivity extends AppCompatActivity
                 public void onReceive(Context ctxt, Intent intent) {
                     Intent install = new Intent(Intent.ACTION_VIEW);
                     install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 /*                    install.setDataAndType(uri,
                             manager.getMimeTypeForDownloadedFile(downloadId));
                     startActivity(install);*/
-                    Uri apkURI = FileProvider.getUriForFile(
-                            MainActivity.this,
-                            MainActivity.this.getApplicationContext()
-                                    .getPackageName() + ".provider", file);
-                    install.setDataAndType(apkURI, manager.getMimeTypeForDownloadedFile(downloadId));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Uri apkURI = FileProvider.getUriForFile(
+                                MainActivity.this,
+                                MainActivity.this.getApplicationContext()
+                                        .getPackageName() + ".provider", file);
+                        install.setDataAndType(apkURI, manager.getMimeTypeForDownloadedFile(downloadId));
+                    }else {
+                        install.setDataAndType(uri,
+                                manager.getMimeTypeForDownloadedFile(downloadId));
+                    }
                     install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     startActivity(install);
                     unregisterReceiver(this);
