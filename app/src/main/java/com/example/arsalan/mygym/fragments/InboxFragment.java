@@ -23,7 +23,6 @@ import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.InboxItem;
 import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.RetInboxList;
-import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.InboxItemListViewModel;
@@ -53,7 +52,7 @@ public class InboxFragment extends Fragment implements Injectable {
     private static final String ARG_USER = "param1";
     @Inject
     MyViewModelFactory factory;
-    private List<InboxItem> privateMessageList = new ArrayList<>();
+    private final List<InboxItem> privateMessageList = new ArrayList<>();
     private OnFragmentInteractionListener mListener;
     private ProgressBar waitingPB;
     private AdapterPm adapter;
@@ -105,7 +104,7 @@ public class InboxFragment extends Fragment implements Injectable {
 
         viewModel.getInboxItemList().observe(this, inboxItems -> {
             Log.d("onActivityCreated", "observe: ");
-            privateMessageList.removeAll(privateMessageList);
+            privateMessageList.clear();
             privateMessageList.addAll(inboxItems);
             adapter.notifyDataSetChanged();
             waitingPB.setVisibility(View.GONE);
@@ -143,7 +142,7 @@ public class InboxFragment extends Fragment implements Injectable {
             @Override
             public void onResponse(Call<RetInboxList> call, Response<RetInboxList> response) {
                 waitingPB.setVisibility(View.GONE);
-                privateMessageList.removeAll(privateMessageList);
+                privateMessageList.clear();
                 privateMessageList.addAll(response.body().getRecords());
                 adapter.notifyDataSetChanged();
 
@@ -201,19 +200,16 @@ public class InboxFragment extends Fragment implements Injectable {
             TextView partyNameTV = view.findViewById(R.id.txtPartyName);
             partyNameTV.setText(getItem(i).getPartyName());
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), MessageRoomActivity.class);
-                    intent.putExtra(EXTRA_USER_ID, mUserId);
-                    intent.putExtra(EXTRA_PARTY_ID, getItem(i).getPartyId());
-                    intent.putExtra(EXTRA_PARTY_NAME, getItem(i).getPartyName());
-                    intent.putExtra(EXTRA_PARTY_THUMB, getItem(i).getPartyThumbUrl());
+            view.setOnClickListener(view1 -> {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), MessageRoomActivity.class);
+                intent.putExtra(EXTRA_USER_ID, mUserId);
+                intent.putExtra(EXTRA_PARTY_ID, getItem(i).getPartyId());
+                intent.putExtra(EXTRA_PARTY_NAME, getItem(i).getPartyName());
+                intent.putExtra(EXTRA_PARTY_THUMB, getItem(i).getPartyThumbUrl());
 
-                    getActivity().startActivity(intent);
+                getActivity().startActivity(intent);
 
-                }
             });
             return view;
         }

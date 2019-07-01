@@ -88,12 +88,28 @@
         app:layout_constraintStart_toEndOf="@+id/txtPoints"
         app:layout_constraintTop_toTopOf="@+id/txtPoints" />
 
-   <!-- <ImageView
-        android:id="@+id/imgCheck"
+    <TextView
+        android:id="@+id/txt_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/img_thumb"
-        app:layout_constraintTop_toTopOf="@+id/img_thumb"
-        app:srcCompat="@drawable/ic_check_circle_24dp"
-        tools:visibility="gone" />-->
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/green_rect_back"
+        android:text="000"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView3" />
+
+    <!-- <ImageView
+         android:id="@+id/imgCheck"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         app:layout_constraintStart_toStartOf="@+id/img_thumb"
+         app:layout_constraintTop_toTopOf="@+id/img_thumb"
+         app:srcCompat="@drawable/ic_check_circle_24dp"
+         tools:visibility="gone" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

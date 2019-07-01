@@ -81,7 +81,7 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
     private TextView nameTV;
     private SimpleDraweeView pictureImg;
     private OnFragmentInteractionListener mListener;
-    private int REQ_SELECT_TRAINER = 1000;
+    private final int REQ_SELECT_TRAINER = 1000;
     private User mCurrentAthlete;
     private Uri resultUri;
     private ProgressDialog waitingDialog;
@@ -127,32 +127,25 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         });*/
 
         Button editProfileBtn = v.findViewById(R.id.btnEditProfilePic);
-        editProfileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent();
-                i.setClass(getActivity(), EditProfileActivity.class);
-                i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, MyKeys.KEY_ROLE_ATHLETE);
-                i.putExtra(EXTRA_OBJ_USER, mCurrentAthlete);
-                startActivity(i);
-            }
+        editProfileBtn.setOnClickListener(view -> {
+            Intent i = new Intent();
+            i.setClass(getActivity(), EditProfileActivity.class);
+            i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, MyKeys.KEY_ROLE_ATHLETE);
+            i.putExtra(EXTRA_OBJ_USER, mCurrentAthlete);
+            startActivity(i);
         });
 
         mGalleryPager = v.findViewById(R.id.vp_gallery);
         TabLayout tabLayout = v.findViewById(R.id.tablayoutGallery);
-        mGalleryPager.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent motionEvent) {
-                Log.d("setOnTouchListener", "onTouch: " + motionEvent.toString());
-                if (
-                        motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
-                                v instanceof ViewPager
-                ) {
-                    ((ViewPager) v).requestDisallowInterceptTouchEvent(true);
-                }
-                return false;
+        mGalleryPager.setOnTouchListener((v1, motionEvent) -> {
+            Log.d("setOnTouchListener", "onTouch: " + motionEvent.toString());
+            if (
+                    motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
+                            v1 instanceof ViewPager
+            ) {
+                ((ViewPager) v1).requestDisallowInterceptTouchEvent(true);
             }
+            return false;
         });
         tabLayout.setupWithViewPager(mGalleryPager);
 
@@ -161,21 +154,16 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         mGalleryPager.setAdapter(mGalleryAdapter);
 
         Button captureImageBtn = v.findViewById(R.id.btnCapture);
-        captureImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setActivityTitle(getString(R.string.choose_profile_photo))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(false)
-                        .setAspectRatio(3, 2)
-                        .setFixAspectRatio(true)
-                        .setRequestedSize(1200, 800)
-                        .start(getContext(), DashBoardAthleteFragment.this);
-            }
-        });
+        captureImageBtn.setOnClickListener(view -> CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setActivityTitle(getString(R.string.choose_profile_photo))
+                .setAllowFlipping(false)
+                .setAllowRotation(false)
+                .setAspectRatio(3, 2)
+                .setFixAspectRatio(true)
+                .setRequestedSize(1200, 800)
+                .start(getContext(), DashBoardAthleteFragment.this));
         v.setRotation(180);
         return v;
     }
@@ -341,7 +329,7 @@ public class DashBoardAthleteFragment extends Fragment implements WebServiceResu
         void changeUserTrainer(long trainerId);
     }
     private class galleryAdapter extends FragmentStatePagerAdapter{
-        List<GalleryItem> galleryItemList;
+        final List<GalleryItem> galleryItemList;
 
         public galleryAdapter(@NonNull FragmentManager fm,List<GalleryItem> galleryItems) {
             super(fm);

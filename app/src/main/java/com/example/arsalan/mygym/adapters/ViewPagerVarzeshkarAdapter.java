@@ -10,7 +10,6 @@ import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.fragments.AthleteMealPlanListFragment;
 import com.example.arsalan.mygym.fragments.AthleteWorkoutPlanListFragment;
 import com.example.arsalan.mygym.fragments.HomeFragment;
-import com.example.arsalan.mygym.fragments.MyGymFragment;
 import com.example.arsalan.mygym.fragments.MyTrainerMembershipFragment;
 import com.example.arsalan.mygym.models.User;
 

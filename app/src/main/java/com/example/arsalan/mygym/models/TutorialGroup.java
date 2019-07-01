@@ -20,10 +20,10 @@ import java.util.List;
 10.  سرکول*/
 public class TutorialGroup {
     private static List<TutorialGroup> tutorialGroupList;
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
     private String thumb;
-    private int thumbRes;
+    private final int thumbRes;
 
     public TutorialGroup(int id,String name, int thumbRes) {
         this.id = id;

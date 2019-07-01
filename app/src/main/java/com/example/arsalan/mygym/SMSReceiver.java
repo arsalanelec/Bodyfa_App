@@ -34,7 +34,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 msgs = new SmsMessage[pdus.length];
                 for (int i = 0; i < msgs.length; i++) {
                     msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                    msg = msgs[i].getMessageBody().toString();
+                    msg = msgs[i].getMessageBody();
                     str = msg.toUpperCase();
                     String actNumber = str.replaceAll("[^0-9]", "");
                    // PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString(KEY_SMS, actNumber).apply();

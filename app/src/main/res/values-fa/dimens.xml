@@ -6,8 +6,4 @@
     <dimen name="nav_header_height">138dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="form_section_margin">24dp</dimen>
-    <dimen name="form_header_margin_bottom">8dp</dimen>
-    <dimen name="form_item_padding_bottom">8dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
 </resources>

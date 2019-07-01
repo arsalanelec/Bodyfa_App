@@ -94,7 +94,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         mAthleteList = new ArrayList<>();
         mAdapter = new AdapterAthletes(mAthleteList, new AdapterAthletes.OnItemClickListener() {
             @Override
-            public void onItemClick(TrainerAthlete athlete, View view) {
+            public void onItemClick(TrainerAthlete athlete) {
                 Log.d(TAG, "onItemClick: athlete id:"+athlete.getAthleteId()+" userName:"+athlete.getAthleteUsername());
                 Fragment athleteProfileFragment= AthleteProfileFragment.newInstance(athlete.getAthleteId(),athlete.getAthleteName());
                 getFragmentManager()
@@ -131,7 +131,7 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         acceptedAthleteListViewModel.init( mCurrentUser.getId(),true);
         acceptedAthleteListViewModel.getAthleteList().observe(this, userList -> {
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: mealPlans cnt:" + userList.size());
-            mAthleteList.removeAll(mAthleteList);
+            mAthleteList.clear();
             mAthleteList.addAll(userList);
             athleteCnt.setText(getString(R.string.athlete_count, userList.size()));
             athleteCnt.setVisibility(View.VISIBLE);
@@ -157,17 +157,14 @@ public class MyAthleteListFragment extends Fragment implements Injectable{
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.d(TAG, "onKey: back presssed!");
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mAthleteContainer.getVisibility()==View.VISIBLE){
-                    mAthleteContainer.setVisibility(View.GONE);
-                    //your code
-                    return true;
-                }
-                return false;
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            Log.d(TAG, "onKey: back presssed!");
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mAthleteContainer.getVisibility()==View.VISIBLE){
+                mAthleteContainer.setVisibility(View.GONE);
+                //your code
+                return true;
             }
+            return false;
         });
     }
     @Override

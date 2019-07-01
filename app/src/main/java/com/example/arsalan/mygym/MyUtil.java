@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.util.TypedValue;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import saman.zamani.persiandate.PersianDate;

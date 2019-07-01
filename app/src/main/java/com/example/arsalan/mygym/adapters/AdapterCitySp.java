@@ -7,28 +7,35 @@ import android.view.ViewGroup;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.City;
 import com.example.arsalan.mygym.models.CityNState;
-import com.example.arsalan.mygym.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterCitySp implements SpinnerAdapter {
 
-    List<City> CityList;
-long provinceId;
+    private final List<City> CityList;
+    private final long provinceId;
 
     public AdapterCitySp(long provinceId) {
         CityList = new ArrayList<>();
-        this.provinceId=provinceId;
-        if(provinceId!=0)
+        this.provinceId = provinceId;
+        if (provinceId != 0)
             try {
                 this.CityList.addAll(CityNState.getProvinceById(provinceId).getCities());
 
-            }catch (Exception e){};
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
     }
-public long getProvinceId(){return provinceId;}
+
+    public long getProvinceId() {
+        return provinceId;
+    }
+
     @Override
     public View getDropDownView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {
@@ -76,7 +83,7 @@ public long getProvinceId(){return provinceId;}
         }
         TextView textView = view.findViewById(R.id.textView);
 
-        textView.setText(getItem(i ).getName());
+        textView.setText(getItem(i).getName());
         return view;
     }
 

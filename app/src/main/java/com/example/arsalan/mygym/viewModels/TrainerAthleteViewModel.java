@@ -14,10 +14,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TrainerAthleteViewModel extends ViewModel {
-    private TrainerAthletesRepository repository;
-    private LiveData<List<TrainerAthlete>> activeTrainerList;
+    private final TrainerAthletesRepository repository;
+    private final LiveData<List<TrainerAthlete>> activeTrainerList;
 
-    private MutableLiveData<Long> userId =new MutableLiveData<>();
+    private final MutableLiveData<Long> userId =new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public TrainerAthleteViewModel(TrainerAthletesRepository repository, Token token) {

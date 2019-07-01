@@ -93,19 +93,7 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
         mMealPlanList = new ArrayList<>();
         mNothingToSee = v.findViewById(R.id.layNothingToShow);
 
-        mAdapter = new AdapterAthleteMealPlanList(getContext(), mMealPlanList, new AdapterAthleteMealPlanList.OnItemClickListener() {
-            @Override
-            public void onItemShowClick(MealPlan mealPlan, int position) {
-                getAthleteMealPlanWeb(mealPlan.getAthleteMealPlanId(), new OnGetPlanListener() {
-                    @Override
-                    public void onGetPlan(long planId, String title, String body) {
-                        mListener.addEditMealPlan(planId, title, body, false);
-
-                    }
-                });
-
-            }
-        });
+        mAdapter = new AdapterAthleteMealPlanList(getContext(), mMealPlanList, mealPlan -> getAthleteMealPlanWeb(mealPlan.getAthleteMealPlanId(), (planId, title1, body) -> mListener.addEditMealPlan(planId, title1, body, false)));
         FloatingActionButton floatingActionButton = v.findViewById(R.id.fab_add_plan);
         floatingActionButton.setVisibility(View.GONE);
         v.setRotation(180);
@@ -120,7 +108,7 @@ public class AthleteMealPlanListFragment extends Fragment implements Injectable 
         mealPlanListViewModel.getMealPlanItemList().observe(this, mealPlans -> {
             mNothingToSee.setVisibility((mealPlans.size() == 0) ? View.VISIBLE : View.GONE);
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: mealPlans cnt:" + mealPlans.size());
-            mMealPlanList.removeAll(mMealPlanList);
+            mMealPlanList.clear();
             mMealPlanList.addAll(mealPlans);
             mAdapter.notifyDataSetChanged();
             planList.setAdapter(mAdapter);

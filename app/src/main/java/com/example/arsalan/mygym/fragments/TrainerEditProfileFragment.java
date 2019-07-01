@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
@@ -24,7 +22,6 @@ import com.example.arsalan.mygym.models.ProgressRequestBody;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.webservice.MyWebService;
 import com.example.arsalan.mygym.webservice.WebServiceResultImplementation;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -37,7 +34,6 @@ import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -108,41 +104,35 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
 
             bind.imgNatCard.setImageURI(MyConst.BASE_CONTENT_URL + mTrainer.getNationalCardThumbUrl());
         }
-        bind.btnEditProfilePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setAspectRatio(3, 2)
-                        .setActivityTitle(getString(R.string.choose_training_licence))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(false)
-                        .setFixAspectRatio(true)
-                        .setRequestedSize(1200, 800)
-                        .getIntent(getContext());
-                // .start(getContext(), TrainerEditProfileFragment.this);
-                /*Intent intent = CropImage.activity()
-                        .getIntent(getContext());*/
-                startActivityForResult(intent, ACTIVITY_REQUEST_DOCUMENT);
-            }
+        bind.btnEditProfilePic.setOnClickListener(view -> {
+            Intent intent = CropImage.activity()
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .setAspectRatio(3, 2)
+                    .setActivityTitle(getString(R.string.choose_training_licence))
+                    .setAllowFlipping(false)
+                    .setAllowRotation(false)
+                    .setFixAspectRatio(true)
+                    .setRequestedSize(1200, 800)
+                    .getIntent(getContext());
+            // .start(getContext(), TrainerEditProfileFragment.this);
+            /*Intent intent = CropImage.activity()
+                    .getIntent(getContext());*/
+            startActivityForResult(intent, ACTIVITY_REQUEST_DOCUMENT);
         });
 
-        bind.btnEditNatCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setActivityTitle(getString(R.string.choose_id_card))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(false)
-                        .setRequestedSize(1200, 800)
-                        .setAspectRatio(3, 2)
-                        .setFixAspectRatio(true)
-                        .getIntent(getContext());
-                startActivityForResult(intent, ACTIVITY_REQUEST_NATIONAL_CARD);
-            }
+        bind.btnEditNatCard.setOnClickListener(view -> {
+            Intent intent = CropImage.activity()
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .setActivityTitle(getString(R.string.choose_id_card))
+                    .setAllowFlipping(false)
+                    .setAllowRotation(false)
+                    .setRequestedSize(1200, 800)
+                    .setAspectRatio(3, 2)
+                    .setFixAspectRatio(true)
+                    .getIntent(getContext());
+            startActivityForResult(intent, ACTIVITY_REQUEST_NATIONAL_CARD);
         });
 
         bind.btnSubmit.setOnClickListener(new View.OnClickListener() {

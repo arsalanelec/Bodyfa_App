@@ -8,7 +8,6 @@ import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.databinding.ActivityTrancastionListBinding;
 import com.example.arsalan.mygym.databinding.ItemTransactionBinding;
 import com.example.arsalan.mygym.di.Injectable;
-import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.Transaction;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TransactionsViewModel;
@@ -59,7 +58,7 @@ public class TransactionListActivity extends AppCompatActivity implements Inject
         viewModel.init(mUserId);
         viewModel.getTransactionList().observe(this, tList -> {
             if (tList != null) {
-                transactionList.removeAll(transactionList);
+                transactionList.clear();
                 transactionList.addAll(tList);
                 adapter.notifyDataSetChanged();
                 Log.d(TAG, "onCreate: count:"+tList.size());
@@ -73,7 +72,7 @@ public class TransactionListActivity extends AppCompatActivity implements Inject
     }
 
     private class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-        List<Transaction> transactions;
+        final List<Transaction> transactions;
 
         public RecyclerAdapter(List<Transaction> transactions) {
             this.transactions = transactions;
@@ -98,7 +97,7 @@ public class TransactionListActivity extends AppCompatActivity implements Inject
 
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            ItemTransactionBinding binding;
+            final ItemTransactionBinding binding;
 
             public ViewHolder(ItemTransactionBinding binding) {
                 super(binding.getRoot());

@@ -44,27 +44,23 @@ public class AthleteWorkoutPlanRepository {
         if (!workoutPlanExist) {
             Log.d("refreshWorkoutPlanList", "!workoutPlanExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetWorkoutPlanList> call = apiService.getAthleteWorkoutPlanList(token, userId);
+                try {
+                    Response<RetWorkoutPlanList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshWorkoutPlanList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
+                        workoutPlanDao.deleteAll();
+                        Log.d("refreshWorkoutPlanList", "run: workoutPlanDao save:" + workoutPlanDao.saveList(response.body().getRecords()).length);
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetWorkoutPlanList> call = apiService.getAthleteWorkoutPlanList(token, userId);
-                    try {
-                        Response<RetWorkoutPlanList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshWorkoutPlanList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
-                            workoutPlanDao.deleteAll();
-                            Log.d("refreshWorkoutPlanList", "run: workoutPlanDao save:" + workoutPlanDao.saveList(response.body().getRecords()).length);
-
-                        } else {
-                            Log.d("refreshWorkoutPlanList", "run: response.error");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } else {
+                        Log.d("refreshWorkoutPlanList", "run: response.error");
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
         }

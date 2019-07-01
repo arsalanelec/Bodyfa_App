@@ -42,31 +42,26 @@ public class HonorRepository {
         if (!honorExist) {
             Log.d("refreshHonorListCity", "!honorExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetHonorList> call = apiService.getHonorList(token, trainerId);
+                try {
+                    Response<RetHonorList> response = call.execute();
+                    if (response.isSuccessful()&&response.body()!=null) {
+                        Log.d("refreshHonorListCity", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetHonorList> call = apiService.getHonorList(token, trainerId);
-                    try {
-                        Response<RetHonorList> response = call.execute();
-                        if (response.isSuccessful()&&response.body()!=null) {
-                            Log.d("refreshHonorListCity", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
+                        Log.d("refreshHonorListCity", "run: honorDao save:" + honorDao.saveList(response.body().getRecords()).length);
 
-                            Log.d("refreshHonorListCity", "run: honorDao save:" + honorDao.saveList(response.body().getRecords()).length);
+                    } else {
+                        Log.d("refreshHonorListCity", "run: response.error");
 
-                        } else {
-                            Log.d("refreshHonorListCity", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 

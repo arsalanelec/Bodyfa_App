@@ -134,7 +134,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         });
 
         bind.tablayout.setupWithViewPager(bind.vpGallery);
-        mGalleryItemList = new ArrayList<GalleryItem>();
+        mGalleryItemList = new ArrayList<>();
         mGalleryAdapter = new GalleryPagerAdapter(mGalleryItemList);
         bind.vpGallery.setAdapter(mGalleryAdapter);
 
@@ -158,17 +158,14 @@ public class MyTrainerFragment extends Fragment implements Injectable {
 
         newsList = new ArrayList<>();
         bind.rvNews.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        adapter = new AdapterDashboardNews(newsList, AdapterDashboardNews.LAYOUT_TYPE_LINEAR, new AdapterDashboardNews.OnAdapterNewsEventListener() {
-            @Override
-            public void onNewsHeadClick(long newsId, int catType) {
-                /*Intent i = new Intent();
-                i.setClass(getContext(), NewsDetailActivity.class);
-                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsId);
-                startActivity(i);*/
-                getFragmentManager().beginTransaction().replace(R.id.container_trainer_news, NewsDetailFragment.newInstance(mTrainerId, newsId, catType), "").commit();
-                bind.containerTrainerNews.setVisibility(View.VISIBLE);
+        adapter = new AdapterDashboardNews(newsList, AdapterDashboardNews.LAYOUT_TYPE_LINEAR, (newsId, catType) -> {
+            /*Intent i = new Intent();
+            i.setClass(getContext(), NewsDetailActivity.class);
+            i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsId);
+            startActivity(i);*/
+            getFragmentManager().beginTransaction().replace(R.id.container_trainer_news, NewsDetailFragment.newInstance(mTrainerId, newsId, catType), "").commit();
+            bind.containerTrainerNews.setVisibility(View.VISIBLE);
 
-            }
         });
 
         bind.rvNews.setAdapter(adapter);
@@ -208,17 +205,14 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         super.onActivityCreated(savedInstanceState);
 
         NewsListViewModel newsListViewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
-        newsListViewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
-            @Override
-            public void onChanged(@Nullable List<NewsHead> newNewsList) {
-                if (newNewsList != null) {
-                    Log.d("NewsListViewModel", "observe: cnt:" + newNewsList.size());
-                    newsList.clear();
-                    newsList.addAll(newNewsList);
-                    adapter.notifyDataSetChanged();
-                    bind.txtNoNews.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
-                    bind.rvNews.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
-                }
+        newsListViewModel.getNewsList().observe(this, newNewsList -> {
+            if (newNewsList != null) {
+                Log.d("NewsListViewModel", "observe: cnt:" + newNewsList.size());
+                newsList.clear();
+                newsList.addAll(newNewsList);
+                adapter.notifyDataSetChanged();
+                bind.txtNoNews.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
+                bind.rvNews.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -231,17 +225,14 @@ public class MyTrainerFragment extends Fragment implements Injectable {
                 bind.setOnRateClick(this::rateTheTrainer);
                 Log.d(getClass().getSimpleName(), "observe: trainer");
                 newsListViewModel.init(trainer.getId(),0);
-                bind.btnSendMessage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent();
-                        intent.putExtra(EXTRA_USER_ID, mAthleteId);
-                        intent.putExtra(EXTRA_PARTY_ID, trainer.getId());
-                        intent.putExtra(EXTRA_PARTY_NAME, trainer.getName());
-                        intent.putExtra(EXTRA_PARTY_THUMB, trainer.getThumbUrl());
-                        intent.setClass(getActivity(), MessageRoomActivity.class);
-                        startActivity(intent);
-                    }
+                bind.btnSendMessage.setOnClickListener(view -> {
+                    Intent intent = new Intent();
+                    intent.putExtra(EXTRA_USER_ID, mAthleteId);
+                    intent.putExtra(EXTRA_PARTY_ID, trainer.getId());
+                    intent.putExtra(EXTRA_PARTY_NAME, trainer.getName());
+                    intent.putExtra(EXTRA_PARTY_THUMB, trainer.getThumbUrl());
+                    intent.setClass(getActivity(), MessageRoomActivity.class);
+                    startActivity(intent);
                 });
                 bind.txtTrainerNotSelected.setVisibility(View.GONE);
             }
@@ -253,7 +244,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         galleryViewModel.init(mTrainerId);
         galleryViewModel.getGalleryItemList().observe(this, galleryItems -> {
             Log.d("onActivityCreated", "observe: ");
-            mGalleryItemList.removeAll(mGalleryItemList);
+            mGalleryItemList.clear();
             mGalleryItemList.addAll(galleryItems);
             mGalleryAdapter.notifyDataSetChanged();
             // waitingFL.setVisibility(View.GONE);
@@ -264,7 +255,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
         honorViewModel.getHonorList().observe(this, honors -> {
             if (honors != null) {
                 Log.d(getClass().getSimpleName(), "observe: honor");
-                mHonorList.removeAll(mHonorList);
+                mHonorList.clear();
                 mHonorList.addAll(honors);
                 mHonorAdapter.notifyDataSetChanged();
                 bind.rvHonor.setVisibility(View.VISIBLE);
@@ -313,7 +304,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     }
 
     public class GalleryPagerAdapter extends PagerAdapter {
-        ArrayList<GalleryItem> galleryItemList;
+        final ArrayList<GalleryItem> galleryItemList;
 
         public GalleryPagerAdapter(ArrayList<GalleryItem> galleryItemList) {
             this.galleryItemList = galleryItemList;
@@ -368,7 +359,7 @@ public class MyTrainerFragment extends Fragment implements Injectable {
     }
 
     private class AdapterHonors extends RecyclerView.Adapter<AdapterHonors.ViewHolder> {
-        List<Honor> honorList;
+        final List<Honor> honorList;
 
         public AdapterHonors(List<Honor> honorList) {
             this.honorList = honorList;
@@ -430,8 +421,8 @@ public class MyTrainerFragment extends Fragment implements Injectable {
 
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView titleTv;
-            ImageView medalImg;
+            final TextView titleTv;
+            final ImageView medalImg;
 
             public ViewHolder(View itemView) {
                 super(itemView);

@@ -169,28 +169,23 @@ public class UserRepository {
 
 
     private void refreshUser(String userName) {
-        mExecutor.execute(new Runnable() {
+        mExecutor.execute(() -> {
+            RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), userName);
+            ApiInterface apiService =
+                    ApiClient.getClient().create(ApiInterface.class);
 
-            @Override
-            public void run() {
-                RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"), userName);
-                ApiInterface apiService =
-                        ApiClient.getClient().create(ApiInterface.class);
-
-                Call<RetUserProfile> call = apiService.getProfile(mToken.getTokenBearer(), requestBody);
-                try {
-                    Response<RetUserProfile> response = call.execute();
-                    if (response.isSuccessful()) {
-                        Log.d("refreshUserListCity", "run: newDao save:" + mUserDao.saveUser(response.body().getRecord()));
-                    } else {
-                        Log.d("refreshUserListCity", "run: response.error");
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+            Call<RetUserProfile> call = apiService.getProfile(mToken.getTokenBearer(), requestBody);
+            try {
+                Response<RetUserProfile> response = call.execute();
+                if (response.isSuccessful()) {
+                    Log.d("refreshUserListCity", "run: newDao save:" + mUserDao.saveUser(response.body().getRecord()));
+                } else {
+                    Log.d("refreshUserListCity", "run: response.error");
                 }
-            }
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
     }

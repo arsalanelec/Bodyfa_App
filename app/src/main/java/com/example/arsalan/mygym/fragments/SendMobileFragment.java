@@ -59,31 +59,28 @@ public class SendMobileFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_send_mobile, container, false);
         mobileET = v.findViewById(R.id.etMobile);
         final Button loginBtn = v.findViewById(R.id.btnSendMobile);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mobileET.getText().length() != 11 || !mobileET.getText().toString().startsWith("09")) {
-                    mobileET.setError(getString(R.string.wrong_mobile_number));
-                    return;
-                }
-                mListener.sendMobileWeb(mobileET.getText().toString());
-                countTimer = new CountDownTimer(60000, 1000) {
-
-                    public void onTick(long millisUntilFinished) {
-                        loginBtn.setText(getString(R.string.submit_again_second, (int) (millisUntilFinished / 1000)));
-                        loginBtn.setEnabled(false);
-                        loginBtn.setTextColor(Color.GRAY);
-                    }
-
-                    public void onFinish() {
-                        loginBtn.setText(getString(R.string.submit_again));
-                        loginBtn.setEnabled(true);
-                        loginBtn.setTextColor(Color.BLACK);
-                    }
-                };
-                countTimer.start();
-
+        loginBtn.setOnClickListener(view -> {
+            if (mobileET.getText().length() != 11 || !mobileET.getText().toString().startsWith("09")) {
+                mobileET.setError(getString(R.string.wrong_mobile_number));
+                return;
             }
+            mListener.sendMobileWeb(mobileET.getText().toString());
+            countTimer = new CountDownTimer(60000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    loginBtn.setText(getString(R.string.submit_again_second, (int) (millisUntilFinished / 1000)));
+                    loginBtn.setEnabled(false);
+                    loginBtn.setTextColor(Color.GRAY);
+                }
+
+                public void onFinish() {
+                    loginBtn.setText(getString(R.string.submit_again));
+                    loginBtn.setEnabled(true);
+                    loginBtn.setTextColor(Color.BLACK);
+                }
+            };
+            countTimer.start();
+
         });
 
         return v;

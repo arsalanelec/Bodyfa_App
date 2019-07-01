@@ -14,10 +14,10 @@ import com.example.arsalan.mygym.R;
 import java.util.List;
 
 public class AdapterAthleteMealPlanList extends BaseAdapter {
-    List<MealPlan> mMealPlanList;
+    private final List<MealPlan> mMealPlanList;
 
-    Context mContext;
-    OnItemClickListener mListener;
+    private final Context mContext;
+    private final OnItemClickListener mListener;
 
     public AdapterAthleteMealPlanList(Context context, List<MealPlan> mealPlanList, OnItemClickListener onItemClickListener) {
         this.mMealPlanList = mealPlanList;
@@ -40,12 +40,6 @@ public class AdapterAthleteMealPlanList extends BaseAdapter {
         return mMealPlanList.get(i).getTrainerMealPlanId();
     }
 
-    public void removeItem(int i) {
-        mMealPlanList.remove(i);
-        this.notifyDataSetChanged();
-
-    }
-
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         if (view == null) {
@@ -62,12 +56,7 @@ public class AdapterAthleteMealPlanList extends BaseAdapter {
         TextView trainerNameTV = view.findViewById(R.id.txtTrainerName);
         trainerNameTV.setText(mMealPlanList.get(i).getTrainerName());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemShowClick(getItem(i), i);
-            }
-        });
+        view.setOnClickListener(view1 -> mListener.onItemShowClick(getItem(i)));
 
 
         return view;
@@ -76,7 +65,7 @@ public class AdapterAthleteMealPlanList extends BaseAdapter {
     public interface OnItemClickListener {
 
 
-        void onItemShowClick(MealPlan mealPlan, int position);
+        void onItemShowClick(MealPlan mealPlan);
 
     }
 }

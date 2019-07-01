@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -30,10 +29,7 @@ import com.example.arsalan.mygym.adapters.AdapterTrainers;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.CityNState;
 import com.example.arsalan.mygym.models.Province;
-import com.example.arsalan.mygym.models.RetTrainerList;
 import com.example.arsalan.mygym.models.Trainer;
-import com.example.arsalan.mygym.retrofit.ApiClient;
-import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerListViewModel;
 
@@ -41,10 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class TrainerListFragment extends Fragment implements Injectable {
@@ -101,7 +93,7 @@ public class TrainerListFragment extends Fragment implements Injectable {
         detailFragment = v.findViewById(R.id.container_trainer);
         RecyclerView rv = v.findViewById(R.id.rv_trainers);
         trainerList = new ArrayList<>();
-        adapter = new AdapterTrainers((trainer, view) -> {
+        adapter = new AdapterTrainers(AdapterTrainers.SHOW_NO_PRICE,(trainer, view) -> {
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container_trainer, MyTrainerFragment.newInstance(mUserId, trainer.getId(), false))
@@ -121,31 +113,25 @@ public class TrainerListFragment extends Fragment implements Injectable {
         waitingFL = v.findViewById(R.id.fl_waiting);
         byMedalBtn = v.findViewById(R.id.btnByMedals);
         byRankBtn = v.findViewById(R.id.btnByRank);
-        byMedalBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-              //  waitingFL.setVisibility(View.VISIBLE);
-                byRankBtn.setChecked(!b);
-                /*getTrainerWeb(0, 0, b ? 1 : 2, new OnGetTrainerListner() {
-                    @Override
-                    public void onSuccess() {
-                        waitingFL.setVisibility(View.GONE);
-                    }
+        byMedalBtn.setOnCheckedChangeListener((compoundButton, b) -> {
+          //  waitingFL.setVisibility(View.VISIBLE);
+            byRankBtn.setChecked(!b);
+            /*getTrainerWeb(0, 0, b ? 1 : 2, new OnGetTrainerListner() {
+                @Override
+                public void onSuccess() {
+                    waitingFL.setVisibility(View.GONE);
+                }
 
-                    @Override
-                    public void onFailed() {
+                @Override
+                public void onFailed() {
 
-                    }
-                });*/
-                compoundButton.setEnabled(!b);
-            }
+                }
+            });*/
+            compoundButton.setEnabled(!b);
         });
-        byRankBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                byMedalBtn.setChecked(!b);
-              //  compoundButton.setEnabled(!b);
-            }
+        byRankBtn.setOnCheckedChangeListener((compoundButton, b) -> {
+            byMedalBtn.setChecked(!b);
+          //  compoundButton.setEnabled(!b);
         });
 
 
@@ -194,18 +180,15 @@ public class TrainerListFragment extends Fragment implements Injectable {
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        getView().setOnKeyListener((v, keyCode, event) -> {
 
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility() == View.VISIBLE) {
-                    detailFragment.setVisibility(View.GONE);
-                    //your code
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility() == View.VISIBLE) {
+                detailFragment.setVisibility(View.GONE);
+                //your code
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
     }
 
@@ -222,7 +205,7 @@ public class TrainerListFragment extends Fragment implements Injectable {
 
     class ProvinceAdapter implements SpinnerAdapter {
 
-        List<Province> provinceList;
+        final List<Province> provinceList;
 
         public ProvinceAdapter() {
             provinceList = new ArrayList<>();

@@ -60,8 +60,8 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     private long mTrainerId;
 
     private OnFragmentInteractionListener mListener;
-    private List<WorkoutPlanReq> mRequestList;
-    private List<TrainerAthlete> mAthletes;
+    private final List<WorkoutPlanReq> mRequestList;
+    private final List<TrainerAthlete> mAthletes;
     private ExtendViewAdapter mAdapter;
     private FragmentTrainerOrderListBinding mBind;
     private TrainerWorkoutPlanReqVm workoutPlanReqVm;
@@ -119,7 +119,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         workoutPlanReqVm.initWaiting(mTrainerId);
         workoutPlanReqVm.getWorkoutPlanListLv().observe(this, workoutPlanReqs -> {
             Log.d(TAG, "onActivityCreated: workoutPlanReqs Changed listSize:" + workoutPlanReqs.size());
-            mRequestList.removeAll(mRequestList);
+            mRequestList.clear();
             if (workoutPlanReqs != null && workoutPlanReqs.size() > 0) {
                 mRequestList.addAll(workoutPlanReqs);
             }
@@ -133,7 +133,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         athletesViewModel.init(mTrainerId,false);
         athletesViewModel.getAthleteList().observe(this, athletes -> {
             Log.d(TAG, "onActivityCreated: athletesViewModel Changed listSize:" + athletes.size());
-            mAthletes.removeAll(mAthletes);
+            mAthletes.clear();
             if (athletes != null && athletes.size() > 0) {
                 mAthletes.addAll(athletes);
             }
@@ -184,7 +184,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onWorkoutPlanCancelRequest(long planId);
     }
 
     private class ExtendViewAdapter extends BaseExpandableListAdapter implements OnRequestRowClickListener {
@@ -193,8 +192,8 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         private static final int TYPE_MEMBERSHIP = 2;
         private static final String TAG = "ExtendViewAdapter";
         final String[] groupTitles = {"سفارشات برنامه ورزشی", "سفارشات برنامه تغذیه", "سفارشات اشتراک"};
-        List<WorkoutPlanReq> workoutPlanReqList;
-        List<TrainerAthlete> athletes;
+        final List<WorkoutPlanReq> workoutPlanReqList;
+        final List<TrainerAthlete> athletes;
 
         public ExtendViewAdapter(List<WorkoutPlanReq> workoutPlanReqList, List<TrainerAthlete> athleteList) {
             this.workoutPlanReqList = workoutPlanReqList;
@@ -360,7 +359,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                             Toast.makeText(getContext(), "حذف انجام شد!", Toast.LENGTH_LONG).show();
                         }
                     });
-                    mListener.onWorkoutPlanCancelRequest(requestId);
                     break;
                 case TYPE_MEMBERSHIP:
                     athletesViewModel.cancelRequest(requestId).observe(TrainerOrderListFragment.this,status->{
@@ -413,17 +411,14 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.d(TAG, "onKey: back presssed!");
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mBind.containerAthleteProfile.getVisibility()==View.VISIBLE){
-                    mBind.containerAthleteProfile.setVisibility(View.GONE);
-                    //your code
-                    return true;
-                }
-                return false;
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            Log.d(TAG, "onKey: back presssed!");
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mBind.containerAthleteProfile.getVisibility()==View.VISIBLE){
+                mBind.containerAthleteProfile.setVisibility(View.GONE);
+                //your code
+                return true;
             }
+            return false;
         });
     }
 

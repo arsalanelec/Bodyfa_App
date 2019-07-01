@@ -3,7 +3,7 @@ package com.example.arsalan.mygym.models;
 public class NextPrev {
     private int step;
     private int day;
-    public NextPrev(){};
+    public NextPrev(){}
 
     public NextPrev(int day, int step) {
         this.day=day;

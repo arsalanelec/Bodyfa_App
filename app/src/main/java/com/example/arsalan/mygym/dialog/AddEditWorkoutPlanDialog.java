@@ -51,7 +51,7 @@ public class AddEditWorkoutPlanDialog extends DialogFragment {
     private boolean mIsNew = true;
 
     private Spinner workoutItemSpn;
-    private ArrayList<Tutorial> tutorialList = new ArrayList<>();
+    private final ArrayList<Tutorial> tutorialList = new ArrayList<>();
 
     public AddEditWorkoutPlanDialog() {
         // Required empty public constructor
@@ -112,7 +112,7 @@ public class AddEditWorkoutPlanDialog extends DialogFragment {
         for (int cnt = 0; cnt < workoutGrpSpn.getCount(); cnt++) {
             if (workoutGrpSpn.getItemIdAtPosition(cnt) == mWorkoutRow.getGroupId()) {
                 workoutGrpSpn.setSelection(cnt);
-                getTutorialWeb((int) workoutGrpSpn.getSelectedItemId(), (int) mWorkoutRow.getWorkoutId(), waitingPB, workoutItemSpn);
+                getTutorialWeb((int) workoutGrpSpn.getSelectedItemId(), mWorkoutRow.getWorkoutId(), waitingPB, workoutItemSpn);
 
                 break;
             }
@@ -121,7 +121,7 @@ public class AddEditWorkoutPlanDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int ii, long l) {
                 mWorkoutRow.setGroupId((int) adapterView.getSelectedItemId());
-                getTutorialWeb((int) workoutGrpSpn.getSelectedItemId(), (int) mWorkoutRow.getGroupId(), waitingPB, workoutItemSpn);
+                getTutorialWeb((int) workoutGrpSpn.getSelectedItemId(), mWorkoutRow.getGroupId(), waitingPB, workoutItemSpn);
             }
 
             @Override
@@ -234,22 +234,19 @@ public class AddEditWorkoutPlanDialog extends DialogFragment {
         });
 
         Button submitBtn = v.findViewById(R.id.btnSubmit);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra(MyKeys.EXTRA_PARCLABLE_OBJ, mWorkoutRow);
-                intent.putExtra(Intent.EXTRA_INDEX, mIndex);
-                getTargetFragment().onActivityResult(getTargetRequestCode(), mIsNew ? MyKeys.RESULT_NEW : MyKeys.RESULT_EDIT, intent);
-                dismiss();
-            }
+        submitBtn.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.putExtra(MyKeys.EXTRA_PARCLABLE_OBJ, mWorkoutRow);
+            intent.putExtra(Intent.EXTRA_INDEX, mIndex);
+            getTargetFragment().onActivityResult(getTargetRequestCode(), mIsNew ? MyKeys.RESULT_NEW : MyKeys.RESULT_EDIT, intent);
+            dismiss();
         });
         return v;
     }
 
 
     private class AdapterWorkoutGrpSpinner extends BaseAdapter {
-        List<TutorialGroup> tutorialGroupList = TutorialGroup.getList();
+        final List<TutorialGroup> tutorialGroupList = TutorialGroup.getList();
 
         @Override
         public int getCount() {
@@ -349,7 +346,7 @@ public class AddEditWorkoutPlanDialog extends DialogFragment {
         }
     }
 
-    void getTutorialWeb(int catId, final int workoutId, final View waitingView, final View finalView) {
+    private void getTutorialWeb(int catId, final int workoutId, final View waitingView, final View finalView) {
         final String TAG = "getTutorialWeb";
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
@@ -361,8 +358,7 @@ public class AddEditWorkoutPlanDialog extends DialogFragment {
                 waitingView.setVisibility(View.GONE);
                 finalView.setVisibility(View.VISIBLE);
                 if (response.isSuccessful()) {
-                    tutorialList.removeAll(tutorialList);
-
+                    tutorialList.clear();
                     tutorialList.addAll(response.body().getRecords());
                     workoutItemSpn.setAdapter(new AdapterWorkoutItemSpinner());
                     if (workoutId > 0) {

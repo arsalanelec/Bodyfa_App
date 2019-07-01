@@ -59,7 +59,7 @@ public class NewMealPlaneActivity extends AppCompatActivity implements NewMealPl
 
     private boolean isNew = true;
     private boolean isEditable = false;
-    Context mContext;
+    final Context mContext;
 
     public NewMealPlaneActivity() {
         mContext = this;
@@ -88,19 +88,20 @@ public class NewMealPlaneActivity extends AppCompatActivity implements NewMealPl
             mealPlanDayList = gson.fromJson(mPlanBody, new TypeToken<List<MealPlanDay>>() {
             }.getType());
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         if (mealPlanDayList != null && mealPlanDayList.size() > 0) {
             isNew = false;
         } else {
             mealPlanDayList = new ArrayList<>();
-            mealPlanDayList.add(new MealPlanDay(1, new ArrayList<MealRow>()));
-            mealPlanDayList.add(new MealPlanDay(2, new ArrayList<MealRow>()));
-            mealPlanDayList.add(new MealPlanDay(3, new ArrayList<MealRow>()));
-            mealPlanDayList.add(new MealPlanDay(4, new ArrayList<MealRow>()));
-            mealPlanDayList.add(new MealPlanDay(5, new ArrayList<MealRow>()));
-            mealPlanDayList.add(new MealPlanDay(6, new ArrayList<MealRow>()));
-            mealPlanDayList.add(new MealPlanDay(7, new ArrayList<MealRow>()));
+            mealPlanDayList.add(new MealPlanDay(1, new ArrayList<>()));
+            mealPlanDayList.add(new MealPlanDay(2, new ArrayList<>()));
+            mealPlanDayList.add(new MealPlanDay(3, new ArrayList<>()));
+            mealPlanDayList.add(new MealPlanDay(4, new ArrayList<>()));
+            mealPlanDayList.add(new MealPlanDay(5, new ArrayList<>()));
+            mealPlanDayList.add(new MealPlanDay(6, new ArrayList<>()));
+            mealPlanDayList.add(new MealPlanDay(7, new ArrayList<>()));
         }
         if (mTitle != null && !mTitle.isEmpty() && isEditable) {
             //set title
@@ -125,13 +126,8 @@ public class NewMealPlaneActivity extends AppCompatActivity implements NewMealPl
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
     private class VPWeekDaysAdapter extends FragmentStatePagerAdapter {
-        String[] titles = {getString(R.string.saturday), getString(R.string.sunday), getString(R.string.monday), getString(R.string.tuesday), getString(R.string.wednesday), getString(R.string.thursday), getString(R.string.friday)};
+        final String[] titles = {getString(R.string.saturday), getString(R.string.sunday), getString(R.string.monday), getString(R.string.tuesday), getString(R.string.wednesday), getString(R.string.thursday), getString(R.string.friday)};
 
         public VPWeekDaysAdapter(FragmentManager fm) {
             super(fm);

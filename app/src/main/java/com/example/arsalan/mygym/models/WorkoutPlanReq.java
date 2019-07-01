@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import static com.example.arsalan.mygym.MyUtil.getLargStringFormatOfDate;
 import static com.example.arsalan.mygym.MyUtil.getShortStringFormatOfDate;
 
 @Entity

@@ -2,7 +2,6 @@ package com.example.arsalan.mygym.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View;
 
 public class WorkoutRow implements Parcelable {
     private int set;

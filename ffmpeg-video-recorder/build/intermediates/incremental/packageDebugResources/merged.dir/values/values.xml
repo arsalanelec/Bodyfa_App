@@ -14,7 +14,6 @@
     <string name="preview_video">Preview Video</string>
     <string name="record_video">ضبط ویدیو</string>
     <string name="saving_video">ذخیره ویدیو</string>
-    <string name="video_saved_path">ویدیو شما در این مسیر ذخبره شده</string>
     <style name="ActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textColorPrimary">@android:color/black</item>

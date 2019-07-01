@@ -21,10 +21,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 public class ViewPagerTrainerAdapter extends FragmentStatePagerAdapter {
-    String[] titles;
-    Context mContext;
-    private User mCurrentUser;
-    private Trainer mCurrentTrainer;
+    final String[] titles;
+    final Context mContext;
+    private final User mCurrentUser;
+    private final Trainer mCurrentTrainer;
 
     public ViewPagerTrainerAdapter(FragmentManager fm, Context context,User user,Trainer trainer) {
         super(fm);

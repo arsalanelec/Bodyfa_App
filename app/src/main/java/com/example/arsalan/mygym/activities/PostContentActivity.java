@@ -44,7 +44,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_ATHLETE;
-import static com.example.arsalan.mygym.MyKeys.EXTRA_IS_MY_TRAINER;
 import static com.example.arsalan.mygym.MyKeys.EXTRA_USER_ID;
 
 public class PostContentActivity extends AppCompatActivity {
@@ -54,7 +53,7 @@ public class PostContentActivity extends AppCompatActivity {
     private SimpleDraweeView image;
     private Spinner cateSpn;
     private EditText contentET;
-    private Context mContext;
+    private final Context mContext;
     private EditText titleET;
     private long mUserId;
     private boolean mIsAthlete;
@@ -79,101 +78,96 @@ public class PostContentActivity extends AppCompatActivity {
         contentET = findViewById(R.id.etContent);
         titleET = findViewById(R.id.etTitle);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // MultipartBody.Part is used to send also the actual file name
-                if (resultUri == null) {
-                    Toast.makeText(mContext, getString(R.string.choose_a_pic), Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (contentET.getText().toString().length() < 2) {
+        fab.setOnClickListener(view -> {
+            // MultipartBody.Part is used to send also the actual file name
+            if (resultUri == null) {
+                Toast.makeText(mContext, getString(R.string.choose_a_pic), Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (contentET.getText().toString().length() < 2) {
 
-                    contentET.setError(getString(R.string.text_is_too_short));
-                    return;
-                }
-                if (titleET.getText().toString().length() < 6) {
-                    titleET.setError(getString(R.string.choose_longer_title));
-                    return;
-                }
-                File imageFile = new File(resultUri.getPath());
-                Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(resultUri.getPath()), 128, 128);
-                //create a file to write bitmap data
-                File thumbFile = new File(mContext.getCacheDir(), "thumb.jpg");
-                try {
-                    thumbFile.createNewFile();
-                    //Convert bitmap to byte array
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    thumbImage.compress(Bitmap.CompressFormat.JPEG, 60 /*ignored for PNG*/, bos);
-                    byte[] bitmapData = bos.toByteArray();
-                    //write the bytes in file
-                    FileOutputStream fos = new FileOutputStream(thumbFile);
-                    fos.write(bitmapData);
-                    fos.flush();
-                    fos.close();
-                    final RequestBody requestThumbFile =
-                            RequestBody.create(
-                                    MediaType.parse("image/jpg"),
-                                    thumbFile);
-                    MultipartBody.Part thumbBody =
-                            MultipartBody.Part.createFormData("ThumbUrl", thumbFile.getName(), requestThumbFile);
+                contentET.setError(getString(R.string.text_is_too_short));
+                return;
+            }
+            if (titleET.getText().toString().length() < 6) {
+                titleET.setError(getString(R.string.choose_longer_title));
+                return;
+            }
+            File imageFile = new File(resultUri.getPath());
+            Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(resultUri.getPath()), 128, 128);
+            //create a file to write bitmap data
+            File thumbFile = new File(mContext.getCacheDir(), "thumb.jpg");
+            try {
+                thumbFile.createNewFile();
+                //Convert bitmap to byte array
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                thumbImage.compress(Bitmap.CompressFormat.JPEG, 60 /*ignored for PNG*/, bos);
+                byte[] bitmapData = bos.toByteArray();
+                //write the bytes in file
+                FileOutputStream fos = new FileOutputStream(thumbFile);
+                fos.write(bitmapData);
+                fos.flush();
+                fos.close();
+                final RequestBody requestThumbFile =
+                        RequestBody.create(
+                                MediaType.parse("image/jpg"),
+                                thumbFile);
+                MultipartBody.Part thumbBody =
+                        MultipartBody.Part.createFormData("ThumbUrl", thumbFile.getName(), requestThumbFile);
 
 
-                    // create RequestBody instance from file
-                    Log.d(TAG, "onClick: mediatype:" + MimeTypeMap.getFileExtensionFromUrl(resultUri.getPath()));
-                    final RequestBody requestFile =
-                            RequestBody.create(
-                                    MediaType.parse("image/jpg"),
-                                    imageFile);
-                    MultipartBody.Part imageBody =
-                            MultipartBody.Part.createFormData("PictureUrl", imageFile.getName(), requestFile);
+                // create RequestBody instance from file
+                Log.d(TAG, "onClick: mediatype:" + MimeTypeMap.getFileExtensionFromUrl(resultUri.getPath()));
+                final RequestBody requestFile =
+                        RequestBody.create(
+                                MediaType.parse("image/jpg"),
+                                imageFile);
+                MultipartBody.Part imageBody =
+                        MultipartBody.Part.createFormData("PictureUrl", imageFile.getName(), requestFile);
 
-                    final ProgressDialog waitingDialog = new ProgressDialog(PostContentActivity.this);
-                    waitingDialog.setMessage(getString(R.string.sending_content));
-                    waitingDialog.show();
+                final ProgressDialog waitingDialog = new ProgressDialog(PostContentActivity.this);
+                waitingDialog.setMessage(getString(R.string.sending_content));
+                waitingDialog.show();
 
-                    ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetroResult> call = apiService.sendContent("Bearer " + ((MyApplication) getApplication()).getCurrentToken().getToken()
-                            , mUserId
-                            , mIsAthlete?5:((StringWithTag) cateSpn.getSelectedItem()).tag
-                            , RequestBody.create(MediaType.parse("text/plain"), titleET.getText().toString())
+                ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+                Call<RetroResult> call = apiService.sendContent("Bearer " + ((MyApplication) getApplication()).getCurrentToken().getToken()
+                        , mUserId
+                        , mIsAthlete?5:((StringWithTag) cateSpn.getSelectedItem()).tag
+                        , RequestBody.create(MediaType.parse("text/plain"), titleET.getText().toString())
 
-                            , RequestBody.create(MediaType.parse("text/plain"), contentET.getText().toString())
-                            , imageBody
-                            , thumbBody
-                    );
-                    call.enqueue(new Callback<RetroResult>() {
-                        @Override
-                        public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
-                            waitingDialog.dismiss();
-                            if (response.isSuccessful()) {
-                                Log.d(TAG, "onResponse: respone:" + response.body().getResult());
-                                Toast.makeText(mContext, getString(R.string.your_content_sent_successfully), Toast.LENGTH_LONG).show();
-                                PostContentActivity.super.onBackPressed();
-                            } else {
-                                Log.d(TAG, "onResponse: is not ok:" + response.message());
-                                Toast.makeText(mContext, R.string.error_accord_try_again, Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<RetroResult> call, Throwable t) {
-                            waitingDialog.dismiss();
-                            Log.d(TAG, "onFailure: " + t.getMessage());
+                        , RequestBody.create(MediaType.parse("text/plain"), contentET.getText().toString())
+                        , imageBody
+                        , thumbBody
+                );
+                call.enqueue(new Callback<RetroResult>() {
+                    @Override
+                    public void onResponse(Call<RetroResult> call, Response<RetroResult> response) {
+                        waitingDialog.dismiss();
+                        if (response.isSuccessful()) {
+                            Log.d(TAG, "onResponse: respone:" + response.body().getResult());
+                            Toast.makeText(mContext, getString(R.string.your_content_sent_successfully), Toast.LENGTH_LONG).show();
+                            PostContentActivity.super.onBackPressed();
+                        } else {
+                            Log.d(TAG, "onResponse: is not ok:" + response.message());
                             Toast.makeText(mContext, R.string.error_accord_try_again, Toast.LENGTH_LONG).show();
                         }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RetroResult> call, Throwable t) {
+                        waitingDialog.dismiss();
+                        Log.d(TAG, "onFailure: " + t.getMessage());
+                        Toast.makeText(mContext, R.string.error_accord_try_again, Toast.LENGTH_LONG).show();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         /* Create your ArrayList collection using StringWithTag instead of String. */
-        List<StringWithTag> itemList = new ArrayList<StringWithTag>();
+        List<StringWithTag> itemList = new ArrayList<>();
 
         /* Iterate through your original collection, in this case defined with an Integer key and String value. */
 
@@ -185,26 +179,20 @@ public class PostContentActivity extends AppCompatActivity {
 
 
         /* Set your ArrayAdapter with the StringWithTag, and when each entry is shown in the Spinner, .toString() is called. */
-        ArrayAdapter<StringWithTag> spinnerAdapter = new ArrayAdapter<StringWithTag>(this, android.R.layout.simple_spinner_item, itemList);
+        ArrayAdapter<StringWithTag> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, itemList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cateSpn.setAdapter(spinnerAdapter);
         image = findViewById(R.id.image);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setActivityTitle(getString(R.string.choose_content_pic))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(true)
-                        .setAspectRatio(1, 1)
-                        .setFixAspectRatio(true)
-                        .setRequestedSize(600, 600)
-                        .start(PostContentActivity.this);
-
-            }
-        });
+        image.setOnClickListener(view -> CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setActivityTitle(getString(R.string.choose_content_pic))
+                .setAllowFlipping(false)
+                .setAllowRotation(true)
+                .setAspectRatio(1, 1)
+                .setFixAspectRatio(true)
+                .setRequestedSize(600, 600)
+                .start(PostContentActivity.this));
 
     }
 
@@ -224,8 +212,8 @@ public class PostContentActivity extends AppCompatActivity {
     }
 
     private static class StringWithTag {
-        public String string;
-        public int tag;
+        public final String string;
+        public final int tag;
 
         public StringWithTag(String string, Integer tag) {
             this.string = string;

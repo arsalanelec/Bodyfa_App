@@ -119,20 +119,17 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
 
         newsRV = v.findViewById(R.id.rv_news);
         newsList = new ArrayList<>();
-        adapter = new AdapterNews( newsList, new AdapterNews.OnAdapterNewsEventListener() {
-            @Override
-            public void onNewsHeadClick(long newsId, int catType) {
-                /*Intent i = new Intent();
-                i.setClass(getContext(), NewsDetailActivity.class);
-                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsId);
-                startActivity(i);*/
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.container_dashboard_news, NewsDetailFragment.newInstance(mUserId, newsId, catType), "")
-                        .commit();
-                detailContainer.setVisibility(View.VISIBLE);
+        adapter = new AdapterNews( newsList, (newsId, catType) -> {
+            /*Intent i = new Intent();
+            i.setClass(getContext(), NewsDetailActivity.class);
+            i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsId);
+            startActivity(i);*/
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container_dashboard_news, NewsDetailFragment.newInstance(mUserId, newsId, catType), "")
+                    .commit();
+            detailContainer.setVisibility(View.VISIBLE);
 
-            }
         });
 
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -140,22 +137,18 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
 
         mGalleryPager = v.findViewById(R.id.vp_gallery);
         TabLayout tabLayout = v.findViewById(R.id.tablayout_trainer_dashboard);
-        mGalleryPager.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent motionEvent) {
-                Log.d("setOnTouchListener", "onTouch: " + motionEvent.toString());
-                if (
-                        motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
-                                v instanceof ViewPager
-                ) {
-                    ((ViewPager) v).requestDisallowInterceptTouchEvent(true);
-                }
-                return false;
+        mGalleryPager.setOnTouchListener((v1, motionEvent) -> {
+            Log.d("setOnTouchListener", "onTouch: " + motionEvent.toString());
+            if (
+                    motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
+                            v1 instanceof ViewPager
+            ) {
+                ((ViewPager) v1).requestDisallowInterceptTouchEvent(true);
             }
+            return false;
         });
         tabLayout.setupWithViewPager(mGalleryPager);
-        mGalleryItemList = new ArrayList<GalleryItem>();
+        mGalleryItemList = new ArrayList<>();
         mGalleryAdapter = new GalleryPagerAdapter(mGalleryItemList);
         mGalleryPager.setAdapter(mGalleryAdapter);
 
@@ -170,17 +163,14 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
         super.onActivityCreated(savedInstanceState);
         NewsListViewModel newsListViewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
         newsListViewModel.getNewsList().removeObservers(getActivity());
-        newsListViewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
-            @Override
-            public void onChanged(@Nullable List<NewsHead> newNewsList) {
-                if (newNewsList != null) {
-                    Log.d("NewsListViewModel", "observe: cnt:" + newNewsList.size());
-                    newsList.clear();
-                    newsList.addAll(newNewsList);
-                    adapter.notifyDataSetChanged();
-                    noNewsTv.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
-                    newsRV.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
-                }
+        newsListViewModel.getNewsList().observe(this, newNewsList -> {
+            if (newNewsList != null) {
+                Log.d("NewsListViewModel", "observe: cnt:" + newNewsList.size());
+                newsList.clear();
+                newsList.addAll(newNewsList);
+                adapter.notifyDataSetChanged();
+                noNewsTv.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
+                newsRV.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
             }
         });
 

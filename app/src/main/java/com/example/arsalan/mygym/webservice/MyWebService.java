@@ -74,7 +74,7 @@ public class MyWebService {
                 if (response.isSuccessful()) {
                     WebServiceResultImplementation.webServiceOnSuccess(null);
                     Log.d("getNewsWeb", "onResponse: records:" + response.body().getRecordsCount());
-                    newsList.removeAll(newsList);
+                    newsList.clear();
                     newsList.addAll(response.body().getRecords());
 
                     adapter.notifyDataSetChanged();
@@ -491,6 +491,7 @@ public class MyWebService {
                         Log.d("getTrainerMealPlanWeb", "onResponse: " + mealPlanList);
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     Log.d("getTrainerMealPlanWeb", "onResponse: planId:" + planId);
                     //ویرایش برنامه

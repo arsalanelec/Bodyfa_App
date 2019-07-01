@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 public class AdapterAthletesDialog extends Adapter<AdapterAthletesDialog.VH> {
     private final OnItemClickListener mListener;
-    List<TrainerAthlete> mUserList;
+    private final List<TrainerAthlete> mUserList;
 
     public AdapterAthletesDialog(List<TrainerAthlete> userList, OnItemClickListener listener) {
         this.mUserList = userList;
@@ -51,16 +51,16 @@ public class AdapterAthletesDialog extends Adapter<AdapterAthletesDialog.VH> {
 
 
     public interface OnItemClickListener {
-        void onItemClick(TrainerAthlete athlete, View view);
+        void onItemClick(TrainerAthlete athlete);
     }
 
     class VH extends RecyclerView.ViewHolder {
-        ImageView thumbImg;
-        TextView nameTV;
-        TextView registerDateTV;
-        Button sendMessageBtn;
+        final ImageView thumbImg;
+        final TextView nameTV;
+        final TextView registerDateTV;
+        final Button sendMessageBtn;
 
-        public VH(View iv) {
+        VH(View iv) {
             super(iv);
             nameTV = iv.findViewById(R.id.txtName);
             thumbImg = iv.findViewById(R.id.img_thumb);
@@ -69,7 +69,7 @@ public class AdapterAthletesDialog extends Adapter<AdapterAthletesDialog.VH> {
 
         }
 
-        public void bind(final TrainerAthlete user, final OnItemClickListener listener) {
+        void bind(final TrainerAthlete user, final OnItemClickListener listener) {
             Glide.with(itemView.getContext())
                     .load(MyConst.BASE_CONTENT_URL + user.getAthleteThumbPicture())
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder))
@@ -82,12 +82,7 @@ public class AdapterAthletesDialog extends Adapter<AdapterAthletesDialog.VH> {
 /*
             ViewCompat.setTransitionName(thumbImg, user.getName());
 */
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(user, thumbImg);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(user));
         }
     }
 

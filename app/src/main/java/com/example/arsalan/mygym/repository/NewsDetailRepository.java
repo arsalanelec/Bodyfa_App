@@ -26,7 +26,7 @@ public class NewsDetailRepository {
     private static final String TAG = "NewsDetailRepository";
     private final NewsDetailDao newsDao;
     private final Executor executor;
-    private Token mToken;
+    private final Token mToken;
 
     @Inject
     public NewsDetailRepository(Token token, NewsDetailDao newsDao, Executor executor) {
@@ -49,29 +49,24 @@ public class NewsDetailRepository {
     }
 
     private void refreshNewsDetail(long userId, long newsId) {
-        executor.execute(new Runnable() {
+        executor.execute(() -> {
 
-            @Override
-            public void run() {
+            ApiInterface apiService =
+                    ApiClient.getClient().create(ApiInterface.class);
+            Call<RetNewsDetail> call = apiService.getNewsDetail(mToken.getTokenBearer(), userId, newsId);
+            try {
+                Response<RetNewsDetail> response = call.execute();
+                if (response.isSuccessful()) {
+                    newsDao.delete(newsId);
+                    Log.d(TAG, "run: newsHeadDao save:" + newsDao.save(response.body().getRecord()));
+                } else {
+                    Log.d(TAG, "run: response.error");
 
-                ApiInterface apiService =
-                        ApiClient.getClient().create(ApiInterface.class);
-                Call<RetNewsDetail> call = apiService.getNewsDetail(mToken.getTokenBearer(), userId, newsId);
-                try {
-                    Response<RetNewsDetail> response = call.execute();
-                    if (response.isSuccessful()) {
-                        newsDao.delete(newsId);
-                        Log.d(TAG, "run: newsHeadDao save:" + newsDao.save(response.body().getRecord()));
-                    } else {
-                        Log.d(TAG, "run: response.error");
-
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 }

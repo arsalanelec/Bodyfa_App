@@ -41,7 +41,7 @@ public class ApiClient {
     */
     private static Retrofit retrofit = null;
 
-    private static Gson gson = new GsonBuilder()
+    private static final Gson gson = new GsonBuilder()
             .enableComplexMapKeySerialization()
             .serializeNulls()
             // .setDateFormat(DateFormat.LONG)
@@ -49,7 +49,7 @@ public class ApiClient {
             .setPrettyPrinting()
             .setVersion(1.0)
             .create();
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
+    private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(3, TimeUnit.MINUTES)

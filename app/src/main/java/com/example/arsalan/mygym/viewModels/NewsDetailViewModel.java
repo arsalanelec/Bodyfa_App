@@ -11,11 +11,11 @@ import com.example.arsalan.mygym.repository.NewsDetailRepository;
 import javax.inject.Inject;
 
 public class NewsDetailViewModel extends ViewModel {
-    private NewsDetailRepository newsRepo;
-    private LiveData<News> news;
-    private LiveData<Integer> nextNewsId;
-    private LiveData<Integer> prevNewsId;
-    private MutableLiveData<Input> inputLiveData;
+    private final NewsDetailRepository newsRepo;
+    private final LiveData<News> news;
+    private final LiveData<Integer> nextNewsId;
+    private final LiveData<Integer> prevNewsId;
+    private final MutableLiveData<Input> inputLiveData;
 
 
     @Inject //  parameter is provided by Dagger 2

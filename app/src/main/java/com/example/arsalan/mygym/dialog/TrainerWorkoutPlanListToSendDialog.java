@@ -93,7 +93,7 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
         return fragment;
     }
 
-    private ArrayList<WorkoutPlan> mWorkoutPlanList = new ArrayList<>();
+    private final ArrayList<WorkoutPlan> mWorkoutPlanList = new ArrayList<>();
     private AdapterTrainerWorkoutPlanListSimple mAdapter;
 
     /**
@@ -160,29 +160,26 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
         }
 
         submitBtn.setOnClickListener(b->{
-            LiveData<Integer> status = getTrainerWorkoutPlanWeb(getActivity(), mSelectedPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
-                @Override
-                public void onGetPlan(long id, String title, String body) {
+            LiveData<Integer> status = getTrainerWorkoutPlanWeb(getActivity(), mSelectedPlan.getTrainerWorkoutPlanId(), (id, title, body) -> {
 
-                    LiveData<Integer> status = sendWokroutPlanToAthleteWeb(getActivity(), mAthleteId, mSelectedPlan.getAthleteWorkoutPlanId(),title, body,mRequestId);
-                    final ProgressDialog waitingDialog = new ProgressDialog(getActivity());
-                    waitingDialog.setMessage(getString(R.string.sending_plan));
-                    waitingDialog.show();
-                    status.observe(TrainerWorkoutPlanListToSendDialog.this, resultStatus -> {
-                        if(resultStatus!= MyWebService.STATUS_WAITING) {
-                            waitingDialog.dismiss();
+                LiveData<Integer> status1 = sendWokroutPlanToAthleteWeb(getActivity(), mAthleteId, mSelectedPlan.getAthleteWorkoutPlanId(),title, body,mRequestId);
+                final ProgressDialog waitingDialog = new ProgressDialog(getActivity());
+                waitingDialog.setMessage(getString(R.string.sending_plan));
+                waitingDialog.show();
+                status1.observe(TrainerWorkoutPlanListToSendDialog.this, resultStatus -> {
+                    if(resultStatus!= MyWebService.STATUS_WAITING) {
+                        waitingDialog.dismiss();
 
-                        }
-                        if(resultStatus==MyWebService.STATUS_SUCCESS) {
-                            mPlanRequestDao.updateStatus(mRequestId,"sent");
-                            dismiss();
-                            Toast.makeText(getContext(), getString(R.string.done_successfully), Toast.LENGTH_LONG).show();
+                    }
+                    if(resultStatus==MyWebService.STATUS_SUCCESS) {
+                        mPlanRequestDao.updateStatus(mRequestId,"sent");
+                        dismiss();
+                        Toast.makeText(getContext(), getString(R.string.done_successfully), Toast.LENGTH_LONG).show();
 
-                        }else if(resultStatus==MyWebService.STATUS_FAIL){
-                            Toast.makeText(getContext(), getString(R.string.error_accord_try_again), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+                    }else if(resultStatus==MyWebService.STATUS_FAIL){
+                        Toast.makeText(getContext(), getString(R.string.error_accord_try_again), Toast.LENGTH_LONG).show();
+                    }
+                });
             });
         });
         return v;

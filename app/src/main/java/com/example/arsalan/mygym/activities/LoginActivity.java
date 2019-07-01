@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -19,13 +18,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.SMSReceiver;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.fragments.EditProfileFragment;
-import com.example.arsalan.mygym.fragments.LoginFragment;
 import com.example.arsalan.mygym.fragments.SelectRoleFragment;
 import com.example.arsalan.mygym.fragments.SendActivationCodeFragment;
 import com.example.arsalan.mygym.fragments.SendMobileFragment;
@@ -53,11 +57,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import okhttp3.MediaType;
@@ -78,8 +77,7 @@ import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_GYM;
 import static com.example.arsalan.mygym.MyKeys.KEY_ROLE_TRAINER;
 
 public class LoginActivity extends AppCompatActivity implements
-        LoginFragment.OnFragmentInteractionListener
-        , EditProfileFragment.OnFragmentInteractionListener
+        EditProfileFragment.OnFragmentInteractionListener
         , SendMobileFragment.OnFragmentInteractionListener
         , SelectRoleFragment.OnFragmentInteractionListener
         , SendActivationCodeFragment.OnFragmentInteractionListener, HasSupportFragmentInjector, Injectable {
@@ -91,13 +89,13 @@ public class LoginActivity extends AppCompatActivity implements
     private final String KEY_PASSWORD = "myGymPassword";
     private final String KEY_USER_ID = "myGymUserId";
     private final String TAG = "LoginActivity";
+    private final Context mContext;
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
     @Inject
     SharedPreferences spf;
     @Inject
     Token mToken;
-    Context mContext;
     @Inject
     UserDao userDao;
     @Inject
@@ -231,12 +229,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         smsBroadcast = new SMSReceiver();
 
-        new InternetCheck(new InternetCheck.Consumer() {
-            @Override
-            public void accept(Boolean internet) {
-                Toast.makeText(LoginActivity.this, "you are " + (internet ? "" : "NOT ") + "Connected to Internet!", Toast.LENGTH_LONG).show();
-            }
-        });
+        new InternetCheck(internet -> Toast.makeText(LoginActivity.this, "you are " + (internet ? "" : "NOT ") + "Connected to Internet!", Toast.LENGTH_LONG).show());
 
         if (getIntent().getBooleanExtra(EXTRA_EXIT_ACCOUNT, false)) {
             spf.edit().putString(KEY_USERNAME, "").commit();
@@ -272,10 +265,7 @@ public class LoginActivity extends AppCompatActivity implements
             Log.d("registerListenerForSms", "messageReceived: " + messageText);
             //برو به ورود
             checkActivation(userId, mobile, messageText, new SendActivationCodeFragment.OnCheckActivation() {
-                @Override
-                public void activationSuccessful() {
 
-                }
 
                 @Override
                 public void activationFailed() {
@@ -303,7 +293,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_RECEIVE_SMS: {
                 if (grantResults.length > 0
@@ -341,7 +331,6 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
 
-    @Override
     public void login(final String userName, final String password) {
         Log.d(TAG, "login: درحال ورود\nلطفا چند لحظه منتظر بمانید..." + userName + " pass:" + password);
         AlertDialog mErrorUserInfoDialog = new AlertDialog.Builder(mContext).setMessage(getString(R.string.error_in_user_info)).create();
@@ -401,11 +390,8 @@ public class LoginActivity extends AppCompatActivity implements
                                         public void webServiceOnSuccess(Bundle bundle1) {
 
                                             Trainer trainer = bundle1.getParcelable(KEY_BUNDLE_OBJ);
-                                            AsyncTask.execute(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    trainerDao.save(trainer); //ذخیره در دیتابیس
-                                                }
+                                            AsyncTask.execute(() -> {
+                                                trainerDao.save(trainer); //ذخیره در دیتابیس
                                             });
                                             ((MyApplication) getApplication()).setCurrentTrainer(trainer);
 
@@ -436,11 +422,8 @@ public class LoginActivity extends AppCompatActivity implements
                                                 public void webServiceOnSuccess(Bundle bundle1) {
 
                                                     Gym gym = bundle1.getParcelable(KEY_BUNDLE_OBJ);
-                                                    AsyncTask.execute(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            gymDao.save(gym); //ذخیره در دیتابیس
-                                                        }
+                                                    AsyncTask.execute(() -> {
+                                                        gymDao.save(gym); //ذخیره در دیتابیس
                                                     });
                                                     Intent i = new Intent();
                                                     i.setClass(mContext, MainActivity.class);
@@ -517,7 +500,7 @@ public class LoginActivity extends AppCompatActivity implements
                         Log.d(TAG, "onResponse: throws:" + t.getLocalizedMessage());
                         //LoginActivity.this.finish();
                         LiveData<User> userLiveData = userDao.getUserById(mUserId);
-                        userLiveData.observe(LoginActivity.this,user -> {
+                        userLiveData.observe(LoginActivity.this, user -> {
                             if (user != null) {
                                 Intent i = new Intent();
                                 i.setClass(mContext, MainActivity.class);
@@ -543,7 +526,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 }
                                 startActivity(i);
                                 finish();
-                            }else {
+                            } else {
                                 Toast.makeText(LoginActivity.this, R.string.error_accord_try_again, Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -629,7 +612,6 @@ public class LoginActivity extends AppCompatActivity implements
                             mUserId = userId;
                             login(mobile, password);
                             Log.d("ckActivation.onResponse", "onResponse:" + response.message());
-                            onCheckActivation.activationSuccessful();
 
                         } else {
                             onCheckActivation.activationFailed();
@@ -669,25 +651,6 @@ public class LoginActivity extends AppCompatActivity implements
         getSupportFragmentManager().beginTransaction().replace(R.id.content, new SendMobileFragment()).commit();
 
     }
-
-
-    @Override
-    public void gotoRegistrationPage(int choice) {
-        /*getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content, EditProfileFragment.newInstance(choice))
-                .addToBackStack("1")
-                .commit();*/
-
-    }
-
-
-/*    @Override
-    public void gotoLoginPage() {
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.content, new LoginFragment()).commit();
-
-    }*/
-
 
     @Override
     public void onSuccessfulEdited(User user) {
@@ -732,7 +695,7 @@ public class LoginActivity extends AppCompatActivity implements
             public void onResponse(Call<RetroResultActivation> call, Response<RetroResultActivation> response) {
                 if (response.isSuccessful()
                         && response.body().getResult() != null
-                        ) {
+                ) {
                     if (response.body().getResult().equalsIgnoreCase("OK")) {
                         //منتظر اس ام اس
                         registerListenerForSms(response.body().getUserId(), mobile);
@@ -740,14 +703,14 @@ public class LoginActivity extends AppCompatActivity implements
                                 .replace(R.id.content, SendActivationCodeFragment.newInstance(response.body().getUserId(), mobile))
                                 .commit();
                         Log.d("Activation", "onResponse: Code sent!");
-                    }else {
+                    } else {
                         Toast.makeText(LoginActivity.this, "خطا در سرور...", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onResponse: Result:"+response.body().getResult());
+                        Log.d(TAG, "onResponse: Result:" + response.body().getResult());
                         getSupportFragmentManager().beginTransaction().replace(R.id.content, new SendMobileFragment()).commit();
 
                     }
                 } else {
-                    Toast.makeText(LoginActivity.this, "خطایی پیش آمده..."+response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "خطایی پیش آمده..." + response.message(), Toast.LENGTH_SHORT).show();
 
                     Log.d("Activation", "onResponse: error:" + response.message() + " code:" + response.code());
                     getSupportFragmentManager().beginTransaction().replace(R.id.content, new SendMobileFragment()).commit();
@@ -787,29 +750,26 @@ public class LoginActivity extends AppCompatActivity implements
                     Log.d("setRoleWeb", "onResponse: " + response.message());
                     String name = ((MyApplication) getApplication()).getCurrentUser().getName();
                     //if (name != null && name.isEmpty()) {
-                        new AlertDialog.Builder(mContext)
-                                .setMessage(R.string.complete_your_profile)
-                                .setPositiveButton(R.string.edit, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intent = new Intent();
-                                        intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
-                                        intent.putExtra(EXTRA_OBJ_USER, user);
-                                        intent.setClass(LoginActivity.this, EditProfileActivity.class);
-                                        startActivityForResult(intent, REQ_EDIT_USER_PROFILE);
-                                    }
-                                })
-                                .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> {
-                                    dialogInterface.cancel();
-                                    Intent intent = new Intent();
-                                    intent.setClass(LoginActivity.this, MainActivity.class);
-                                    intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
-                                    intent.putExtra(EXTRA_USER_NAME, user.getUserName());
-                                    startActivity(intent);
-                                })
-                                .show();
+                    new AlertDialog.Builder(mContext)
+                            .setMessage(R.string.complete_your_profile)
+                            .setPositiveButton(R.string.edit, (dialogInterface, i) -> {
+                                Intent intent = new Intent();
+                                intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
+                                intent.putExtra(EXTRA_OBJ_USER, user);
+                                intent.setClass(LoginActivity.this, EditProfileActivity.class);
+                                startActivityForResult(intent, REQ_EDIT_USER_PROFILE);
+                            })
+                            .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> {
+                                dialogInterface.cancel();
+                                Intent intent = new Intent();
+                                intent.setClass(LoginActivity.this, MainActivity.class);
+                                intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
+                                intent.putExtra(EXTRA_USER_NAME, user.getUserName());
+                                startActivity(intent);
+                            })
+                            .show();
                 } else {
-                    Log.d("setRoleWeb", "onResponse: error:" +response.code()+" msg:"+ response.message());
+                    Log.d("setRoleWeb", "onResponse: error:" + response.code() + " msg:" + response.message());
                 }
             }
 
@@ -837,7 +797,7 @@ public class LoginActivity extends AppCompatActivity implements
         return dispatchingAndroidInjector;
     }
 
-    public void setLocale(String localeName) {
+    private void setLocale(String localeName) {
         myLocale = new Locale(localeName);
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();

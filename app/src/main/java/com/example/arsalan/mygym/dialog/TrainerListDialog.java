@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageButton;
-import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,12 +39,12 @@ public class TrainerListDialog extends DialogFragment implements Injectable {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final int TYPE_WORKOUT = 1;
+    public static final int TYPE_MEMBERSHIP = 2;
+    public static final int TYPE_GENERAL = 3;
     @Inject
     MyViewModelFactory mFactory;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mDialogType;
     private List<Trainer> trainerList;
     private List<Trainer> filteredTrainerList;
     private OnFragmentInteractionListener mListener;
@@ -58,20 +57,10 @@ public class TrainerListDialog extends DialogFragment implements Injectable {
         // Required empty public constructor
     }
 
-    /**
-     * Use this mFactory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GymListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static TrainerListDialog newInstance(String param1, String param2) {
+    public static TrainerListDialog newInstance(int dialogType) {
         TrainerListDialog fragment = new TrainerListDialog();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM1, dialogType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,8 +69,7 @@ public class TrainerListDialog extends DialogFragment implements Injectable {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mDialogType = getArguments().getInt(ARG_PARAM1);
         }
     }
 
@@ -94,7 +82,20 @@ public class TrainerListDialog extends DialogFragment implements Injectable {
         RecyclerView rv = v.findViewById(R.id.rv_trainers);
         filteredTrainerList = new ArrayList<>();
         trainerList = new ArrayList<>();
-        adapter = new AdapterTrainers((trainer, view) -> {
+        int adapterType=AdapterTrainers.SHOW_NO_PRICE;
+        switch (mDialogType){
+            case TYPE_GENERAL:
+                adapterType=AdapterTrainers.SHOW_NO_PRICE;
+                break;
+            case TYPE_MEMBERSHIP:
+                adapterType=AdapterTrainers.SHOW_PRICE_MEMBERSHIP_PLAN;
+                break;
+            case TYPE_WORKOUT:
+                adapterType=AdapterTrainers.SHOW_PRICE_WORKOUT_PLAN;
+                break;
+
+        }
+        adapter = new AdapterTrainers(adapterType,(trainer, view) -> {
             dismiss();
             Intent intent = new Intent();
             intent.putExtra(MyKeys.EXTRA_OBJ_TRAINER,trainer);

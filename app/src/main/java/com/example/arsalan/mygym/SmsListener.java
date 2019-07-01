@@ -1,6 +1,6 @@
 package com.example.arsalan.mygym;
 
 public interface SmsListener {
-        public void messageReceived(String messageText);
+    void messageReceived(String messageText);
 
 }

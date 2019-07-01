@@ -83,23 +83,20 @@ public class TutorialFragment extends Fragment {
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        getView().setOnKeyListener((v, keyCode, event) -> {
 
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility() == View.VISIBLE) {
-                    detailFragment.setVisibility(View.GONE);
-                    //your code
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility() == View.VISIBLE) {
+                detailFragment.setVisibility(View.GONE);
+                //your code
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
     }
 
     class AdapterTutorial extends BaseAdapter {
-        List<TutorialGroup> tutorialGroups = TutorialGroup.getList();
+        final List<TutorialGroup> tutorialGroups = TutorialGroup.getList();
 
         public AdapterTutorial() {
 
@@ -129,18 +126,15 @@ public class TutorialFragment extends Fragment {
             nameTV.setText(tutorialGroups.get(i).getName());
             thumb.setImageResource(tutorialGroups.get(i).getThumbRes());
             Button showItemsBtn = view.findViewById(R.id.btnShowItems);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            view.setOnClickListener(view1 -> {
 
-                    detailFragment.setVisibility(View.VISIBLE);
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.container2, TutorialListFragment.newInstance(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName(), mCanSendVideo))
-                            .commit();
+                detailFragment.setVisibility(View.VISIBLE);
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container2, TutorialListFragment.newInstance(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName(), mCanSendVideo))
+                        .commit();
 
-                    // mListener.goToTutorialList(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName());
-                }
+                // mListener.goToTutorialList(tutorialGroups.get(i).getId(),tutorialGroups.get(i).getName());
             });
             return view;
         }

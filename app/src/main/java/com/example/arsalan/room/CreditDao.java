@@ -1,16 +1,12 @@
 package com.example.arsalan.room;
 
-import com.example.arsalan.mygym.models.User;
 import com.example.arsalan.mygym.models.UserCredit;
-
-import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import static androidx.room.OnConflictStrategy.IGNORE;
 import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao

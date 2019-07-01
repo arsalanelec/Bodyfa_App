@@ -18,7 +18,6 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import static com.example.arsalan.mygym.MyUtil.getLargStringFormatOfDate;
 import static com.example.arsalan.mygym.MyUtil.getShortStringFormatOfDate;
 
 /**
@@ -27,7 +26,7 @@ import static com.example.arsalan.mygym.MyUtil.getShortStringFormatOfDate;
 
 public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
     private final OnItemClickListener mListener;
-    List<TrainerAthlete> mUserList;
+    private final List<TrainerAthlete> mUserList;
 
     public AdapterAthletes(List<TrainerAthlete> userList, OnItemClickListener listener) {
         this.mUserList = userList;
@@ -54,18 +53,18 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
 
 
     public interface OnItemClickListener {
-        void onItemClick(TrainerAthlete athlete, View view);
+        void onItemClick(TrainerAthlete athlete);
 
         void onSendMessageClicked(TrainerAthlete athlete);
     }
 
     class VH extends RecyclerView.ViewHolder {
-        ImageView thumbImg;
-        TextView nameTV;
-        TextView registerDateTV;
-        Button sendMessageBtn;
+        final ImageView thumbImg;
+        final TextView nameTV;
+        final TextView registerDateTV;
+        final Button sendMessageBtn;
 
-        public VH(View iv) {
+        VH(View iv) {
             super(iv);
             nameTV = iv.findViewById(R.id.txtName);
             thumbImg = iv.findViewById(R.id.img_thumb);
@@ -74,7 +73,7 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
 
         }
 
-        public void bind(final TrainerAthlete trainerAthlete, final OnItemClickListener listener) {
+        void bind(final TrainerAthlete trainerAthlete, final OnItemClickListener listener) {
             Glide.with(itemView.getContext())
                     .load(MyConst.BASE_CONTENT_URL + trainerAthlete.getAthleteThumbPicture())
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder))
@@ -87,18 +86,8 @@ public class AdapterAthletes extends Adapter<AdapterAthletes.VH> {
 /*
             ViewCompat.setTransitionName(thumbImg, user.getName());
 */
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(trainerAthlete, thumbImg);
-                }
-            });
-            sendMessageBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onSendMessageClicked(trainerAthlete);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(trainerAthlete));
+            sendMessageBtn.setOnClickListener(view -> listener.onSendMessageClicked(trainerAthlete));
         }
     }
 

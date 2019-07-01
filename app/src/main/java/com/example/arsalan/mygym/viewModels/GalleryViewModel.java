@@ -13,10 +13,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class GalleryViewModel extends ViewModel {
-    private GalleryRepository galleryItemRepo;
-    private LiveData<List<GalleryItem>> galleryItemList;
+    private final GalleryRepository galleryItemRepo;
+    private final LiveData<List<GalleryItem>> galleryItemList;
 
-    private MutableLiveData<Long> galleryItemTypeLD = new MutableLiveData<>();
+    private final MutableLiveData<Long> galleryItemTypeLD = new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public GalleryViewModel(GalleryRepository galleryItemRepo) {

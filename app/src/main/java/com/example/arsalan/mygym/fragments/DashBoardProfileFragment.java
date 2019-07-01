@@ -22,8 +22,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -36,11 +34,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterDashboardNews;
 import com.example.arsalan.mygym.adapters.GalleryPagerAdapter;
-import com.example.arsalan.mygym.databinding.ItemMyNewsGridBinding;
-import com.example.arsalan.mygym.databinding.ItemMyNewsLinearBinding;
 import com.example.arsalan.mygym.di.Injectable;
 import com.example.arsalan.mygym.models.GalleryItem;
-import com.example.arsalan.mygym.models.MyConst;
 import com.example.arsalan.mygym.models.NewsHead;
 import com.example.arsalan.mygym.models.ProgressRequestBody;
 import com.example.arsalan.mygym.models.User;
@@ -178,20 +173,17 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
 
          mPostNews = v.findViewById(R.id.btnPostNews);
 
-        mPostNews.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.container_dashboard_news, PostNewsFragment.newInstance(mUserId, mUser.getRoleName().equalsIgnoreCase("athlete")))
-                .commit();
-                detailContainer.setVisibility(View.VISIBLE);
-                /*Intent i = new Intent();
-                i.putExtra(EXTRA_USER_ID, mUserId);
-                i.putExtra(EXTRA_IS_ATHLETE, mUser.getRoleName().equalsIgnoreCase("athlete"));
-                i.setClass(getActivity(), PostContentActivity.class);
-                startActivity(i);*/
-            }
+        mPostNews.setOnClickListener(view -> {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container_dashboard_news, PostNewsFragment.newInstance(mUserId, mUser.getRoleName().equalsIgnoreCase("athlete")))
+            .commit();
+            detailContainer.setVisibility(View.VISIBLE);
+            /*Intent i = new Intent();
+            i.putExtra(EXTRA_USER_ID, mUserId);
+            i.putExtra(EXTRA_IS_ATHLETE, mUser.getRoleName().equalsIgnoreCase("athlete"));
+            i.setClass(getActivity(), PostContentActivity.class);
+            startActivity(i);*/
         });
 
         newsRV = v.findViewById(R.id.rv_news);
@@ -201,17 +193,14 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, RecyclerView.VERTICAL, false);
         newsRV.setLayoutManager(linearLayout);
         newsRV.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        adapter = new AdapterDashboardNews( newsList,AdapterDashboardNews.LAYOUT_TYPE_LINEAR, new AdapterDashboardNews.OnAdapterNewsEventListener() {
-            @Override
-            public void onNewsHeadClick(long newsId, int catType) {
-                /*Intent i = new Intent();
-                i.setClass(getContext(), NewsDetailActivity.class);
-                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsId);
-                startActivity(i);*/
-                getFragmentManager().beginTransaction().replace(R.id.container_dashboard_news, NewsDetailFragment.newInstance(mUserId, newsId, catType), "").commit();
-                detailContainer.setVisibility(View.VISIBLE);
+        adapter = new AdapterDashboardNews( newsList,AdapterDashboardNews.LAYOUT_TYPE_LINEAR, (newsId, catType) -> {
+            /*Intent i = new Intent();
+            i.setClass(getContext(), NewsDetailActivity.class);
+            i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsId);
+            startActivity(i);*/
+            getFragmentManager().beginTransaction().replace(R.id.container_dashboard_news, NewsDetailFragment.newInstance(mUserId, newsId, catType), "").commit();
+            detailContainer.setVisibility(View.VISIBLE);
 
-            }
         });
 
         newsRV.setAdapter(adapter);
@@ -232,41 +221,32 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
 
         mGalleryPager = v.findViewById(R.id.vp_gallery);
         TabLayout tabLayout = v.findViewById(R.id.tablayout_trainer_dashboard);
-        mGalleryPager.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent motionEvent) {
-                Log.d("setOnTouchListener", "onTouch: " + motionEvent.toString());
-                if (
-                        motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
-                                v instanceof ViewPager
-                ) {
-                    ((ViewPager) v).requestDisallowInterceptTouchEvent(true);
-                }
-                return false;
+        mGalleryPager.setOnTouchListener((v1, motionEvent) -> {
+            Log.d("setOnTouchListener", "onTouch: " + motionEvent.toString());
+            if (
+                    motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
+                            v1 instanceof ViewPager
+            ) {
+                ((ViewPager) v1).requestDisallowInterceptTouchEvent(true);
             }
+            return false;
         });
         tabLayout.setupWithViewPager(mGalleryPager);
-        mGalleryItemList = new ArrayList<GalleryItem>();
+        mGalleryItemList = new ArrayList<>();
         mGalleryAdapter = new GalleryPagerAdapter(mGalleryItemList);
         mGalleryPager.setAdapter(mGalleryAdapter);
 
         Button captureImageBtn = v.findViewById(R.id.btnCapture);
-        captureImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setActivityTitle(getString(R.string.choose_profile_photo))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(false)
-                        .setAspectRatio(3, 2)
-                        .setFixAspectRatio(true)
-                        .setRequestedSize(1200, 800)
-                        .start(getContext(), DashBoardProfileFragment.this);
-            }
-        });
+        captureImageBtn.setOnClickListener(view -> CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setActivityTitle(getString(R.string.choose_profile_photo))
+                .setAllowFlipping(false)
+                .setAllowRotation(false)
+                .setAspectRatio(3, 2)
+                .setFixAspectRatio(true)
+                .setRequestedSize(1200, 800)
+                .start(getContext(), DashBoardProfileFragment.this));
 
         detailContainer = v.findViewById(R.id.container_dashboard_news);
         noNewsTv = v.findViewById(R.id.txt_no_news);
@@ -278,17 +258,14 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         NewsListViewModel newsListViewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
-        newsListViewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
-            @Override
-            public void onChanged(@Nullable List<NewsHead> newNewsList) {
-                if (newNewsList != null) {
-                    Log.d("NewsListViewModel", "observe: cnt:" + newNewsList.size());
-                    newsList.clear();
-                    newsList.addAll(newNewsList);
-                    adapter.notifyDataSetChanged();
-                    noNewsTv.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
-                    newsRV.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
-                }
+        newsListViewModel.getNewsList().observe(this, newNewsList -> {
+            if (newNewsList != null) {
+                Log.d("NewsListViewModel", "observe: cnt:" + newNewsList.size());
+                newsList.clear();
+                newsList.addAll(newNewsList);
+                adapter.notifyDataSetChanged();
+                noNewsTv.setVisibility((newNewsList.size() == 0) ? View.VISIBLE : View.GONE);
+                newsRV.setVisibility((newNewsList.size() != 0) ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -324,18 +301,15 @@ public class DashBoardProfileFragment extends Fragment implements WebServiceResu
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        getView().setOnKeyListener((v, keyCode, event) -> {
 
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailContainer.getVisibility() == View.VISIBLE) {
-                    detailContainer.setVisibility(View.GONE);
-                    //your code
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailContainer.getVisibility() == View.VISIBLE) {
+                detailContainer.setVisibility(View.GONE);
+                //your code
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
     }
 

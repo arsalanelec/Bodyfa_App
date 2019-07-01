@@ -36,26 +36,23 @@ public class NewPlanDialog extends DialogFragment {
         final EditText nameET = v.findViewById(R.id.txtName);
 
         Button creatPlanBtn = v.findViewById(R.id.btnCreatPlan);
-        creatPlanBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (nameET.getText().toString().isEmpty()) {
-                    nameET.setError(getString(R.string.plan_name_is_empty));
-                    return;
-                }
-                int selectedPlan = 1;
-                switch (((RadioGroup) v.findViewById(R.id.radioGroup)).getCheckedRadioButtonId()) {
-                    case R.id.rbMeal:
-                        selectedPlan = 1;
-                        break;
-                    case R.id.rbWorkout:
-                        selectedPlan = 2;
-                        break;
-                }
-                mListener.goToNewPlane(selectedPlan, nameET.getText().toString());
-                getDialog().dismiss();
-
+        creatPlanBtn.setOnClickListener(view -> {
+            if (nameET.getText().toString().isEmpty()) {
+                nameET.setError(getString(R.string.plan_name_is_empty));
+                return;
             }
+            int selectedPlan = 1;
+            switch (((RadioGroup) v.findViewById(R.id.radioGroup)).getCheckedRadioButtonId()) {
+                case R.id.rbMeal:
+                    selectedPlan = 1;
+                    break;
+                case R.id.rbWorkout:
+                    selectedPlan = 2;
+                    break;
+            }
+            mListener.goToNewPlane(selectedPlan, nameET.getText().toString());
+            getDialog().dismiss();
+
         });
         return v;
     }

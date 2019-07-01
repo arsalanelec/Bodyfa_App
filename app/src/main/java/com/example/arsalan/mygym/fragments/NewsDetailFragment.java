@@ -120,16 +120,13 @@ public class NewsDetailFragment extends Fragment implements Injectable {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
          mBind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_news_detail, container, false);
-        mBind.imgBtnIsLiked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                likeANewsWeb(mNewsId, !mIsLiked);
-                mBind.imgBtnIsLiked.setImageResource(mIsLiked ? R.drawable.ic_favorite_border_48dp : R.drawable.ic_favorite_48dp);
-            }
+        mBind.imgBtnIsLiked.setOnClickListener(view -> {
+            likeANewsWeb(mNewsId, !mIsLiked);
+            mBind.imgBtnIsLiked.setImageResource(mIsLiked ? R.drawable.ic_favorite_border_48dp : R.drawable.ic_favorite_48dp);
         });
         mBind.image.setOnTouchListener(new View.OnTouchListener() {
 
-            private GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            private final GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
                     Log.d("TEST", "onDoubleTap");
@@ -141,17 +138,14 @@ public class NewsDetailFragment extends Fragment implements Injectable {
                             .scaleX(10.0f)
                             .scaleY(10.0f)
                             .alpha(0.0f)
-                            .withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mBind.imgHeart.setVisibility(View.GONE);
-                                    mBind.imgHeart.setAlpha(1.0f);
-                                    mBind.imgHeart.setScaleX(0.1f);
-                                    mBind.imgHeart.setScaleY(1.0f);
-                                    if (!mIsLiked) {
-                                        mBind.imgBtnIsLiked.setImageResource(R.drawable.ic_favorite_48dp);
-                                        likeANewsWeb(mNewsId, true);
-                                    }
+                            .withEndAction(() -> {
+                                mBind.imgHeart.setVisibility(View.GONE);
+                                mBind.imgHeart.setAlpha(1.0f);
+                                mBind.imgHeart.setScaleX(0.1f);
+                                mBind.imgHeart.setScaleY(1.0f);
+                                if (!mIsLiked) {
+                                    mBind.imgBtnIsLiked.setImageResource(R.drawable.ic_favorite_48dp);
+                                    likeANewsWeb(mNewsId, true);
                                 }
                             })
                             .start();
@@ -325,11 +319,8 @@ public class NewsDetailFragment extends Fragment implements Injectable {
                 if (response.body().getResult().equals("OK")) {
                     getCommentWeb(newId);
                     Snackbar.make(mBind.imgBtnCommentSubmit, R.string.your_comment_submited, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.ok, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
+                            .setAction(R.string.ok, view -> {
 
-                                }
                             })
                             .setActionTextColor(Color.YELLOW).show();
                 } else {

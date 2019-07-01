@@ -45,7 +45,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import dagger.android.DispatchingAndroidInjector;
@@ -78,11 +77,11 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
 
     private boolean isNew = true;
     private boolean mIsEditable = false;
-    Context mContext;
+    final Context mContext;
     private ActivityNewWorkoutPlanBinding bind;
     private CountDownTimer countOneItem;
     private CountDownTimer countTotalTime;
-    private MutableLiveData<CurrentPlayPauseFragment> mPlayPause = new MutableLiveData<>();
+    private final MutableLiveData<CurrentPlayPauseFragment> mPlayPause = new MutableLiveData<>();
     private int mCurrentStep;
 
     public NewWorkoutPlanActivity() {
@@ -109,6 +108,7 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
             workoutPlanDayList = gson.fromJson(mPlanBody, new TypeToken<List<WorkoutPlanDay>>() {
             }.getType());
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
         NextPrevVm nextPrevVm= ViewModelProviders.of(this).get(NextPrevVm.class);
 
@@ -116,13 +116,13 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
             isNew = false;
         } else {
             workoutPlanDayList = new ArrayList<>();
-            workoutPlanDayList.add(new WorkoutPlanDay(1, new ArrayList<WorkoutRow>()));
-            workoutPlanDayList.add(new WorkoutPlanDay(2, new ArrayList<WorkoutRow>()));
-            workoutPlanDayList.add(new WorkoutPlanDay(3, new ArrayList<WorkoutRow>()));
-            workoutPlanDayList.add(new WorkoutPlanDay(4, new ArrayList<WorkoutRow>()));
-            workoutPlanDayList.add(new WorkoutPlanDay(5, new ArrayList<WorkoutRow>()));
-            workoutPlanDayList.add(new WorkoutPlanDay(6, new ArrayList<WorkoutRow>()));
-            workoutPlanDayList.add(new WorkoutPlanDay(7, new ArrayList<WorkoutRow>()));
+            workoutPlanDayList.add(new WorkoutPlanDay(1, new ArrayList<>()));
+            workoutPlanDayList.add(new WorkoutPlanDay(2, new ArrayList<>()));
+            workoutPlanDayList.add(new WorkoutPlanDay(3, new ArrayList<>()));
+            workoutPlanDayList.add(new WorkoutPlanDay(4, new ArrayList<>()));
+            workoutPlanDayList.add(new WorkoutPlanDay(5, new ArrayList<>()));
+            workoutPlanDayList.add(new WorkoutPlanDay(6, new ArrayList<>()));
+            workoutPlanDayList.add(new WorkoutPlanDay(7, new ArrayList<>()));
         }
         Calendar c = Calendar.getInstance();
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
@@ -165,21 +165,12 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    @Override
     public void createWorkoutPlan(int dayOfWeek, List<WorkoutRow> workoutRowList) {
         workoutPlanDayList.get(dayOfWeek - 1).setWorkoutRows((ArrayList<WorkoutRow>) workoutRowList);
         String json = new Gson().toJson(workoutPlanDayList);
         Log.d(TAG, "workoutPlanDayList:" + json);
     }
 
-    @Override
-    public void setWorkoutPlanRow(WorkoutRow workoutPlanRow) {
-
-    }
 
 
     @Override
@@ -245,7 +236,7 @@ public class NewWorkoutPlanActivity extends AppCompatActivity implements
 
 
     private class VPWeekDaysAdapter extends FragmentPagerAdapter {
-        String[] titles = {getString(R.string.saturday), getString(R.string.sunday), getString(R.string.monday), getString(R.string.tuesday), getString(R.string.wednesday), getString(R.string.thursday), getString(R.string.friday)};
+        final String[] titles = {getString(R.string.saturday), getString(R.string.sunday), getString(R.string.monday), getString(R.string.tuesday), getString(R.string.wednesday), getString(R.string.thursday), getString(R.string.friday)};
 
         public VPWeekDaysAdapter(FragmentManager fm) {
             super(fm);

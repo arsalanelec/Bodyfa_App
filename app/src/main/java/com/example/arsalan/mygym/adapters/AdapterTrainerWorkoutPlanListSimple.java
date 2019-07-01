@@ -1,16 +1,12 @@
 package com.example.arsalan.mygym.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.models.WorkoutPlan;
@@ -18,10 +14,10 @@ import com.example.arsalan.mygym.models.WorkoutPlan;
 import java.util.List;
 
 public class AdapterTrainerWorkoutPlanListSimple extends BaseAdapter {
-    List<WorkoutPlan> mWorkoutPlanList;
-    int index = -1;
-    Context mContext;
-    OnItemClickListener mListener;
+    private final List<WorkoutPlan> mWorkoutPlanList;
+    private int index = -1;
+    private final Context mContext;
+    private final OnItemClickListener mListener;
     private static final String TAG = "AdapterTrainerWorkoutPl";
 
     public AdapterTrainerWorkoutPlanListSimple(Context context, List<WorkoutPlan> workoutPlans, OnItemClickListener onItemClickListener) {
@@ -62,12 +58,9 @@ public class AdapterTrainerWorkoutPlanListSimple extends BaseAdapter {
 
         RadioButton rbSelect = view.findViewById(R.id.rbSelect);
         rbSelect.setText(mWorkoutPlanList.get(i).getTitle());
-        rbSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                index=i;
-                notifyDataSetChanged();
-            }
+        rbSelect.setOnClickListener(v -> {
+            index=i;
+            notifyDataSetChanged();
         });
         if (i == index) {
             rbSelect.setChecked(true);

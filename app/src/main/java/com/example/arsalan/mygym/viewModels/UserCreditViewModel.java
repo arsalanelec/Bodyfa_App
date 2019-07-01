@@ -11,10 +11,10 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 public class UserCreditViewModel extends ViewModel {
-    private CreditRepository repository;
-    private LiveData<UserCredit> userCreditLiveData;
+    private final CreditRepository repository;
+    private final LiveData<UserCredit> userCreditLiveData;
 
-    private MutableLiveData<Long> userIdLive = new MutableLiveData<>();
+    private final MutableLiveData<Long> userIdLive = new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public UserCreditViewModel(CreditRepository repository) {

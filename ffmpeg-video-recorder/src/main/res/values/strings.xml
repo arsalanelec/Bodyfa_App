@@ -12,6 +12,5 @@
     <string name="encoding_percent">رمز گذاری %d%%</string>
     <string name="saving_video">ذخیره ویدیو</string>
     <string name="record_video">ضبط ویدیو</string>
-    <string name="video_saved_path">ویدیو شما در این مسیر ذخبره شده</string>
 
 </resources>

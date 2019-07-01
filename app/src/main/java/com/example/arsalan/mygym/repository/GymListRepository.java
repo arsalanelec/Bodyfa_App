@@ -43,31 +43,26 @@ public class GymListRepository {
         if (!gymExist) {
             Log.d("refreshGymList", "!gymExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetGymList> call = apiService.getGymList(0, 100,0, sortType);
+                try {
+                    Response<RetGymList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshGymList", "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetGymList> call = apiService.getGymList(0, 100,0, sortType);
-                    try {
-                        Response<RetGymList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshGymList", "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
+                        Log.d("refreshGymList", "run: newDao save:"+ gymDao.saveList(response.body().getRecords()).length);
 
-                            Log.d("refreshGymList", "run: newDao save:"+ gymDao.saveList(response.body().getRecords()).length);
+                    } else {
+                        Log.d("refreshGymList", "run: response.error");
 
-                        } else {
-                            Log.d("refreshGymList", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 

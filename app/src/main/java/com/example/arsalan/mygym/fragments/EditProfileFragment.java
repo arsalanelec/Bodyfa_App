@@ -185,21 +185,16 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
 
         avatar = mBind.avatar;
         avatar.setImageURI(MyConst.BASE_CONTENT_URL + mUser.getThumbUrl());
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MyWebService.getGalleryWeb(
-                        "Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken()
-                        , mUser.getId(), galleryItems -> {
-                            Intent intent = new Intent();
-                            intent.setClass(getActivity(), GalleryActivity.class);
-                            intent.putExtra(EXTRA_POSITION, 0);
-                            intent.putExtra(EXTRA_GALLERY_ARRAY, galleryItems);
-                            intent.putExtra(EXTRA_EDIT_MODE, true);
-                            startActivity(intent);
-                        });
-            }
-        });
+        avatar.setOnClickListener(view -> MyWebService.getGalleryWeb(
+                "Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken()
+                , mUser.getId(), galleryItems -> {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), GalleryActivity.class);
+                    intent.putExtra(EXTRA_POSITION, 0);
+                    intent.putExtra(EXTRA_GALLERY_ARRAY, galleryItems);
+                    intent.putExtra(EXTRA_EDIT_MODE, true);
+                    startActivity(intent);
+                }));
         mBind.btnEditProfilePic.setOnClickListener(view -> CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setCropShape(CropImageView.CropShape.RECTANGLE)
@@ -215,37 +210,32 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
         mBind.rbMale.setChecked(mUser.isMale());
         mBind.rbFemale.setChecked(!mUser.isMale());
 
-        mBind.btnSubmit.setOnClickListener(new View.OnClickListener() {
+        mBind.btnSubmit.setOnClickListener(view -> {
 
-
-            @Override
-            public void onClick(View view) {
-
-                if (mBind.etWeight.getText().toString().isEmpty()) {
-                    mBind.etWeight.setText("0");
-                }
-
-                mUser.setName(mBind.etName.getText().toString());
-                mUser.setGender(mBind.rbMale.isChecked());
-                mUser.setWeight(mBind.etWeight.getText().toString());
-                mUser.setCityId(mBind.spCity.getSelectedItemId());
-                mUser.setBirthdayDateFa(String.format("%04d/%02d/%02d", (int) mBind.spDateYear.getSelectedItem(), (int) mBind.spDateMont.getSelectedItem(), (int) mBind.spDateDay.getSelectedItem()));
-                waitingDialog.show();
-                LiveData<RetStatusProgress> status = userViewModel.save(mUser, resultUri, getContext().getCacheDir().getPath());
-                status.observe(EditProfileFragment.this, s -> {
-                    if (s.getStatus() == MyWebService.STATUS_WAITING) {
-                        waitingDialog.setProgress(s.getProgress());
-                    } else if (s.getStatus() == MyWebService.STATUS_SUCCESS) {
-                        waitingDialog.dismiss();
-                        mListener.onSuccessfulEdited(mUser);
-
-                    } else {
-                        waitingDialog.dismiss();
-                        Toast.makeText(getContext(), R.string.error_accord_try_again, Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+            if (mBind.etWeight.getText().toString().isEmpty()) {
+                mBind.etWeight.setText("0");
             }
+
+            mUser.setName(mBind.etName.getText().toString());
+            mUser.setGender(mBind.rbMale.isChecked());
+            mUser.setWeight(mBind.etWeight.getText().toString());
+            mUser.setCityId(mBind.spCity.getSelectedItemId());
+            mUser.setBirthdayDateFa(String.format("%04d/%02d/%02d", (int) mBind.spDateYear.getSelectedItem(), (int) mBind.spDateMont.getSelectedItem(), (int) mBind.spDateDay.getSelectedItem()));
+            waitingDialog.show();
+            LiveData<RetStatusProgress> status = userViewModel.save(mUser, resultUri, getContext().getCacheDir().getPath());
+            status.observe(EditProfileFragment.this, s -> {
+                if (s.getStatus() == MyWebService.STATUS_WAITING) {
+                    waitingDialog.setProgress(s.getProgress());
+                } else if (s.getStatus() == MyWebService.STATUS_SUCCESS) {
+                    waitingDialog.dismiss();
+                    mListener.onSuccessfulEdited(mUser);
+
+                } else {
+                    waitingDialog.dismiss();
+                    Toast.makeText(getContext(), R.string.error_accord_try_again, Toast.LENGTH_SHORT).show();
+
+                }
+            });
         });
         waitingDialog = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
         waitingDialog.setMessage(getString(R.string.uploading_picture_wait));
@@ -338,7 +328,7 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
     }
 
     private class MySpinnerAdapter implements SpinnerAdapter {
-        List<Integer> nums;
+        final List<Integer> nums;
 
         public MySpinnerAdapter(List<Integer> nums) {
             this.nums = nums;

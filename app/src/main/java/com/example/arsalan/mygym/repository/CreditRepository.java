@@ -24,8 +24,8 @@ public class CreditRepository {
     private static final String TAG = "CreditRepository";
     private final CreditDao creditDao;
     private final Executor executor;
-    private String mToken;
-    private Retrofit mRetrofit;
+    private final String mToken;
+    private final Retrofit mRetrofit;
 
     @Inject
     public CreditRepository(CreditDao creditDao, Executor executor, Retrofit retrofit, SharedPreferences sfp) {

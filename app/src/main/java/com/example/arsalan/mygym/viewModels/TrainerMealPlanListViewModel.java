@@ -12,7 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TrainerMealPlanListViewModel extends ViewModel {
-    private TrainerMealPlanRepository mealPlanItemRepo;
+    private final TrainerMealPlanRepository mealPlanItemRepo;
     private LiveData<List<MealPlan>> mealPlanItemList;
 
     private MutableLiveData<Integer> mealPlanItemTypeLD = new MutableLiveData<>();

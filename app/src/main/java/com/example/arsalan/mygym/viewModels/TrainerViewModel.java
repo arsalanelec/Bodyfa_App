@@ -11,10 +11,10 @@ import com.example.arsalan.mygym.repository.TrainerListRepository;
 import javax.inject.Inject;
 
 public class TrainerViewModel extends ViewModel {
-    private TrainerListRepository trainerRepo;
-    private LiveData<Trainer> trainer;
+    private final TrainerListRepository trainerRepo;
+    private final LiveData<Trainer> trainer;
 
-    private MutableLiveData<Long> trainerIdLD =new MutableLiveData<>();
+    private final MutableLiveData<Long> trainerIdLD =new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public TrainerViewModel(TrainerListRepository trainerRepo) {

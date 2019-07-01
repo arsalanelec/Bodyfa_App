@@ -13,16 +13,18 @@ public class Comment {
             "Title": "",
             "Comment": "سلام این یک پیام نمونه است."*/
     @SerializedName("NewsCommentId")
+    private
     long id;
-    String senderName;
-    long newsId;
-    String commentDateFa;
-    String commentTimeFa;
+    private String senderName;
+    private long newsId;
+    private String commentDateFa;
+    private String commentTimeFa;
 
     @SerializedName("CommentDateTs")
-            long commentDateTs;
+    private
+    long commentDateTs;
 
-    String comment;
+    private String comment;
     public Comment() {
     }
 

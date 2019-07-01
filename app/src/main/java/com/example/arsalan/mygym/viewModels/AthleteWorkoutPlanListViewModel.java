@@ -12,7 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AthleteWorkoutPlanListViewModel extends ViewModel {
-    private AthleteWorkoutPlanRepository workoutPlanItemRepo;
+    private final AthleteWorkoutPlanRepository workoutPlanItemRepo;
     private LiveData<List<WorkoutPlan>> workoutPlanItemList;
 
     private MutableLiveData<Integer> workoutPlanItemTypeLD = new MutableLiveData<>();

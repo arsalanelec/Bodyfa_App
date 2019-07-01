@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.arsalan.mygym.models.NextPrev;
 
 public class NextPrevVm extends ViewModel {
-    MutableLiveData<NextPrev> nextPrevMutableLiveData = new MutableLiveData<>();
+    final MutableLiveData<NextPrev> nextPrevMutableLiveData = new MutableLiveData<>();
 
     public LiveData<NextPrev> getNextPrevLiveData() {
         return nextPrevMutableLiveData;

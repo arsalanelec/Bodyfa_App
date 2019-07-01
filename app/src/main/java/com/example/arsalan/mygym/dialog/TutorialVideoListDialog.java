@@ -365,7 +365,7 @@ public class TutorialVideoListDialog extends DialogFragment implements Injectabl
     }
 
     class AdapterTutorialVideo extends BaseAdapter {
-        List<TutorialVideo> videoList;
+        final List<TutorialVideo> videoList;
 
         public AdapterTutorialVideo(List<TutorialVideo> tutorialVideoList) {
             videoList = tutorialVideoList;
@@ -401,52 +401,46 @@ public class TutorialVideoListDialog extends DialogFragment implements Injectabl
             thumbImg.setImageURI(thumbUrl);
 
             ImageButton playBtn = view.findViewById(R.id.btnPlay);
-            playBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), PlayVideoActivity.class);
-                    intent.putExtra(PlayVideoActivity.KEY_VIDEO_URL, videoList.get(i).getPictureUrl());
-                    startActivity(intent);
-                }
+            playBtn.setOnClickListener(view12 -> {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), PlayVideoActivity.class);
+                intent.putExtra(PlayVideoActivity.KEY_VIDEO_URL, videoList.get(i).getPictureUrl());
+                startActivity(intent);
             });
 
             ImageButton downloadBtn = view.findViewById(R.id.btnDownload);
-            downloadBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    downloadBtn.setVisibility(View.INVISIBLE);
+            downloadBtn.setOnClickListener(view1 -> {
+                downloadBtn.setVisibility(View.INVISIBLE);
 
-                    progressBar.setVisibility(View.VISIBLE);
-                    progressTV.setVisibility(View.VISIBLE);
-                   /* Intent intent = new Intent();
-                    intent.setClass(getActivity(), PlayVideoActivity.class);
-                    intent.putExtra(PlayVideoActivity.KEY_VIDEO_URL, videoList.get(i).getPictureUrl());
-                    startVideoRecorderActivity(intent);*/
-                    downloadVideo(MyConst.BASE_CONTENT_URL + videoList.get(i).getPictureUrl(), new DownloadProgressListener() {
-                        @Override
-                        public void onUpdateProgress(int progress) {
-                            progressBar.setProgress(progress);
-                            progressTV.setText(String.valueOf(progress));
-                        }
+                progressBar.setVisibility(View.VISIBLE);
+                progressTV.setVisibility(View.VISIBLE);
+               /* Intent intent = new Intent();
+                intent.setClass(getActivity(), PlayVideoActivity.class);
+                intent.putExtra(PlayVideoActivity.KEY_VIDEO_URL, videoList.get(i).getPictureUrl());
+                startVideoRecorderActivity(intent);*/
+                downloadVideo(MyConst.BASE_CONTENT_URL + videoList.get(i).getPictureUrl(), new DownloadProgressListener() {
+                    @Override
+                    public void onUpdateProgress(int progress) {
+                        progressBar.setProgress(progress);
+                        progressTV.setText(String.valueOf(progress));
+                    }
 
-                        @Override
-                        public void onDownloadFailed() {
-                            downloadBtn.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
-                            progressTV.setVisibility(View.GONE);
-                        }
+                    @Override
+                    public void onDownloadFailed() {
+                        downloadBtn.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        progressTV.setVisibility(View.GONE);
+                    }
 
-                        @Override
-                        public void onDownloadCompleted() {
-                            playBtn.setVisibility(View.VISIBLE);
-                            downloadBtn.setVisibility(View.INVISIBLE);
-                            progressBar.setVisibility(View.GONE);
-                            progressTV.setVisibility(View.GONE);
-                        }
-                    });
+                    @Override
+                    public void onDownloadCompleted() {
+                        playBtn.setVisibility(View.VISIBLE);
+                        downloadBtn.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        progressTV.setVisibility(View.GONE);
+                    }
+                });
 
-                }
             });
             String videoUrl = MyConst.BASE_CONTENT_URL + videoList.get(i).getPictureUrl();
             String fileName = videoUrl.substring(videoUrl.lastIndexOf('/') + 1);

@@ -232,7 +232,7 @@ public class PostNewsFragment extends Fragment {
         });
 
         /* Create your ArrayList collection using StringWithTag instead of String. */
-        List<StringWithTag> itemList = new ArrayList<StringWithTag>();
+        List<StringWithTag> itemList = new ArrayList<>();
 
         /* Iterate through your original collection, in this case defined with an Integer key and String value. */
 
@@ -243,7 +243,7 @@ public class PostNewsFragment extends Fragment {
 
 
         /* Set your ArrayAdapter with the StringWithTag, and when each entry is shown in the Spinner, .toString() is called. */
-        ArrayAdapter<StringWithTag> spinnerAdapter = new ArrayAdapter<StringWithTag>(getContext(), android.R.layout.simple_spinner_item, itemList);
+        ArrayAdapter<StringWithTag> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, itemList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mCateSpn.setAdapter(spinnerAdapter);
         mImage = v.findViewById(R.id.image);
@@ -288,8 +288,8 @@ public class PostNewsFragment extends Fragment {
     }
 
     private static class StringWithTag {
-        public String string;
-        public int tag;
+        public final String string;
+        public final int tag;
 
         public StringWithTag(String string, Integer tag) {
             this.string = string;

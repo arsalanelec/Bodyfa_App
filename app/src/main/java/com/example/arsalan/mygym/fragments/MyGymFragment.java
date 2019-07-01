@@ -93,14 +93,11 @@ public class MyGymFragment extends Fragment {
         for (int i=0;i<20;i++)
             newsList.add(new NewsHead());
 
-        AdapterNews adapter = new AdapterNews(newsList, new AdapterNews.OnAdapterNewsEventListener() {
-            @Override
-            public void onNewsHeadClick(long newsId,int catType) {
-                Intent i = new Intent();
-                //i.setClass(getContext(), NewsDetailActivity.class);
-                //i.putExtra(NewsDetailActivity.KEY_NEWS_ID,newsId);
-              //startActivity(i);
-            }
+        AdapterNews adapter = new AdapterNews(newsList, (newsId, catType) -> {
+            Intent i = new Intent();
+            //i.setClass(getContext(), NewsDetailActivity.class);
+            //i.putExtra(NewsDetailActivity.KEY_NEWS_ID,newsId);
+          //startActivity(i);
         });
         newsRV.setAdapter(adapter);
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -150,7 +147,7 @@ public class MyGymFragment extends Fragment {
 
     class ProvinceAdapter implements SpinnerAdapter {
 
-        List<Province> provinceList;
+        final List<Province> provinceList;
 
         public ProvinceAdapter() {
             provinceList = new ArrayList<>();

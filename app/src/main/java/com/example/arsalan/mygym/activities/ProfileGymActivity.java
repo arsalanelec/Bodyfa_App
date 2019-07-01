@@ -45,7 +45,7 @@ public class ProfileGymActivity extends AppCompatActivity implements OnMapReadyC
     private static final int REQUEST_MAP_PERMISSIONS_REQUEST = 1000;
     private final String TAG = this.getClass().getSimpleName();
     GoogleMap map;
-    Context mContext;
+    final Context mContext;
     private Gym mCurrentGym;
     private MapView m;
     private ImageView imgGym;

@@ -23,7 +23,6 @@ import com.example.arsalan.mygym.models.RetTransactionList;
 import com.example.arsalan.mygym.models.RetTutorialList;
 import com.example.arsalan.mygym.models.RetTutorialVideoList;
 import com.example.arsalan.mygym.models.RetUpdate;
-import com.example.arsalan.mygym.models.RetUserList;
 import com.example.arsalan.mygym.models.RetUserProfile;
 import com.example.arsalan.mygym.models.RetWorkoutPlan;
 import com.example.arsalan.mygym.models.RetWorkoutPlanList;

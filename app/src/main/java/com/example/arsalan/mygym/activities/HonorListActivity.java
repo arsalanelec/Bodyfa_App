@@ -39,7 +39,7 @@ import retrofit2.Response;
 
 public class HonorListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private User mUser;
-    private Context mContext;
+    private final Context mContext;
     private List<Honor> mHonorList;
     private AdapterHonors mAdapter;
     private TextView errorTv;
@@ -62,12 +62,9 @@ public class HonorListActivity extends AppCompatActivity implements SwipeRefresh
         }
 
         FloatingActionButton addHonorBtn = findViewById(R.id.btnAddMedal);
-        addHonorBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddMedalDialog dialog = AddMedalDialog.newInstance(mUser);
-                dialog.show(getSupportFragmentManager(), "add honor dialog");
-            }
+        addHonorBtn.setOnClickListener(view -> {
+            AddMedalDialog dialog = AddMedalDialog.newInstance(mUser);
+            dialog.show(getSupportFragmentManager(), "add honor dialog");
         });
         ListView honorLV = findViewById(R.id.listView);
         mHonorList = new ArrayList<>();
@@ -87,7 +84,7 @@ public class HonorListActivity extends AppCompatActivity implements SwipeRefresh
     }
 
     private class AdapterHonors extends BaseAdapter {
-        List<Honor> honorList;
+        final List<Honor> honorList;
 
         public AdapterHonors(List<Honor> honorList) {
             this.honorList = honorList;
@@ -155,26 +152,13 @@ public class HonorListActivity extends AppCompatActivity implements SwipeRefresh
             medalImg.setImageResource(medalImageRes);
 
             Button removeBtn = view.findViewById(R.id.btnRemove);
-            removeBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AlertDialog removeDialog = new AlertDialog.Builder(mContext,R.style.AlertDialogCustomPrivate)
-                            .setMessage(R.string.ask_remove_medal)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int ii) {
-                                    removeHonorWeb(getItemId(i),i);
-                                }
-                            })
-                            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                            .create();
-                    removeDialog.show();
-                }
+            removeBtn.setOnClickListener(view1 -> {
+                AlertDialog removeDialog = new AlertDialog.Builder(mContext,R.style.AlertDialogCustomPrivate)
+                        .setMessage(R.string.ask_remove_medal)
+                        .setPositiveButton(R.string.ok, (dialogInterface, ii) -> removeHonorWeb(getItemId(i), i))
+                        .setNegativeButton(getString(R.string.cancel), (dialogInterface, i1) -> dialogInterface.dismiss())
+                        .create();
+                removeDialog.show();
             });
             return view;
         }
@@ -193,7 +177,7 @@ public class HonorListActivity extends AppCompatActivity implements SwipeRefresh
                     Log.d(TAG, "onResponse: success! cnt:"+response.body().getRecordsCount()+" id"+userId);
 
                     if (response.body().getRecordsCount() > 0) {
-                        mHonorList.removeAll(mHonorList);
+                        mHonorList.clear();
                         mHonorList.addAll(response.body().getRecords());
                         mAdapter.notifyDataSetChanged();
                     } else {

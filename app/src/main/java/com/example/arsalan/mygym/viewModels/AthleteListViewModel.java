@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AthleteListViewModel extends ViewModel {
-    private AthleteListRepository userRepo;
+    private final AthleteListRepository userRepo;
     private LiveData<List<TrainerAthlete>> athleteList;
 
     @Inject //  parameter is provided by Dagger 2
@@ -38,8 +38,8 @@ public class AthleteListViewModel extends ViewModel {
      * @param requestId
      * @return
      */
-    public LiveData<Integer> acceptRequest(long requestId){
-        return userRepo.acceptMembershipRequest(requestId);
+    public void acceptRequest(long requestId){
+        userRepo.acceptMembershipRequest(requestId);
     }
 
     public LiveData<List<TrainerAthlete>> getAthleteList() {

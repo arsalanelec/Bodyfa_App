@@ -13,10 +13,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class GymListViewModel extends ViewModel {
-    private GymListRepository gymRepo;
-    private LiveData<List<Gym>> gymList;
+    private final GymListRepository gymRepo;
+    private final LiveData<List<Gym>> gymList;
 
-    private MutableLiveData<Integer> gymTypeLD=new MutableLiveData<>();
+    private final MutableLiveData<Integer> gymTypeLD=new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public GymListViewModel(GymListRepository gymRepo) {

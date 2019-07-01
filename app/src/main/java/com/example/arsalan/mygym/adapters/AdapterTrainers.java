@@ -24,17 +24,22 @@ import java.util.List;
  */
 
 public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
+    public static final int SHOW_PRICE_MEAL_PLAN = 1;
+    public static final int SHOW_PRICE_WORKOUT_PLAN = 2;
+    public static final int SHOW_PRICE_MEMBERSHIP_PLAN = 3;
+    public static final int SHOW_NO_PRICE = 0;
     private final OnItemClickListener mListener;
-    private SortedList<Trainer> trainerSortedList;
+    private final SortedList<Trainer> trainerSortedList;
+    private final int mShowPrice;
 
-    public AdapterTrainers(OnItemClickListener listener) {
+    public AdapterTrainers(int showPrice, OnItemClickListener listener) {
+        mShowPrice = showPrice;
         mListener = listener;
-        trainerSortedList = new SortedList<Trainer>(Trainer.class, new SortedList.Callback<Trainer>() {
+        trainerSortedList = new SortedList<>(Trainer.class, new SortedList.Callback<Trainer>() {
             @Override
             public int compare(Trainer o1, Trainer o2) {
-                if(o1.getPoint()<o2.getPoint())return 1;
-                if(o1.getPoint()>o2.getPoint())return -1;
-                return 0;//o1.getName().compareTo(o2.getName());
+                return Integer.compare(o2.getPoint(), o1.getPoint());
+                //o1.getName().compareTo(o2.getName());
             }
 
             @Override
@@ -134,23 +139,24 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
     }
 
     class VH extends RecyclerView.ViewHolder {
-        ImageView thumbImg;
-        TextView nameTV;
-        TextView honorTV;
-        TextView pointsTV;
-        RatingBar ratingBar;
+        final ImageView thumbImg;
+        final TextView nameTV;
+        final TextView honorTV;
+        final TextView pointsTV;
+        final RatingBar ratingBar;
+        final TextView priceTv;
 
-
-        public VH(View iv) {
+        VH(View iv) {
             super(iv);
             nameTV = iv.findViewById(R.id.txtName);
             honorTV = iv.findViewById(R.id.txtTitle);
             ratingBar = iv.findViewById(R.id.ratingBar);
             pointsTV = iv.findViewById(R.id.txtPoints);
             thumbImg = iv.findViewById(R.id.img_thumb);
+            priceTv = iv.findViewById(R.id.txt_price);
         }
 
-        public void bind(final Trainer t, final OnItemClickListener listener) {
+        void bind(final Trainer t, final OnItemClickListener listener) {
             Glide.with(itemView.getContext())
                     .load(MyConst.BASE_CONTENT_URL + t.getThumbUrl())
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop())
@@ -162,12 +168,19 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
             nameTV.setText(t.getName());
             //  h.honorTV.setText(t.getTitle());
             /*ViewCompat.setTransitionName(thumbImg, t.getName());*/
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(t, thumbImg);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(t, thumbImg));
+            switch (mShowPrice) {
+                case SHOW_NO_PRICE:
+                case SHOW_PRICE_MEAL_PLAN:
+                    priceTv.setVisibility(View.GONE);
+                    break;
+                case SHOW_PRICE_MEMBERSHIP_PLAN:
+                    priceTv.setText(itemView.getContext().getString( R.string.priceInRial,t.getOneDayFee()));
+                    break;
+                    case SHOW_PRICE_WORKOUT_PLAN:
+                    priceTv.setText(itemView.getContext().getString( R.string.priceInRial,t.getWorkoutPlanPrice()));
+                    break;
+            }
         }
     }
 }

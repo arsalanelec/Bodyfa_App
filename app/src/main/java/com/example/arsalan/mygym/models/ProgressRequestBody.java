@@ -13,11 +13,11 @@ import okio.BufferedSink;
 
 public class ProgressRequestBody extends RequestBody {
     private static final int DEFAULT_BUFFER_SIZE = 2048;
-    private File mFile;
+    private final File mFile;
     private String mPath;
-    private UploadCallbacks mListener;
-    private MediaType mediaType;
-    private String tag;
+    private final UploadCallbacks mListener;
+    private final MediaType mediaType;
+    private final String tag;
 
     public ProgressRequestBody(MediaType mediaType, final File file, final UploadCallbacks listener, String tag) {
         mFile = file;
@@ -40,10 +40,9 @@ public class ProgressRequestBody extends RequestBody {
     public void writeTo(BufferedSink sink) throws IOException {
         long fileLength = mFile.length();
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        FileInputStream in = new FileInputStream(mFile);
-        long uploaded = 0;
 
-        try {
+        try (FileInputStream in = new FileInputStream(mFile)) {
+            long uploaded = 0;
             int read;
             Handler handler = new Handler(Looper.getMainLooper());
             while ((read = in.read(buffer)) != -1) {
@@ -54,8 +53,6 @@ public class ProgressRequestBody extends RequestBody {
                 uploaded += read;
                 sink.write(buffer, 0, read);
             }
-        } finally {
-            in.close();
         }
     }
 
@@ -68,8 +65,8 @@ public class ProgressRequestBody extends RequestBody {
     }
 
     private class ProgressUpdater implements Runnable {
-        private long mUploaded;
-        private long mTotal;
+        private final long mUploaded;
+        private final long mTotal;
 
         public ProgressUpdater(long uploaded, long total) {
             mUploaded = uploaded;

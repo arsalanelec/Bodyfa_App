@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
@@ -105,14 +104,11 @@ public class TutorialListFragment extends Fragment {
         if (mCatId != 0) getTutorialWeb(mCatId);
         mBind.txtToolbar.setText(mCatName);
         mBind.fab.setVisibility((mCanSendTutorial) ? View.VISIBLE : View.GONE);
-        mBind.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent();
-                i.setClass(getActivity(), PostTutorialActivity.class);
-                i.putExtra(EXTRA_TUTORIAL_CAT_ID, mCatId);
-                startActivity(i);
-            }
+        mBind.fab.setOnClickListener(view -> {
+            Intent i = new Intent();
+            i.setClass(getActivity(), PostTutorialActivity.class);
+            i.putExtra(EXTRA_TUTORIAL_CAT_ID, mCatId);
+            startActivity(i);
         });
 
         //Back Button
@@ -184,7 +180,7 @@ public class TutorialListFragment extends Fragment {
     }
 
     class AdapterTutorialList extends BaseAdapter {
-        List<Tutorial> tutorials;
+        final List<Tutorial> tutorials;
 
         public AdapterTutorialList(List<Tutorial> tutorialList) {
             this.tutorials = tutorialList;
@@ -211,12 +207,9 @@ public class TutorialListFragment extends Fragment {
                 view = getLayoutInflater().inflate(R.layout.item_tutorial, viewGroup, false);
             TextView nameTV = view.findViewById(R.id.txtName);
             nameTV.setText(tutorials.get(i).getTitle());
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TutorialVideoListDialog dialog = TutorialVideoListDialog.newInstance(tutorialList.get(i).getId());
-                    dialog.show(getFragmentManager(), "");
-                }
+            view.setOnClickListener(view1 -> {
+                TutorialVideoListDialog dialog = TutorialVideoListDialog.newInstance(tutorialList.get(i).getId());
+                dialog.show(getFragmentManager(), "");
             });
             return view;
         }

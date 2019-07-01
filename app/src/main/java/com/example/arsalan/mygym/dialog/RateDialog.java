@@ -73,12 +73,9 @@ public class RateDialog extends DialogFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.dialog_rate, container, false);
         RatingBar ratingBar = v.findViewById(R.id.rateBar);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                mListener.setTrainerRate(mAthleteId,mTrainerId,(int) v);
-                dismiss();
-            }
+        ratingBar.setOnRatingBarChangeListener((ratingBar1, v1, b) -> {
+            mListener.setTrainerRate(mAthleteId,mTrainerId,(int) v1);
+            dismiss();
         });
         return v;
     }

@@ -39,8 +39,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.example.arsalan.mygym.MyKeys.EXTRA_TRAINER_ID;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -123,7 +121,7 @@ private TextView noDeactiveRequestTxt;
          mReqMembershipBtn = v.findViewById(R.id.fab_request_membership);
         mReqMembershipBtn.setOnClickListener(b->{
 
-                    TrainerListDialog dialog = new TrainerListDialog();
+                    TrainerListDialog dialog =  TrainerListDialog.newInstance(TrainerListDialog.TYPE_MEMBERSHIP);
                     dialog.setTargetFragment(MyTrainerMembershipFragment.this, REQ_SELECT_TRAINER);
                     dialog.show(getFragmentManager(), "");
 
@@ -193,18 +191,15 @@ private TextView noDeactiveRequestTxt;
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        getView().setOnKeyListener((v, keyCode, event) -> {
 
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility()==View.VISIBLE){
-                    detailFragment.setVisibility(View.GONE);
-                    //your code
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailFragment.getVisibility()==View.VISIBLE){
+                detailFragment.setVisibility(View.GONE);
+                //your code
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
     }
     /**
@@ -226,7 +221,7 @@ private TextView noDeactiveRequestTxt;
     }
 
     private class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> implements OnRequestItemListener {
-        List<TrainerAthlete> trainerAthletes;
+        final List<TrainerAthlete> trainerAthletes;
 
         public RequestAdapter(List<TrainerAthlete> trainerAthletes) {
             this.trainerAthletes = trainerAthletes;
@@ -242,7 +237,7 @@ private TextView noDeactiveRequestTxt;
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.binding.setTrainer(trainerAthletes.get(position));
-            holder.binding.setOnClickListener(this::onItemClicked);
+            holder.binding.setOnClickListener(this);
             Glide.with(getContext())
                     .load(MyConst.BASE_CONTENT_URL + trainerAthletes.get(position).getParentThumbUrl())
                     .apply(new RequestOptions().placeholder(R.drawable.bodybuilder_place_holder).circleCrop().fitCenter())
@@ -272,7 +267,7 @@ private TextView noDeactiveRequestTxt;
 
         class ViewHolder extends RecyclerView.ViewHolder {
 
-            ItemMyTrainerBinding binding;
+            final ItemMyTrainerBinding binding;
 
             public ViewHolder(@NonNull ItemMyTrainerBinding binding) {
                 super(binding.getRoot());

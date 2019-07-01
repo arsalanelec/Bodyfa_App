@@ -43,16 +43,20 @@ public class EditProfileActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (getIntent().getStringExtra(EXTRA_ROLE_CHOICE).equals(KEY_ROLE_ATHLETE)) {
-            User user = getIntent().getParcelableExtra(EXTRA_OBJ_USER);
-            getSupportFragmentManager().beginTransaction().replace(R.id.content, EditProfileFragment.newInstance(user)).commit();
-        } else if (getIntent().getStringExtra(EXTRA_ROLE_CHOICE).equals(KEY_ROLE_TRAINER)) {
-            Trainer trainer = getIntent().getParcelableExtra(EXTRA_OBJ_TRAINER);
-            getSupportFragmentManager().beginTransaction().replace(R.id.content, TrainerEditProfileFragment.newInstance(trainer)).commit();
-        } else if (getIntent().getStringExtra(EXTRA_ROLE_CHOICE).equals(KEY_ROLE_GYM)) {
-            Gym gym = getIntent().getParcelableExtra(EXTRA_OBJ_GYM);
-            getSupportFragmentManager().beginTransaction().replace(R.id.content, GymEditProfileFragment.newInstance(gym)).commit();
+        switch (getIntent().getStringExtra(EXTRA_ROLE_CHOICE)) {
+            case KEY_ROLE_ATHLETE:
+                User user = getIntent().getParcelableExtra(EXTRA_OBJ_USER);
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, EditProfileFragment.newInstance(user)).commit();
+                break;
+            case KEY_ROLE_TRAINER:
+                Trainer trainer = getIntent().getParcelableExtra(EXTRA_OBJ_TRAINER);
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, TrainerEditProfileFragment.newInstance(trainer)).commit();
+                break;
+            case KEY_ROLE_GYM:
+                Gym gym = getIntent().getParcelableExtra(EXTRA_OBJ_GYM);
+                getSupportFragmentManager().beginTransaction().replace(R.id.content, GymEditProfileFragment.newInstance(gym)).commit();
 
+                break;
         }
     }
 

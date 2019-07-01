@@ -13,8 +13,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-import com.example.arsalan.mygym.activities.NewWorkoutPlanActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.arsalan.mygym.R;
+import com.example.arsalan.mygym.activities.NewWorkoutPlanActivity;
 import com.example.arsalan.mygym.databinding.ItemNewWorkoutBinding;
 import com.example.arsalan.mygym.dialog.TutorialVideoListDialog;
 import com.example.arsalan.mygym.models.SelectableRow;
@@ -23,11 +28,6 @@ import com.example.arsalan.mygym.viewModels.NextPrevVm;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
 
 
 public class WorkoutPlanFragment extends Fragment {
@@ -38,16 +38,14 @@ public class WorkoutPlanFragment extends Fragment {
 
     private static final String ARG_LIST = "param list";
     private static final int REQ_WORKOUT_PLAN = 1000;
-
+    private static final String TAG = "WorkoutPlanFragment";
     // TODO: Rename and change types of parameters
     private int mDayOfWeek;
-
     private List<WorkoutRow> mWorkoutRowList;
     private OnFragmentInteractionListener mListener;
     private AdapterWorkoutLV adapter;
     private ListView workoutLV;
     private CountDownTimer countOneItem;
-    private static final String TAG = "WorkoutPlanFragment";
     private MutableLiveData<NewWorkoutPlanActivity.CurrentPlayPauseFragment> mPlayPause;
     private long mSavedTime = 0;
     private boolean isPaused = false;
@@ -105,15 +103,15 @@ public class WorkoutPlanFragment extends Fragment {
         NextPrevVm nextPrevVm = ViewModelProviders.of(getActivity()).get(NextPrevVm.class);
         nextPrevVm.getNextPrevLiveData().observe(this, nextPrev -> {
 
-            if(nextPrev.getDay()==mDayOfWeek){
-                if(nextPrev.getStep()>mCurrentStep){
+            if (nextPrev.getDay() == mDayOfWeek) {
+                if (nextPrev.getStep() > mCurrentStep) {
                     adapter.onClick(++mCurrentIndext);
 
-                }else if(nextPrev.getStep()<mCurrentStep){
+                } else if (nextPrev.getStep() < mCurrentStep) {
                     adapter.onClick(--mCurrentIndext);
                 }
             }
-            mCurrentStep=nextPrev.getStep();
+            mCurrentStep = nextPrev.getStep();
         });
         v.setRotation(180);
         return v;
@@ -154,8 +152,8 @@ public class WorkoutPlanFragment extends Fragment {
 
     private class AdapterWorkoutLV extends BaseAdapter implements WorkoutRow.OnWorkoutRowEventListener {
         private static final String TAG = "AdapterWorkoutLV";
-        List<WorkoutRow> workoutRowList;
-        List<SelectableRow> selectableRows = new ArrayList<>();
+        final List<WorkoutRow> workoutRowList;
+        final List<SelectableRow> selectableRows = new ArrayList<>();
 
         public AdapterWorkoutLV(List<WorkoutRow> workoutRowList) {
             this.workoutRowList = workoutRowList;
@@ -191,8 +189,7 @@ public class WorkoutPlanFragment extends Fragment {
             bind.setSelectable(selectableRows.get(i));
             bind.btnShowTutorial.setImageResource(R.drawable.ic_video_library_24dp);
             v = bind.getRoot();
-            Animation animation = null;
-            animation = AnimationUtils.loadAnimation(getContext(), R.anim.push_left_in);
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.push_left_in);
             animation.setDuration(200);
             v.startAnimation(animation);
             animation = null;

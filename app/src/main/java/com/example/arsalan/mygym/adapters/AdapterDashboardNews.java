@@ -23,9 +23,9 @@ public class AdapterDashboardNews extends RecyclerView.Adapter<AdapterDashboardN
     public static final int LAYOUT_TYPE_LINEAR =1;
     public static final int LAYOUT_TYPE_GRID=2;
     private static final String TAG = "AdapterDashboardNews";
-    List<NewsHead> newsList;
-    int mViewType;
-    OnAdapterNewsEventListener eventListener;
+    private final List<NewsHead> newsList;
+    private int mViewType;
+    private final OnAdapterNewsEventListener eventListener;
 
     public AdapterDashboardNews(List<NewsHead> newsList,int viewType, OnAdapterNewsEventListener onAdapterNewsEventListener) {
         this.newsList = newsList;
@@ -73,16 +73,13 @@ public class AdapterDashboardNews extends RecyclerView.Adapter<AdapterDashboardN
             thumb = ((ItemMyNewsGridBinding) h.binding).imgThumb;
         }
         thumb.setImageURI(MyConst.BASE_CONTENT_URL + newsHead.getThumbUrl());
-        h.binding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: newId:" + newsHead.getId());
-                eventListener.onNewsHeadClick(newsHead.getId(),newsHead.getTypeId());
-                /*Intent i = new Intent();
-                i.setClass(h.itemView.getContext(), NewsDetailActivity.class);
-                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsHead.getId());
-                h.itemView.getContext().startActivity(i);*/
-            }
+        h.binding.getRoot().setOnClickListener(view -> {
+            Log.d(TAG, "onClick: newId:" + newsHead.getId());
+            eventListener.onNewsHeadClick(newsHead.getId(),newsHead.getTypeId());
+            /*Intent i = new Intent();
+            i.setClass(h.itemView.getContext(), NewsDetailActivity.class);
+            i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsHead.getId());
+            h.itemView.getContext().startActivity(i);*/
         });
 
     }
@@ -93,8 +90,8 @@ public class AdapterDashboardNews extends RecyclerView.Adapter<AdapterDashboardN
     }
 
     class VH extends RecyclerView.ViewHolder {
-        ViewDataBinding binding;
-        public VH(ViewDataBinding binding) {
+        final ViewDataBinding binding;
+        VH(ViewDataBinding binding) {
             super(binding.getRoot());
             this.binding=binding;
         }

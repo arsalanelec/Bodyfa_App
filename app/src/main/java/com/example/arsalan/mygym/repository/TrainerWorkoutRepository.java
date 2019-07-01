@@ -49,31 +49,26 @@ public class TrainerWorkoutRepository {
         if (!workoutPlanExist) {
             Log.d("refreshWorkoutPlanList", "!workoutPlanExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetWorkoutPlanList> call = apiService.getTrainerWorkoutPlanList(token, userId, 0, 100);
+                try {
+                    Response<RetWorkoutPlanList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshWorkoutPlanList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetWorkoutPlanList> call = apiService.getTrainerWorkoutPlanList(token, userId, 0, 100);
-                    try {
-                        Response<RetWorkoutPlanList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshWorkoutPlanList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
+                        Log.d("refreshWorkoutPlanList", "run: newDao save:" + workoutPlanDao.saveList(response.body().getRecords()).length);
 
-                            Log.d("refreshWorkoutPlanList", "run: newDao save:" + workoutPlanDao.saveList(response.body().getRecords()).length);
+                    } else {
+                        Log.d("refreshWorkoutPlanList", "run: response.error");
 
-                        } else {
-                            Log.d("refreshWorkoutPlanList", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 
@@ -84,30 +79,25 @@ public class TrainerWorkoutRepository {
         if (!workoutPlanExist) {
             Log.d("refreshWorkoutPlanList", "!workoutPlanExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetWorkoutPlan> call = apiService.getTrainerWorkoutPlan(token,planId);
+                try {
+                    Response<RetWorkoutPlan> response = call.execute();
+                    if (response.isSuccessful()) {
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetWorkoutPlan> call = apiService.getTrainerWorkoutPlan(token,planId);
-                    try {
-                        Response<RetWorkoutPlan> response = call.execute();
-                        if (response.isSuccessful()) {
+                        Log.d("refreshWorkoutPlanList", "run: newDao update:" + workoutPlanDao.updatePlan(response.body().getRecord()));
 
-                            Log.d("refreshWorkoutPlanList", "run: newDao update:" + workoutPlanDao.updatePlan(response.body().getRecord()));
+                    } else {
+                        Log.d("refreshWorkoutPlanList", "run: response.error");
 
-                        } else {
-                            Log.d("refreshWorkoutPlanList", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 

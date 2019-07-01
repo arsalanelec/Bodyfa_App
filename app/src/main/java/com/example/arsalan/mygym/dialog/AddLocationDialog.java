@@ -51,7 +51,7 @@ public class AddLocationDialog extends DialogFragment implements OnMapReadyCallb
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
     private static final int REQUEST_MAP_PERMISSIONS_REQUEST = 1000;
-    GoogleMap map;
+    private GoogleMap map;
     private MapView m;
     private final String TAG = this.getClass().getSimpleName();
     private Button OkBtn;
@@ -148,33 +148,30 @@ public class AddLocationDialog extends DialogFragment implements OnMapReadyCallb
         Log.d(TAG, "onMapReady: ");
 
         map = googleMap;
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                Log.d(TAG, "onMapClick: mLatLng:" + latLng.toString());
+        map.setOnMapClickListener(latLng -> {
+            Log.d(TAG, "onMapClick: mLatLng:" + latLng.toString());
 
-                mLatLng = latLng;
+            mLatLng = latLng;
 
 
-                // Creating a marker
-                MarkerOptions markerOptions = new MarkerOptions();
+            // Creating a marker
+            MarkerOptions markerOptions = new MarkerOptions();
 
-                // Setting the position for the marker
-                markerOptions.position(latLng);
+            // Setting the position for the marker
+            markerOptions.position(latLng);
 
-                // Setting the title for the marker.
-                // This will be displayed on taping the marker
-                markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+            // Setting the title for the marker.
+            // This will be displayed on taping the marker
+            markerOptions.title(latLng.latitude + " : " + latLng.longitude);
 
-                // Clears the previously touched position
-                map.clear();
+            // Clears the previously touched position
+            map.clear();
 
-                // Animating to the touched position
-                map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            // Animating to the touched position
+            map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                // Placing a marker on the touched position
-                map.addMarker(markerOptions);
-            }
+            // Placing a marker on the touched position
+            map.addMarker(markerOptions);
         });
         map.getUiSettings().setMyLocationButtonEnabled(false);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -183,17 +180,14 @@ public class AddLocationDialog extends DialogFragment implements OnMapReadyCallb
         }
 
         if (mLatLng != null) {
-            OkBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //  mListener.setLatLng(mLatLng);
-                    Intent intent = new Intent();
-                    intent.putExtra("Lng", mLatLng.longitude);
-                    intent.putExtra("Lat", mLatLng.latitude);
+            OkBtn.setOnClickListener(view -> {
+                //  mListener.setLatLng(mLatLng);
+                Intent intent = new Intent();
+                intent.putExtra("Lng", mLatLng.longitude);
+                intent.putExtra("Lat", mLatLng.latitude);
 
-                    getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_OK, intent);
-                    dismiss();
-                }
+                getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_OK, intent);
+                dismiss();
             });
             // Creating a marker
             MarkerOptions markerOptions = new MarkerOptions();
@@ -226,7 +220,7 @@ public class AddLocationDialog extends DialogFragment implements OnMapReadyCallb
         }
     }
 
-    public LatLng getLocationFromAddress(Context context, String strAddress) {
+    private LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);
         List<Address> address;

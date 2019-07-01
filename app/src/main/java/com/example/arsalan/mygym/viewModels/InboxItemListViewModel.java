@@ -12,7 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class InboxItemListViewModel extends ViewModel {
-    private InboxItemListRepository inboxItemRepo;
+    private final InboxItemListRepository inboxItemRepo;
     private LiveData<List<InboxItem>> inboxItemList;
 
     private MutableLiveData<Integer> inboxItemToken = new MutableLiveData<>();

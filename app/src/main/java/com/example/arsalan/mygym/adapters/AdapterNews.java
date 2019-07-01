@@ -1,6 +1,5 @@
 package com.example.arsalan.mygym.adapters;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 public class AdapterNews extends Adapter<AdapterNews.VH> {
     private static final String TAG = "AdapterDashboardNews";
-    List<NewsHead> newsList;
-    OnAdapterNewsEventListener eventListener;
+    private final List<NewsHead> newsList;
+    private final OnAdapterNewsEventListener eventListener;
 
     public AdapterNews(List<NewsHead> newsList,OnAdapterNewsEventListener onAdapterNewsEventListener) {
         this.newsList = newsList;
@@ -53,16 +52,13 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
         h.dateTV.setText(newsHead.getPersianDate());
         h.thumb.setImageURI(MyConst.BASE_CONTENT_URL + newsHead.getThumbUrl());
         h.avatar.setImageURI(MyConst.BASE_CONTENT_URL + newsHead.getUserThumbUrl());
-        h.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: newId:" + newsHead.getId());
-                eventListener.onNewsHeadClick(newsHead.getId(),newsHead.getTypeId());
-                /*Intent i = new Intent();
-                i.setClass(h.itemView.getContext(), NewsDetailActivity.class);
-                i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsHead.getId());
-                h.itemView.getContext().startActivity(i);*/
-            }
+        h.itemView.setOnClickListener(view -> {
+            Log.d(TAG, "onClick: newId:" + newsHead.getId());
+            eventListener.onNewsHeadClick(newsHead.getId(),newsHead.getTypeId());
+            /*Intent i = new Intent();
+            i.setClass(h.itemView.getContext(), NewsDetailActivity.class);
+            i.putExtra(NewsDetailActivity.KEY_NEWS_ID, newsHead.getId());
+            h.itemView.getContext().startActivity(i);*/
         });
 
     }
@@ -73,15 +69,15 @@ public class AdapterNews extends Adapter<AdapterNews.VH> {
     }
 
     class VH extends RecyclerView.ViewHolder {
-        TextView titleTV;
-        TextView viewCntTV;
-        TextView likeCntTV;
-        TextView commentCntTV;
-        TextView dateTV;
-        SimpleDraweeView thumb;
-        SimpleDraweeView avatar;
+        final TextView titleTV;
+        final TextView viewCntTV;
+        final TextView likeCntTV;
+        final TextView commentCntTV;
+        final TextView dateTV;
+        final SimpleDraweeView thumb;
+        final SimpleDraweeView avatar;
 
-        public VH(View itemView) {
+        VH(View itemView) {
             super(itemView);
             titleTV = itemView.findViewById(R.id.txtTitle);
             viewCntTV = itemView.findViewById(R.id.txtViewCnt);

@@ -14,7 +14,7 @@ import com.example.arsalan.mygym.R;
 import java.util.List;
 
 public class AdapterComments extends RecyclerView.Adapter<AdapterComments.VH> {
-    List<Comment> commentList;
+    private final List<Comment> commentList;
 
 
     public AdapterComments(List<Comment> commentList) {
@@ -42,11 +42,11 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.VH> {
     }
 
     class VH extends RecyclerView.ViewHolder {
-        TextView senderNameTV;
-        TextView dateTV;
-        TextView commentTv;
+        final TextView senderNameTV;
+        final TextView dateTV;
+        final TextView commentTv;
 
-        public VH(View iv) {
+        VH(View iv) {
             super(iv);
             senderNameTV = iv.findViewById(R.id.txtName);
             dateTV = iv.findViewById(R.id.txtDate);

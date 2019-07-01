@@ -78,7 +78,7 @@ public class PostTutorialActivity extends AppCompatActivity {
     private static final int REQUEST_VIDEO_PERMISSIONS_REQUEST = 1000;
     private static final int RECORD_VIDEO_REQUEST = 2000;
     private final static String TAG = "PostTutorialActivity";
-    private Context mContext;
+    private final Context mContext;
     private FloatingActionButton fab;
     private List<Tutorial> tutorialList;
     private TextView titleTV;
@@ -102,39 +102,30 @@ public class PostTutorialActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         startCameraBtn = findViewById(R.id.btnCaptureVideo);
-        startCameraBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: turorialID:" + tutorialSpn.getSelectedItemId());
-                if (newRB.isChecked() && titleTV.getText().toString().isEmpty()) {
-                    titleTV.setError(getString(R.string.workout_title_is_empty));
-                    return;
-                }
-                checkPermissions();
+        startCameraBtn.setOnClickListener(view -> {
+            Log.d(TAG, "onClick: turorialID:" + tutorialSpn.getSelectedItemId());
+            if (newRB.isChecked() && titleTV.getText().toString().isEmpty()) {
+                titleTV.setError(getString(R.string.workout_title_is_empty));
+                return;
             }
+            checkPermissions();
         });
 
         titleTV = findViewById(R.id.txtNewTitle);
         tutorialSpn = findViewById(R.id.spnCategory);
         existRB = findViewById(R.id.rbExist);
         newRB = findViewById(R.id.rbNewTitle);
-        existRB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                newRB.setChecked(!b);
-                titleTV.setVisibility(b ? View.GONE : View.VISIBLE);
-                tutorialSpn.setEnabled(b);
+        existRB.setOnCheckedChangeListener((compoundButton, b) -> {
+            newRB.setChecked(!b);
+            titleTV.setVisibility(b ? View.GONE : View.VISIBLE);
+            tutorialSpn.setEnabled(b);
 
-            }
         });
-        newRB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                existRB.setChecked(!b);
-                titleTV.setVisibility(b ? View.VISIBLE : View.GONE);
-                tutorialSpn.setEnabled(!b);
+        newRB.setOnCheckedChangeListener((compoundButton, b) -> {
+            existRB.setChecked(!b);
+            titleTV.setVisibility(b ? View.VISIBLE : View.GONE);
+            tutorialSpn.setEnabled(!b);
 
-            }
         });
         existRB.setChecked(true);
         tutorialList = new ArrayList<>();
@@ -182,20 +173,14 @@ public class PostTutorialActivity extends AppCompatActivity {
                     .setMessage("You have set permissions to never show. You must enable" +
                             " them in the app details screen to record video.")
                     .setPositiveButton("App Details",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(
-                                        DialogInterface dialogInterface, int i) {
-                                    startAppDetailsIntent();
-                                }
-                            })
+                            (dialogInterface, i) -> startAppDetailsIntent())
                     .show();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(
-            int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_VIDEO_PERMISSIONS_REQUEST:
                 handleRequestPermissionsResult();
@@ -215,11 +200,11 @@ public class PostTutorialActivity extends AppCompatActivity {
         try {
             while (true) {
                 int n = (int) (Math.random() * Integer.MAX_VALUE);
-                String videoFileName = FILE_PREFIX + Integer.toString(n) + ".mp4";
+                String videoFileName = FILE_PREFIX + n + ".mp4";
                 mVideoFile = new File(dir, videoFileName);
                 if (!mVideoFile.exists() && mVideoFile.createNewFile()) {
                     String thumbnailFileName =
-                            FILE_PREFIX + Integer.toString(n) + "." + THUMBNAIL_FILE_EXTENSION;
+                            FILE_PREFIX + n + "." + THUMBNAIL_FILE_EXTENSION;
                     mThumbnailFile = new File(dir, thumbnailFileName);
                     if (!mThumbnailFile.exists() && mThumbnailFile.createNewFile()) {
                         return;
@@ -422,7 +407,7 @@ public class PostTutorialActivity extends AppCompatActivity {
     }
 
     class TutorialListAdapter implements SpinnerAdapter {
-        List<Tutorial> tutorialList;
+        final List<Tutorial> tutorialList;
 
         public TutorialListAdapter(List<Tutorial> tutorialList) {
             this.tutorialList = tutorialList;

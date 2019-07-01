@@ -153,12 +153,10 @@ public class NewWorkoutPlanFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void createWorkoutPlan(int dayOfWeek, List<WorkoutRow> workoutRowList);
-
-        void setWorkoutPlanRow(WorkoutRow workoutPlanRow);
     }
 
     private class AdapterWorkoutLV extends BaseAdapter implements WorkoutRow.OnWorkoutRowEventListener {
-        List<WorkoutRow> workoutRowList;
+        final List<WorkoutRow> workoutRowList;
         private static final String TAG = "AdapterWorkoutLV";
 
         public AdapterWorkoutLV(List<WorkoutRow> workoutRowList) {
@@ -205,20 +203,16 @@ public class NewWorkoutPlanFragment extends Fragment {
             v = bind.getRoot();
 
 
-            Animation animation = null;
-            animation = AnimationUtils.loadAnimation(getContext(), R.anim.push_left_in);
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.push_left_in);
             animation.setDuration(200);
             v.startAnimation(animation);
             animation = null;
 
             ImageButton editBtn = v.findViewById(R.id.btnShowTutorial);
-            editBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AddEditWorkoutPlanDialog dialog = AddEditWorkoutPlanDialog.newInstance(i, mWorkoutRowList.get(i));
-                    dialog.setTargetFragment(NewWorkoutPlanFragment.this, REQ_WORKOUT_PLAN);
-                    dialog.show(getFragmentManager(), "edit");
-                }
+            editBtn.setOnClickListener(view -> {
+                AddEditWorkoutPlanDialog dialog = AddEditWorkoutPlanDialog.newInstance(i, mWorkoutRowList.get(i));
+                dialog.setTargetFragment(NewWorkoutPlanFragment.this, REQ_WORKOUT_PLAN);
+                dialog.show(getFragmentManager(), "edit");
             });
             return v;
         }

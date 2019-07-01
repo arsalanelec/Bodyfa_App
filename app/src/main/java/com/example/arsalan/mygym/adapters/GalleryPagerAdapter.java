@@ -15,7 +15,7 @@ import com.example.arsalan.mygym.models.MyConst;
 import java.util.List;
 
 public class GalleryPagerAdapter extends PagerAdapter {
-    List<GalleryItem> galleryItemList;
+    final List<GalleryItem> galleryItemList;
 
     public GalleryPagerAdapter(List<GalleryItem> galleryItemList) {
         this.galleryItemList = galleryItemList;

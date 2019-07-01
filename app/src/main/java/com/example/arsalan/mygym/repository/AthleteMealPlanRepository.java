@@ -84,31 +84,26 @@ public class AthleteMealPlanRepository {
         if (!mealPlanExist) {
             Log.d("refreshMealPlanList", "!mealPlanExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetMealPlanList> call = apiService.getAthleteMealPlanList(token, userId);
+                try {
+                    Response<RetMealPlanList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshMealPlanList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetMealPlanList> call = apiService.getAthleteMealPlanList(token, userId);
-                    try {
-                        Response<RetMealPlanList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshMealPlanList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
+                        Log.d("refreshMealPlanList", "run: mealPlanDao save:" + mealPlanDao.saveList(response.body().getRecords()).length);
 
-                            Log.d("refreshMealPlanList", "run: mealPlanDao save:" + mealPlanDao.saveList(response.body().getRecords()).length);
+                    } else {
+                        Log.d("refreshMealPlanList", "run: response.error");
 
-                        } else {
-                            Log.d("refreshMealPlanList", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 

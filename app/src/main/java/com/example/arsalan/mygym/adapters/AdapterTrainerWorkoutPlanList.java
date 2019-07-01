@@ -15,10 +15,10 @@ import com.example.arsalan.mygym.R;
 import java.util.List;
 
 public class AdapterTrainerWorkoutPlanList extends BaseAdapter {
-    List<WorkoutPlan> mWorkoutPlanList;
+    private final List<WorkoutPlan> mWorkoutPlanList;
 
-    Context mContext;
-    OnItemClickListener mListener;
+    private final Context mContext;
+    private final OnItemClickListener mListener;
 
     public AdapterTrainerWorkoutPlanList(Context context, List<WorkoutPlan> workoutPlans, OnItemClickListener onItemClickListener) {
         this.mWorkoutPlanList = workoutPlans;
@@ -62,36 +62,15 @@ public class AdapterTrainerWorkoutPlanList extends BaseAdapter {
         titleTV.setText(mWorkoutPlanList.get(i).getTitle());
         dateTV.setText(mWorkoutPlanList.get(i).getDate());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemShowClick(getItem(i),i);
-            }
-        });
+        view.setOnClickListener(view14 -> mListener.onItemShowClick(getItem(i),i));
 
         Button deleteBtn = view.findViewById(R.id.btnDelete);
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemDeleteClick(getItem(i),i);
-            }
-        });
+        deleteBtn.setOnClickListener(view13 -> mListener.onItemDeleteClick(getItem(i),i));
 
         Button editBtn = view.findViewById(R.id.btnShowTutorial);
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemEditClick(getItem(i),i);
-
-            }
-        });
+        editBtn.setOnClickListener(view12 -> mListener.onItemEditClick(getItem(i),i));
         Button sendBtn = view.findViewById(R.id.btnSend);
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemSendClick(getItem(i),i);
-            }
-        });
+        sendBtn.setOnClickListener(view1 -> mListener.onItemSendClick(getItem(i),i));
         return view;
     }
     public interface OnItemClickListener {

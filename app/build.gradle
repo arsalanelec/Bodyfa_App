@@ -10,8 +10,8 @@ android {
         applicationId "com.example.arsalan.mygym"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 8
-        versionName "2.1.19-beta"
+        versionCode 9
+        versionName "2.2.0-beta"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
     }
@@ -52,7 +52,7 @@ configurations {
 }
 
 dependencies {
-    def lifecycle_version = '2.1.0-beta01'
+    def lifecycle_version = '2.2.0-alpha01'
     def room_version = '2.1.0-beta01'
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
@@ -67,7 +67,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'com.facebook.fresco:fresco:1.5.0'
+    implementation 'com.facebook.fresco:fresco:1.10.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'

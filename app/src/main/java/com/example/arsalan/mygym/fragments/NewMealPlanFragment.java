@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.example.arsalan.mygym.dialog.SelectTrainerJoinTimeDialog;
 import com.example.arsalan.mygym.models.MealRow;
 import com.example.arsalan.mygym.R;
 
@@ -90,13 +89,10 @@ public class NewMealPlanFragment extends Fragment {
 
         Button newRowBtn = v.findViewById(R.id.btnNewRow);
         newRowBtn.setVisibility(mIsEditable ? View.VISIBLE : View.GONE);
-        newRowBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMealRowList.add(new MealRow());
-                adapterMeal.notifyDataSetChanged();
+        newRowBtn.setOnClickListener(view -> {
+            mMealRowList.add(new MealRow());
+            adapterMeal.notifyDataSetChanged();
 
-            }
         });
         v.setRotation(180);
         return v;
@@ -126,7 +122,7 @@ public class NewMealPlanFragment extends Fragment {
     }
 
     private class AdapterMealLV extends BaseAdapter {
-        List<MealRow> mealRows;
+        final List<MealRow> mealRows;
 
         public AdapterMealLV(List<MealRow> mealRows) {
             this.mealRows = mealRows;

@@ -59,17 +59,14 @@ public class GalleryActivity extends AppCompatActivity {
         mEditMode = xtras.getBoolean(EXTRA_EDIT_MODE, false);
         mGalleryPager = findViewById(R.id.vp_gallery);
         TabLayout tabLayout = findViewById(R.id.tablayout);
-        mGalleryPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent motionEvent) {
-                if (
-                        motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
-                                v instanceof ViewGroup
-                ) {
-                    ((ViewGroup) v).requestDisallowInterceptTouchEvent(true);
-                }
-                return false;
+        mGalleryPager.setOnTouchListener((v, motionEvent) -> {
+            if (
+                    motionEvent.getAction() == MotionEvent.ACTION_DOWN &&
+                            v instanceof ViewGroup
+            ) {
+                ((ViewGroup) v).requestDisallowInterceptTouchEvent(true);
             }
+            return false;
         });
 
         tabLayout.setupWithViewPager(mGalleryPager);
@@ -104,19 +101,11 @@ public class GalleryActivity extends AppCompatActivity {
             new AlertDialog.Builder(this, R.style.AlertDialogCustom)
                     .setTitle(getString(R.string.remove_photo))
                     .setMessage(getString(R.string.ask_remove_photo))
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            removeFromGallery(mGalleryItems.get(mGalleryPager.getCurrentItem()).getId());
-                        }
+                    .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+                        dialogInterface.dismiss();
+                        removeFromGallery(mGalleryItems.get(mGalleryPager.getCurrentItem()).getId());
                     })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    })
+                    .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.cancel())
                     .create().show();
         }
         return super.onOptionsItemSelected(item);
@@ -154,7 +143,7 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     public class GalleryPagerAdapter extends PagerAdapter {
-        List<GalleryItem> galleryItemList;
+        final List<GalleryItem> galleryItemList;
 
         public GalleryPagerAdapter(List<GalleryItem> galleryItemList) {
             this.galleryItemList = galleryItemList;

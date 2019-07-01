@@ -113,25 +113,19 @@ public class GymListFragment extends Fragment implements Injectable{
 
         sortByCityBtn = v.findViewById(R.id.btnSortByPoints);
         sortByPointsBtn = v.findViewById(R.id.btnSortByCity);
-        sortByCityBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                compoundButton.setEnabled(!b);
-                sortByPointsBtn.setChecked(!b);
-               // getGymWeb(0, b ? 1 : 2);
-                if(viewModel!=null)
-                viewModel.init(b ? 1 : 2);
+        sortByCityBtn.setOnCheckedChangeListener((compoundButton, b) -> {
+            compoundButton.setEnabled(!b);
+            sortByPointsBtn.setChecked(!b);
+           // getGymWeb(0, b ? 1 : 2);
+            if(viewModel!=null)
+            viewModel.init(b ? 1 : 2);
 
 
-            }
         });
-        sortByPointsBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                sortByCityBtn.setChecked(!b);
-                compoundButton.setEnabled(!b);
+        sortByPointsBtn.setOnCheckedChangeListener((compoundButton, b) -> {
+            sortByCityBtn.setChecked(!b);
+            compoundButton.setEnabled(!b);
 
-            }
         });
         waitingFL = v.findViewById(R.id.fl_waiting);
 
@@ -145,7 +139,7 @@ public class GymListFragment extends Fragment implements Injectable{
         viewModel = ViewModelProviders.of(this, factory).get(GymListViewModel.class);
         viewModel.getGymList().observe(this, gymList -> {
             Log.d("onActivityCreated", "observe: ");
-            this.gyms.removeAll(this.gyms);
+            this.gyms.clear();
             this.gyms.addAll(gymList);
             adapter.notifyDataSetChanged();
             waitingFL.setVisibility(View.GONE);
@@ -187,7 +181,7 @@ public class GymListFragment extends Fragment implements Injectable{
             public void onResponse(Call<RetGymList> call, Response<RetGymList> response) {
                 if (response.isSuccessful())
                     Log.d("getNewsWeb", "onResponse: records:" + response.body().getRecordsCount());
-                gyms.removeAll(gyms);
+                gyms.clear();
                 gyms.addAll(response.body().getRecords());
                 adapter.notifyDataSetChanged();
                 waitingFL.setVisibility(View.GONE);

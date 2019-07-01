@@ -858,7 +858,6 @@ string record_video
 string saving_video
 string search_menu_title
 string status_bar_notification_info_overflow
-string video_saved_path
 style ActivityTheme
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light

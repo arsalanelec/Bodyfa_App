@@ -45,30 +45,26 @@ public class NewsListRepository {
     }
 
     private void refreshNewsList(int newsType) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
+        executor.execute(() -> {
 
-                ApiInterface apiService =
-                        ApiClient.getClient().create(ApiInterface.class);
-                Call<RetNewsList> call = apiService.getNewsList(0, 100, newsType, 0);
-                try {
-                    Response<RetNewsList> response = call.execute();
-                    if (response.isSuccessful()) {
-                        Log.d("refreshNewsList", "run: response.isSuccessful type:"+newsType+" cnt:" + response.body().getRecordsCount());
-                        newsHeadDao.deleteByType(newsType);
-                        Log.d("refreshNewsList", "run: newDao save:" + newsHeadDao.saveList(response.body().getRecords()).length);
+            ApiInterface apiService =
+                    ApiClient.getClient().create(ApiInterface.class);
+            Call<RetNewsList> call = apiService.getNewsList(0, 100, newsType, 0);
+            try {
+                Response<RetNewsList> response = call.execute();
+                if (response.isSuccessful()) {
+                    Log.d("refreshNewsList", "run: response.isSuccessful type:"+newsType+" cnt:" + response.body().getRecordsCount());
+                    newsHeadDao.deleteByType(newsType);
+                    Log.d("refreshNewsList", "run: newDao save:" + newsHeadDao.saveList(response.body().getRecords()).length);
 
-                    } else {
-                        Log.d("refreshNewsList", "run: response.error");
+                } else {
+                    Log.d("refreshNewsList", "run: response.error");
 
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 }

@@ -29,7 +29,7 @@ public class TrainerWorkoutPlanReqRepository {
     private final TrainerWorkoutPlanRequestDao planRequestDao;
     private final Executor executor;
     private final Token mToken;
-    private MutableLiveData<Integer> cancelStatus=new MutableLiveData<>();
+    private final MutableLiveData<Integer> cancelStatus=new MutableLiveData<>();
     private static final String TAG = "TrainerWorkoutPlanReqRe";
 
     @Inject
@@ -56,59 +56,51 @@ public class TrainerWorkoutPlanReqRepository {
         return cancelStatus;
     }
     private void refreshList(String token, long id) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
+            executor.execute(() -> {
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetTrainerWorkoutPlanReqList> call = apiService.getTrainerWorkoutPlanRequests(token, id);
-                    try {
-                        Response<RetTrainerWorkoutPlanReqList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            planRequestDao.deleteAll();
-                            Log.d(TAG, "run: ");
-                            Log.d(TAG, "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
-                            Log.d(TAG, "run: newDao save:"+ planRequestDao.saveList(response.body().getRecords()).length);
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetTrainerWorkoutPlanReqList> call = apiService.getTrainerWorkoutPlanRequests(token, id);
+                try {
+                    Response<RetTrainerWorkoutPlanReqList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        planRequestDao.deleteAll();
+                        Log.d(TAG, "run: ");
+                        Log.d(TAG, "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
+                        Log.d(TAG, "run: newDao save:"+ planRequestDao.saveList(response.body().getRecords()).length);
 
-                        } else {
-                            Log.d(TAG, "run: response.error");
+                    } else {
+                        Log.d(TAG, "run: response.error");
 
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
     }
 
     private void cancelWorkoutRequest(String token, long planId){
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
+        executor.execute(() -> {
 
-                ApiInterface apiService =
-                        ApiClient.getClient().create(ApiInterface.class);
-                Call<RetroResult> call = apiService.trainerCancelWorkoutPlanRequest("Bearer "+token, planId);
-                try {
-                    Response<RetroResult> response = call.execute();
-                    if (response.isSuccessful()) {
-                        cancelStatus.postValue(1);
+            ApiInterface apiService =
+                    ApiClient.getClient().create(ApiInterface.class);
+            Call<RetroResult> call = apiService.trainerCancelWorkoutPlanRequest("Bearer "+token, planId);
+            try {
+                Response<RetroResult> response = call.execute();
+                if (response.isSuccessful()) {
+                    cancelStatus.postValue(1);
 
-                        Log.d(TAG, "cancelWorkoutRequest: response.isSuccessful:"+planRequestDao.deleteById(planId));
-                    } else {
-                        Log.d(TAG, "cancelWorkoutRequest: response.error:"+response.raw().toString());
-                        cancelStatus.postValue(-1);
-                    }
-
-                } catch (IOException e) {
+                    Log.d(TAG, "cancelWorkoutRequest: response.isSuccessful:"+planRequestDao.deleteById(planId));
+                } else {
+                    Log.d(TAG, "cancelWorkoutRequest: response.error:"+response.raw().toString());
                     cancelStatus.postValue(-1);
-                    e.printStackTrace();
                 }
-            }
 
+            } catch (IOException e) {
+                cancelStatus.postValue(-1);
+                e.printStackTrace();
+            }
         });
     }
 }

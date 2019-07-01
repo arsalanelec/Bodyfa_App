@@ -72,20 +72,10 @@ public class MessageRoomActivity extends AppCompatActivity {
         mPrivateMessageList = new ArrayList<>();
         adapter = new AdapterPMList(mPrivateMessageList);
         pmListRV.setAdapter(adapter);
-        pmListRV.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v,
-                                       int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (bottom < oldBottom) {
-                    pmListRV.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pmListRV.smoothScrollToPosition(
-                                    0);
-                        }
-                    }, 100);
-                }
+        pmListRV.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom < oldBottom) {
+                pmListRV.postDelayed(() -> pmListRV.smoothScrollToPosition(
+                        0), 100);
             }
         });
         waitingPB = findViewById(R.id.pbWaiting);
@@ -94,12 +84,9 @@ public class MessageRoomActivity extends AppCompatActivity {
         sendMessageET = findViewById(R.id.etSendMessage);
 
         sendBtn = findViewById(R.id.btnSend);
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (sendMessageET.getText().toString().isEmpty()) return;
-                sendMessageWeb(sendMessageET.getText().toString().replace("\n", "").replace("\r", ""));
-            }
+        sendBtn.setOnClickListener(view -> {
+            if (sendMessageET.getText().toString().isEmpty()) return;
+            sendMessageWeb(sendMessageET.getText().toString().replace("\n", "").replace("\r", ""));
         });
 
     }
@@ -141,7 +128,7 @@ public class MessageRoomActivity extends AppCompatActivity {
             public void onResponse(Call<RetPMList> call, Response<RetPMList> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     waitingPB.setVisibility(View.GONE);
-                    mPrivateMessageList.removeAll(mPrivateMessageList);
+                    mPrivateMessageList.clear();
                     mPrivateMessageList.addAll(response.body().getRecords());
                     adapter.notifyDataSetChanged();
                 }
@@ -158,7 +145,7 @@ public class MessageRoomActivity extends AppCompatActivity {
 
 
     private class AdapterPMList extends RecyclerView.Adapter<ViewHolder> {
-        List<PrivateMessage> privateMessageList;
+        final List<PrivateMessage> privateMessageList;
 
         public AdapterPMList(List<PrivateMessage> privateMessageList) {
             this.privateMessageList = privateMessageList;
@@ -167,7 +154,7 @@ public class MessageRoomActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = null;
+            View view ;
             if (viewType == VIEW_TYPE_PM_ME) {
                 view = getLayoutInflater().inflate(R.layout.item_pm_me, parent, false);
             } else {
@@ -205,9 +192,9 @@ public class MessageRoomActivity extends AppCompatActivity {
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
-        TextView messageTV;
+        final TextView messageTV;
         //  TextView dateTV;
-        ImageView thumbImg;
+        final ImageView thumbImg;
 
         public ViewHolder(View itemView) {
             super(itemView);

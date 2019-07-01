@@ -107,24 +107,12 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
         mPlanListView = v.findViewById(R.id.lst_plan);
         mWorkoutPlanList = new ArrayList<>();
 
-        mAdapter = new AdapterAthleteWorkoutPlanList(getContext(), mWorkoutPlanList, new AdapterAthleteWorkoutPlanList.OnItemClickListener() {
-            @Override
-            public void onItemShowClick(WorkoutPlan workoutPlan, int position) {
-                getAthleteWorkoutPlanWeb(workoutPlan.getAthleteWorkoutPlanId(), new OnGetPlanListener() {
-                    @Override
-                    public void onGetPlan(long planId, String title, String body) {
-                        mListener.addEditWorkoutPlan(planId, title, body, false);
-
-                    }
-                });
-
-            }
-        });
+        mAdapter = new AdapterAthleteWorkoutPlanList(getContext(), mWorkoutPlanList, workoutPlan -> getAthleteWorkoutPlanWeb(workoutPlan.getAthleteWorkoutPlanId(), (planId, title1, body) -> mListener.addEditWorkoutPlan(planId, title1, body, false)));
 
         mPlanListView.setAdapter(mAdapter);
         FloatingActionButton addPlanBtn = v.findViewById(R.id.fab_add_plan);
         addPlanBtn.setOnClickListener(b -> {
-            TrainerListDialog dialog = new TrainerListDialog();
+            TrainerListDialog dialog =  TrainerListDialog.newInstance(TrainerListDialog.TYPE_WORKOUT);
             dialog.setTargetFragment(AthleteWorkoutPlanListFragment.this, REQ_SELECT_TRAINER);
             dialog.show(getFragmentManager(), "");
         });
@@ -144,7 +132,7 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
         workoutPlanListViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mUser.getId());
         workoutPlanListViewModel.getWorkoutPlanItemList().observe(this, workoutPlans -> {
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: workoutPlan cnt:" + workoutPlans.size());
-            mWorkoutPlanList.removeAll(mWorkoutPlanList);
+            mWorkoutPlanList.clear();
             mWorkoutPlanList.addAll(workoutPlans);
             mAdapter.notifyDataSetChanged();
             if (workoutPlans.size() > 0) {
@@ -249,9 +237,9 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
     }
 
     private class WorkoutPlanRequestAdapter extends BaseAdapter {
-        List<WorkoutPlanReq> workoutPlanReqList;
+        final List<WorkoutPlanReq> workoutPlanReqList;
 
-        public WorkoutPlanRequestAdapter(List<WorkoutPlanReq> workoutPlanReqList) {
+        WorkoutPlanRequestAdapter(List<WorkoutPlanReq> workoutPlanReqList) {
 
             this.workoutPlanReqList = workoutPlanReqList;
         }

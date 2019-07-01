@@ -12,7 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class HonorViewModel extends ViewModel {
-    private HonorRepository honorRepo;
+    private final HonorRepository honorRepo;
     private LiveData<List<Honor>> honorList;
 
     private MutableLiveData<Integer> honorTypeLD = new MutableLiveData<>();

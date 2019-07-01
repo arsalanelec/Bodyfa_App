@@ -109,7 +109,7 @@ public class MealPlanFragment extends Fragment {
     }
 
     private class AdapterMealLV extends BaseAdapter {
-        List<MealRow> mealRows;
+        final List<MealRow> mealRows;
 
         public AdapterMealLV(List<MealRow> mealRows) {
             this.mealRows = mealRows;

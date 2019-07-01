@@ -44,31 +44,26 @@ public class TutorialVideoListRepository {
         if (!tutorialVideoExist) {
             Log.d("refreshTutorialVidList", "!tutorialVideoExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetTutorialVideoList> call = apiService.getTutorialVideoList(0, 100, subCatId);
+                try {
+                    Response<RetTutorialVideoList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshTutorialVidList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetTutorialVideoList> call = apiService.getTutorialVideoList(0, 100, subCatId);
-                    try {
-                        Response<RetTutorialVideoList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshTutorialVidList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
+                        Log.d("refreshTutorialVidList", "run: newDao save:" + tutorialVideoDao.saveList(response.body().getRecords()).length);
 
-                            Log.d("refreshTutorialVidList", "run: newDao save:" + tutorialVideoDao.saveList(response.body().getRecords()).length);
+                    } else {
+                        Log.d("refreshTutorialVidList", "run: response.error");
 
-                        } else {
-                            Log.d("refreshTutorialVidList", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 

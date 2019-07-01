@@ -29,8 +29,8 @@ import static com.example.arsalan.mygym.models.MyConst.BASE_CONTENT_URL;
  */
 
 public class AdapterGymList extends Adapter<AdapterGymList.VH> {
-    List<Gym> gymList;
-    Activity mActivity;
+    private final List<Gym> gymList;
+    private final Activity mActivity;
 
     public AdapterGymList(Activity activity, List<Gym> gymList) {
         this.gymList = gymList;
@@ -59,22 +59,19 @@ public class AdapterGymList extends Adapter<AdapterGymList.VH> {
         ViewCompat.setTransitionName(h.thumbImg, g.getTitle());
 */
 
-        h.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent();
-                i.setClass(mActivity, ProfileGymActivity.class);
-                i.putExtra(MyKeys.EXTRA_OBJ_GYM, g);
-               /* i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(h.thumbImg));
+        h.itemView.setOnClickListener(view -> {
+            Intent i = new Intent();
+            i.setClass(mActivity, ProfileGymActivity.class);
+            i.putExtra(MyKeys.EXTRA_OBJ_GYM, g);
+           /* i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(h.thumbImg));
 
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        mActivity,
-                        h.thumbImg,
-                        ViewCompat.getTransitionName(h.thumbImg));*/
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    mActivity,
+                    h.thumbImg,
+                    ViewCompat.getTransitionName(h.thumbImg));*/
 
-                //   mActivity.startVideoRecorderActivity(i, options.toBundle());
-                mActivity.startActivity(i);
-            }
+            //   mActivity.startVideoRecorderActivity(i, options.toBundle());
+            mActivity.startActivity(i);
         });
         Log.d("AdapterGymList", "onBindViewHolder: rate:" + g.getRate());
 
@@ -86,13 +83,13 @@ public class AdapterGymList extends Adapter<AdapterGymList.VH> {
     }
 
     class VH extends RecyclerView.ViewHolder {
-        ImageView thumbImg;
-        TextView gymNameTV;
-        TextView addressTV;
-        TextView pointsTV;
-        RatingBar ratingBar;
+        final ImageView thumbImg;
+        final TextView gymNameTV;
+        final TextView addressTV;
+        final TextView pointsTV;
+        final RatingBar ratingBar;
 
-        public VH(View iv) {
+        VH(View iv) {
             super(iv);
             thumbImg = iv.findViewById(R.id.img_thumb);
             gymNameTV = iv.findViewById(R.id.txtName);

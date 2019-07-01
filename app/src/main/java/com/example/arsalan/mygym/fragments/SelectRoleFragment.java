@@ -17,7 +17,7 @@ import com.example.arsalan.mygym.R;
 
 public class SelectRoleFragment extends Fragment {
 
-    private static String ARG_PARAM1="ARG_PARAM1";
+    private static final String ARG_PARAM1="ARG_PARAM1";
     private OnFragmentInteractionListener mListener;
     private EditText mobileET;
     private int selectedIndex;
@@ -55,30 +55,22 @@ public class SelectRoleFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_select_role, container, false);
         RadioGroup radioGroup = v.findViewById(R.id.radioGroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                switch (i) {
-                    case R.id.rbAthlete:
-                        choice= MyKeys.KEY_ROLE_ATHLETE;
-                        return;
-                    case R.id.rbTrainer:
-                        choice = MyKeys.KEY_ROLE_TRAINER;
-                        return;
-                    case R.id.rbGym:
-                        choice = MyKeys.KEY_ROLE_GYM;
-                        return;
-                }
+        radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> {
+            switch (i) {
+                case R.id.rbAthlete:
+                    choice= MyKeys.KEY_ROLE_ATHLETE;
+                    return;
+                case R.id.rbTrainer:
+                    choice = MyKeys.KEY_ROLE_TRAINER;
+                    return;
+                case R.id.rbGym:
+                    choice = MyKeys.KEY_ROLE_GYM;
+                    return;
             }
         });
 
         Button sendBtn = v.findViewById(R.id.btnSend);
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.setRoleWeb(choice,mUser);
-            }
-        });
+        sendBtn.setOnClickListener(view -> mListener.setRoleWeb(choice,mUser));
         return v;
     }
 

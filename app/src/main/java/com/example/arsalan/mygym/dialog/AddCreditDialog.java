@@ -120,7 +120,7 @@ public class AddCreditDialog extends DialogFragment {
         submitBtn.setOnClickListener(b->{
            int amount = 0;
             try {
-                amount = Integer.parseInt(current.toString().replaceAll("[$,.]", ""));
+                amount = Integer.parseInt(current.replaceAll("[$,.]", ""));
             }catch (NumberFormatException e){
                 Log.d(TAG, "onCreateView: Amount is not an integer!");
                 tl.setError(getString(R.string.AMOUNT_IS_WRONG));

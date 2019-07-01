@@ -168,12 +168,12 @@ public class MainActivity extends AppCompatActivity
     @Inject
     Token mToken;
 
-    boolean doubleBackToExitPressedOnce = false;
+    private boolean doubleBackToExitPressedOnce = false;
     private PagerAdapter mGeneratVpga;
     private User mCurrentUser;
     private Trainer mCurrentTrainer;
     private Gym mCurrentGym;
-    private Context mContext;
+    private final Context mContext;
     private int mThemeResId = R.style.AppTheme_NoActionBar;
     private boolean mPrivateView = false;
     private PagerAdapter mPrivateVpa;
@@ -246,12 +246,7 @@ public class MainActivity extends AppCompatActivity
                     .setTitle("اتمام دوره تست")
                     .setMessage("این نسخه از اپلیکیشن جهت تست در اختیار شما قرار گرفته و اکنون دوره تست به اتمام رسیده.\n جهت دریافت نسخه اصلی به نشانی:\n www.BodyFa.ir مراجعه نمایید.\n با تشکر فراوان")
                     .setCancelable(false)
-                    .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            MainActivity.this.finish();
-                        }
-                    })
+                    .setPositiveButton(R.string.accept, (dialogInterface, i) -> MainActivity.this.finish())
                     .create().show();
         }
 
@@ -325,127 +320,113 @@ public class MainActivity extends AppCompatActivity
 
 
         if (mPrivateView) switchBtn.setChecked(true);
-        switchBtn.setOnSwipedListener(new Function0<Unit>() {
-            @Override
-            public Unit invoke() {
-                switchBtn.setEnabled(false);
-                //swap view flag for private/general
-                if (!mPrivateView) {
-                    mPrivateView = true;
-                    mThemeResId = R.style.AppThemePrivate_NoActionBar;
+        switchBtn.setOnSwipedListener(() -> {
+            switchBtn.setEnabled(false);
+            //swap view flag for private/general
+            if (!mPrivateView) {
+                mPrivateView = true;
+                mThemeResId = R.style.AppThemePrivate_NoActionBar;
 
-                } else {
-                    mPrivateView = false;
-                    mThemeResId = R.style.AppTheme_NoActionBar;
+            } else {
+                mPrivateView = false;
+                mThemeResId = R.style.AppTheme_NoActionBar;
 
-                }
-                removeShortcut();
-                addShortcut(mPrivateView);
-                switch (mCurrentUser.getRoleName()) {
-                    case KEY_ROLE_TRAINER: {
-                        if (!mCurrentTrainer.isConfirmed()) {
-                            final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
-                            TextView title = titleView.findViewById(R.id.textView);
-                            title.setText(getString(R.string.incomplete_profile));
-                            final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
-                            TextView bodyText = bodyView.findViewById(R.id.textView);
-                            bodyText.setText(getString(R.string.trainer_incomplete_profile_dialog));
-                            final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
-                                    .setView(bodyView)
-                                    .setCustomTitle(titleView)
-                                    .setPositiveButton(getString(R.string.completing_profile), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int ii) {
-                                            Intent i = new Intent();
-                                            i.setClass(mContext, EditProfileActivity.class);
-                                            i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, MyKeys.KEY_ROLE_TRAINER);
-                                            i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
-                                            startActivity(i);
-                                        }
-                                    })
-                                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                        }
-                                    })
-                                    .create();
-                            dialog.setOnShowListener(dialog1 ->
-                                    switchBtn.setEnabled(true));
-                            dialog.show();
-                        } else {
-                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
-                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
-                            Intent intent = new Intent();
-                            intent.setClass(mContext, MainActivity.class);
-                            intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
-                            intent.putExtra(EXTRA_USER_NAME, mUserName);
-                            intent.putExtra(EXTRA_OBJ_TRAINER, mCurrentTrainer);
-                            finish();
-                            startActivity(intent);
-                            // overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            // overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
-                        }
-                    }
-                    break;
-                    case KEY_ROLE_ATHLETE: {
+            }
+            removeShortcut();
+            addShortcut(mPrivateView);
+            switch (mCurrentUser.getRoleName()) {
+                case KEY_ROLE_TRAINER: {
+                    if (!mCurrentTrainer.isConfirmed()) {
+                        final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
+                        TextView title = titleView.findViewById(R.id.textView);
+                        title.setText(getString(R.string.incomplete_profile));
+                        final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
+                        TextView bodyText = bodyView.findViewById(R.id.textView);
+                        bodyText.setText(getString(R.string.trainer_incomplete_profile_dialog));
+                        final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
+                                .setView(bodyView)
+                                .setCustomTitle(titleView)
+                                .setPositiveButton(getString(R.string.completing_profile), (dialogInterface, ii) -> {
+                                    Intent i = new Intent();
+                                    i.setClass(mContext, EditProfileActivity.class);
+                                    i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, MyKeys.KEY_ROLE_TRAINER);
+                                    i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                                    startActivity(i);
+                                })
+                                .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel())
+                                .create();
+                        dialog.setOnShowListener(dialog1 ->
+                                switchBtn.setEnabled(true));
+                        dialog.show();
+                    } else {
                         PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
                         PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
                         Intent intent = new Intent();
                         intent.setClass(mContext, MainActivity.class);
-                        intent.putExtra(EXTRA_ROLE_CHOICE, mCurrentUser.getRoleName());
+                        intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
                         intent.putExtra(EXTRA_USER_NAME, mUserName);
+                        intent.putExtra(EXTRA_OBJ_TRAINER, mCurrentTrainer);
                         finish();
                         startActivity(intent);
+                        // overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        // overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
                     }
-                    break;
-
-                    case KEY_ROLE_GYM: {
-                        if (!mCurrentGym.isConfirmed()) {
-                            final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
-                            TextView title = titleView.findViewById(R.id.textView);
-                            title.setText(R.string.incomplete_profile);
-                            final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
-                            TextView bodyText = bodyView.findViewById(R.id.textView);
-                            bodyText.setText(getString(R.string.gym_incomplete_profile_dialog));
-                            final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
-                                    .setView(bodyView)
-                                    .setCustomTitle(titleView)
-                                    .setPositiveButton(R.string.completing_profile, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int ii) {
-                                            Intent i = new Intent();
-                                            i.setClass(mContext, EditProfileActivity.class);
-                                            i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
-                                            i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
-                                            i.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
-                                            startActivity(i);
-                                            overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
-                                        }
-                                    })
-                                    .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel())
-                                    .create();
-                            dialog.setOnShowListener(dialog1 ->
-                                    switchBtn.setEnabled(true));
-                            dialog.show();
-                        } else {
-                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
-                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
-                            Intent intent = new Intent();
-                            intent.setClass(mContext, MainActivity.class);
-                            intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
-                            intent.putExtra(EXTRA_USER_NAME, mUserName);
-                            intent.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
-                            finish();
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
-                        }
-                    }
-                    break;
                 }
+                break;
+                case KEY_ROLE_ATHLETE: {
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, MainActivity.class);
+                    intent.putExtra(EXTRA_ROLE_CHOICE, mCurrentUser.getRoleName());
+                    intent.putExtra(EXTRA_USER_NAME, mUserName);
+                    finish();
+                    startActivity(intent);
+                }
+                break;
 
-                return null;
+                case KEY_ROLE_GYM: {
+                    if (!mCurrentGym.isConfirmed()) {
+                        final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
+                        TextView title = titleView.findViewById(R.id.textView);
+                        title.setText(R.string.incomplete_profile);
+                        final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
+                        TextView bodyText = bodyView.findViewById(R.id.textView);
+                        bodyText.setText(getString(R.string.gym_incomplete_profile_dialog));
+                        final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
+                                .setView(bodyView)
+                                .setCustomTitle(titleView)
+                                .setPositiveButton(R.string.completing_profile, (dialogInterface, ii) -> {
+                                    Intent i = new Intent();
+                                    i.setClass(mContext, EditProfileActivity.class);
+                                    i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
+                                    i.putExtra(EXTRA_OBJ_USER, mCurrentUser);
+                                    i.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
+                                    startActivity(i);
+                                    overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+                                })
+                                .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel())
+                                .create();
+                        dialog.setOnShowListener(dialog1 ->
+                                switchBtn.setEnabled(true));
+                        dialog.show();
+                    } else {
+                        PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                        PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+                        Intent intent = new Intent();
+                        intent.setClass(mContext, MainActivity.class);
+                        intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
+                        intent.putExtra(EXTRA_USER_NAME, mUserName);
+                        intent.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
+                        finish();
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+                    }
+                }
+                break;
             }
+
+            return null;
         });
 
 
@@ -453,12 +434,9 @@ public class MainActivity extends AppCompatActivity
         //check and choose current view pager
 
 
-        navigationView.getHeaderView(0).findViewById(R.id.btnAddCredit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), mCredit.getCredit());
-                dialog.show(getSupportFragmentManager(), "");
-            }
+        navigationView.getHeaderView(0).findViewById(R.id.btnAddCredit).setOnClickListener(v -> {
+            AddCreditDialog dialog = AddCreditDialog.newInstance(mCurrentUser.getId(), mCredit.getCredit());
+            dialog.show(getSupportFragmentManager(), "");
         });
         try {
             int versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
@@ -469,7 +447,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void checkUpdate(String token, long version) {
+    private void checkUpdate(String token, long version) {
         final int STATUS_NO_UPDATE = 0;
         final int STATUS_NEW_UPDATE = 1;
         final int STATUS_FORCE_UPDATE = 2;
@@ -501,12 +479,9 @@ public class MainActivity extends AppCompatActivity
                                     dialogInterface.dismiss();
                                     ProgressDialog dialog = new ProgressDialog(MainActivity.this);
                                     dialog.setTitle(R.string.waiting_for_update);
-                                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.dismiss();
-                                            MainActivity.this.finish();
-                                        }
+                                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel), (dialogInterface1, i1) -> {
+                                        dialogInterface1.dismiss();
+                                        MainActivity.this.finish();
                                     });
 
                                     dialog.setCancelable(false);
@@ -721,13 +696,7 @@ public class MainActivity extends AppCompatActivity
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(mContext, R.string.press_back_exit, Toast.LENGTH_SHORT).show();
 
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    doubleBackToExitPressedOnce = false;
-                }
-            }, 2000);
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
         }
     }
 
@@ -924,7 +893,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void setLocale(String localeName) {
+    private void setLocale(String localeName) {
         Locale myLocale = new Locale(localeName);
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
@@ -942,10 +911,6 @@ public class MainActivity extends AppCompatActivity
         return dispatchingAndroidInjector;
     }
 
-    @Override
-    public void onWorkoutPlanCancelRequest(long planId) {
-
-    }
 
     @Override
     public LiveData<Integer> requestWorkoutPlanFromWeb(long trainedId, String title, String description, int amount) {
@@ -1001,7 +966,7 @@ public class MainActivity extends AppCompatActivity
         private final String[] titles = {getString(R.string.dashboard), getString(R.string.news), getString(R.string.tutorials), getString(R.string.trainers)};//, getString(R.string.gyms)};
 
 
-        public ViewPagerOmoomiAdapter(FragmentManager fm) {
+        ViewPagerOmoomiAdapter(FragmentManager fm) {
             super(fm);
 
         }

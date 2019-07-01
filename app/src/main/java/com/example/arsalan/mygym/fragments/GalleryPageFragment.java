@@ -1,7 +1,6 @@
 package com.example.arsalan.mygym.fragments;
 
 
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;

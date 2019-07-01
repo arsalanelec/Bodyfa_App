@@ -45,7 +45,7 @@ public class MyAthleteListDialog extends DialogFragment implements Injectable {
     private static final String ARG_PLAN_ID = "param4";
 
 
-    private List<TrainerAthlete> mAthleteList=new ArrayList<>();
+    private final List<TrainerAthlete> mAthleteList=new ArrayList<>();
     private OnFragmentInteractionListener mListener;
     private AdapterAthletesDialog mAdapter;
 
@@ -99,29 +99,26 @@ public class MyAthleteListDialog extends DialogFragment implements Injectable {
         athleteCnt.setVisibility(View.INVISIBLE);
 
         RecyclerView rv = v.findViewById(R.id.rv_trainers);
-        mAdapter = new AdapterAthletesDialog(mAthleteList, new AdapterAthletesDialog.OnItemClickListener() {
-            @Override
-            public void onItemClick(TrainerAthlete athlete, View view) {
-                Intent intent = new Intent();
-                intent.putExtra(MyKeys.EXTRA_ATHLETE_ID, athlete.getId());
-                intent.putExtra(MyKeys.EXTRA_PLAN_ID, mPlanId);
-                intent.putExtra(MyKeys.EXTRA_PLAN_TITLE, mPlanTitle);
-                intent.putExtra(MyKeys.EXTRA_PLAN_BODY, mPlanBody);
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-                dismiss();
+        mAdapter = new AdapterAthletesDialog(mAthleteList, athlete -> {
+            Intent intent = new Intent();
+            intent.putExtra(MyKeys.EXTRA_ATHLETE_ID, athlete.getId());
+            intent.putExtra(MyKeys.EXTRA_PLAN_ID, mPlanId);
+            intent.putExtra(MyKeys.EXTRA_PLAN_TITLE, mPlanTitle);
+            intent.putExtra(MyKeys.EXTRA_PLAN_BODY, mPlanBody);
+            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+            dismiss();
 //                mListener.onAthleteSelected(athlete);
-                /*Intent i = new Intent();
-                i.setClass(getActivity(), ProfileTrainerActivity.class);
-                i.putExtra(EXTRA_PARCLABLE_OBJ, trainer);
-                i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(view));
+            /*Intent i = new Intent();
+            i.setClass(getActivity(), ProfileTrainerActivity.class);
+            i.putExtra(EXTRA_PARCLABLE_OBJ, trainer);
+            i.putExtra(EXTRA_IMAGE_TRANSITION_NAME, ViewCompat.getTransitionName(view));
 
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        view,
-                        ViewCompat.getTransitionName(view));
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    getActivity(),
+                    view,
+                    ViewCompat.getTransitionName(view));
 
-                startVideoRecorderActivity(i, options.toBundle());*/
-            }
+            startVideoRecorderActivity(i, options.toBundle());*/
         });
         waitingFL = v.findViewById(R.id.fl_waiting);
         rv.setAdapter(mAdapter);
@@ -136,7 +133,7 @@ public class MyAthleteListDialog extends DialogFragment implements Injectable {
         acceptedAthleteListViewModel.init( mCurrentTrainer.getId(),true);
         acceptedAthleteListViewModel.getAthleteList().observe(this, userList -> {
             Log.d(getClass().getSimpleName(), "onActivityCreated observe: mealPlans cnt:" + userList.size());
-            mAthleteList.removeAll(mAthleteList);
+            mAthleteList.clear();
             mAthleteList.addAll(userList);
             athleteCnt.setText(getString(R.string.athlete_count, userList.size()));
             athleteCnt.setVisibility(View.VISIBLE);

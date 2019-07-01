@@ -66,22 +66,14 @@ public class TrainerWorkoutPlanListDialog extends DialogFragment {
                 @Override
                 public void onItemDeleteClick(final WorkoutPlan workoutPlan, final int position) {
                     new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom).setMessage(getString(R.string.ask_remove_plan))
-                            .setPositiveButton(getString(R.string.remove), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int ii) {
-                                    dialogInterface.dismiss();
-                                    Intent intent = new Intent();
-                                    intent.putExtra(MyKeys.EXTRA_PLAN_ID, workoutPlan.getTrainerWorkoutPlanId());
-                                    getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_DELETE, intent);
-                                    adapter.removeItem(position);
-                                }
+                            .setPositiveButton(getString(R.string.remove), (dialogInterface, ii) -> {
+                                dialogInterface.dismiss();
+                                Intent intent = new Intent();
+                                intent.putExtra(MyKeys.EXTRA_PLAN_ID, workoutPlan.getTrainerWorkoutPlanId());
+                                getTargetFragment().onActivityResult(getTargetRequestCode(), MyKeys.RESULT_DELETE, intent);
+                                adapter.removeItem(position);
                             })
-                            .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.cancel();
-                                }
-                            }).show();
+                            .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel()).show();
                 }
 
                 @Override

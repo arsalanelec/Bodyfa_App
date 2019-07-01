@@ -1,7 +1,5 @@
 package com.example.arsalan.mygym.models;
 
-import android.util.Log;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.text.DecimalFormat;

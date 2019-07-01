@@ -13,10 +13,10 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 public class TransactionsViewModel extends ViewModel {
-    private TransactionsRepository repository;
-    private LiveData<List<Transaction>> transactionListLd;
+    private final TransactionsRepository repository;
+    private final LiveData<List<Transaction>> transactionListLd;
 
-    private MutableLiveData<Long> trainerIdLD = new MutableLiveData<>();
+    private final MutableLiveData<Long> trainerIdLD = new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public TransactionsViewModel(TransactionsRepository repository) {

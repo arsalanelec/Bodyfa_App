@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TrainerWorkoutPlanReqVm extends ViewModel {
-    TrainerWorkoutPlanReqRepository mRepository;
+    final TrainerWorkoutPlanReqRepository mRepository;
     LiveData<List<WorkoutPlanReq>> mWorkoutPlanListLv;
 
 

@@ -16,7 +16,6 @@
 
 package com.example.arsalan.mygym.di;
 
-import com.example.arsalan.mygym.activities.MainActivity;
 import com.example.arsalan.mygym.activities.ProfileTrainerActivity;
 
 import dagger.Module;

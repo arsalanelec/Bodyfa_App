@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.arsalan.mygym.models.DownloadStatus;
 
-public class DownloadStatusVM extends ViewModel {
-    MutableLiveData<DownloadStatus> mutableLiveData;
+class DownloadStatusVM extends ViewModel {
+    private MutableLiveData<DownloadStatus> mutableLiveData;
     public void init(){
         mutableLiveData = new MutableLiveData<>();
     }

@@ -45,31 +45,26 @@ public class TrainerListRepository {
     }
 
     private void refreshTrainerListByCity(int cityId) {
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetTrainerList> call = apiService.getTrainerList(0, 100,0, cityId, 1);
+                try {
+                    Response<RetTrainerList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshTrainerListCity", "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
+                        trainerDao.deleteAll();
+                        Log.d("refreshTrainerListCity", "run: TrainerDao save:"+ trainerDao.saveList(response.body().getRecords()).length);
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetTrainerList> call = apiService.getTrainerList(0, 100,0, cityId, 1);
-                    try {
-                        Response<RetTrainerList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshTrainerListCity", "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
-                            trainerDao.deleteAll();
-                            Log.d("refreshTrainerListCity", "run: TrainerDao save:"+ trainerDao.saveList(response.body().getRecords()).length);
+                    } else {
+                        Log.d("refreshTrainerListCity", "run: response.error");
 
-                        } else {
-                            Log.d("refreshTrainerListCity", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
 
     }
@@ -78,29 +73,24 @@ public class TrainerListRepository {
       //  if (!trainerExist) {
 
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetTrainer> call = apiService.getTrainerDetail(trainerId);
+                try {
+                    Response<RetTrainer> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshTrainerListById", "run: newDao save:" + trainerDao.save(response.body().getRecord()));
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetTrainer> call = apiService.getTrainerDetail(trainerId);
-                    try {
-                        Response<RetTrainer> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshTrainerListById", "run: newDao save:" + trainerDao.save(response.body().getRecord()));
+                    } else {
+                        Log.d("refreshTrainerListById", "run: response.error");
 
-                        } else {
-                            Log.d("refreshTrainerListById", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 

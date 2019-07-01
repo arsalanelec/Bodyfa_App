@@ -17,7 +17,6 @@
 package com.example.arsalan.mygym.di;
 
 import com.example.arsalan.mygym.activities.ChatListActivity;
-import com.example.arsalan.mygym.activities.MainActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

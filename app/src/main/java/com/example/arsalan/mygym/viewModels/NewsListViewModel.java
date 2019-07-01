@@ -13,10 +13,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class NewsListViewModel extends ViewModel {
-    private NewsListRepository newsRepo;
-    private LiveData<List<NewsHead>> newsList;
+    private final NewsListRepository newsRepo;
+    private final LiveData<List<NewsHead>> newsList;
 
-    private MutableLiveData<NewsMapSource> newsSource =new MutableLiveData<>();
+    private final MutableLiveData<NewsMapSource> newsSource =new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public NewsListViewModel(NewsListRepository newRepo) {
@@ -33,8 +33,8 @@ public class NewsListViewModel extends ViewModel {
     }
 
     private class NewsMapSource{
-        long publisherId;
-        int newsType;
+        final long publisherId;
+        final int newsType;
 
         public NewsMapSource(long publisherId, int newsType) {
             this.publisherId = publisherId;

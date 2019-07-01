@@ -6,7 +6,6 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="title_activity_login">ثبت نام</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
@@ -18,7 +17,6 @@
     <string name="not_registered_yet">هنوز در بادیفا ثبت نام نکرده اید؟</string>
     <string name="register">ثبت نام</string>
     <string name="user_account">حساب کاربری</string>
-    <string name="register_in_bodyfa">عضویت در بادیفا</string>
     <string name="agree_licence">شرایط را خوانده و قوانین را قبول دارم</string>
     <string name="foodNews">اخبار تغذیه</string>
     <string name="fitnessNews">اخبار ورزشی</string>
@@ -28,72 +26,28 @@
     <string name="by_city">بر اساس شهر</string>
     <string name="title_activity_athlete_main">AthleteMainActivity</string>
     <string name="show">نمایش</string>
-    <string name="vip">اختصاصی</string>
     <string name="main_page">صفحه اصلی</string>
     <string name="FAQ">سوالات متداول</string>
     <string name="EULA">سیاست حفظ حریم خصوصی</string>
     <string name="contact_us">تماس با ما</string>
     <string name="title_activity_profile_trained">مربی</string>
     <string name="gym">باشگاه</string>
-    <string name="title_activity_news_detail">شرح خبر</string>
     <string name="title_activity_edit_profile">ویرایش نمایه کاربر</string>
     <string name="user_comments">نظرات کاربران (%1d نظر)</string>
     <string name="title_activity_post_content">ارسال مطلب</string>
     <string name="send_content">ارسال مطلب</string>
     <string name="title_activity_post_tutorial">ارسال ویدیوی آموزشی</string>
     <string name="send_tutorial_video">ارسال ویدیو آموزشی</string>
+    <string name="add_credit">+افزایش اعتبار</string>
+    <string name="AMOUNT_IS_WRONG">مقدار وارد شده باید بیش از 1000 ریال باشد.</string>
+    <string name="PAYMENT_SUCCESS">پرداخت با موفقیت انجام شد!</string>
+    <string name="PAYMENT_FAIL">پرداخت انجام نشد!</string>
+    <string name="edited_successfully">ویرایش با موفقیت انجام شد.</string>
 
 
-    <string name="audio_bitrate">Audio Bitrate (bytes/s)</string>
-    <string name="audio_channel_count">Audio Channel Count</string>
-    <string name="audio_codec">Audio Codec</string>
-    <string name="audio_options">Audio Options</string>
-    <string name="audio_sample_rate">Audio Sample Rate</string>
-    <string name="audio_sample_rate_hz">Audio Sample Rate (Hz)</string>
-    <string name="can_crop_video">Can crop video</string>
-    <string name="can_pad_video">Can pad video</string>
-    <string name="can_upscale_video">Can upscale video</string>
-    <string name="delete_all">Delete All</string>
-    <string name="delete_all_video_files">Are you sure you want to delete all video files?</string>
-    <string name="delete_video_file">Are you sure you want to delete the video file?</string>
     <string name="error">خطا</string>
-    <string name="error_value_is_empty">Value is empty</string>
-    <string name="error_value_is_negative">Value is negative</string>
-    <string name="error_value_is_not_a_number">Value is not a number</string>
-    <string name="error_value_is_zero">Value is zero</string>
-    <string name="launch_video_recorder">Launch Video Recorder</string>
-    <string name="max_file_size">Max file size (MB)</string>
-    <string name="max_recording_time">Max recording (s)</string>
-    <string name="min_recording_time">Min recording (s)</string>
     <string name="ok">تایید</string>
-    <string name="output_format">Output Format</string>
-    <string name="recording">Recording</string>
-    <string name="recording_options">Recording Options</string>
-    <string name="results">Results</string>
-    <string name="success">Success</string>
-    <string name="thumbnail_preview">Thumbnail Preview</string>
-    <string name="video_bitrate">Video Bitrate</string>
-    <string name="video_bitrate_bytes">Video Bitrate (bytes/s)</string>
-    <string name="video_camera_facing">Video Camera Facing</string>
-    <string name="video_codec">Video Codec</string>
-    <string name="video_date">Video Date</string>
-    <string name="video_file_format">Video File Format</string>
-    <string name="video_file_size">Video File Size</string>
-    <string name="video_frames_per_second">Video Frames Per Second</string>
-    <string name="video_frame_rate">Video Frame Rate</string>
-    <string name="video_height">Video Height</string>
-    <string name="video_height_px">Video Height (px)</string>
-    <string name="video_length">Video Length</string>
-    <string name="video_options">Video Options</string>
-    <string name="video_scale_direction">Video Scale Direction</string>
-    <string name="video_scale_fit">Video Scale Fit</string>
-    <string name="video_width">Video Width</string>
-    <string name="video_width_px">Video Width (px)</string>
-    <string name="thumbnail">Thumbnail</string>
-    <string name="thumbnail_file_size">Thumbnail File Size</string>
-    <string name="unknown">Unknown</string>
     <string name="enter_mobile">شماره موبایل خود را وارد نمایید:</string>
-    <string name="sendActivationCode">ارسال کد اعتبار سنجی</string>
     <string name="registerInBodyfa">ثبت نام در بادیفا</string>
 
     <string name="title_activity_fullscreen_video">نمایش ویدیو</string>
@@ -101,9 +55,7 @@
     <string name="enterReceivedCode">کد دریافتی از طریق پیامک را وارد نمایید:</string>
     <string name="send">ارسال</string>
     <string name="edit">ویرایش</string>
-    <string name="trainerProfile">پروفایل مربی</string>
     <string name="likedCount"> %d پسند شده</string>
-    <string name="gymProfile">پروفایل باشگاه</string>
     <string name="athlete_count">تعداد ورزشکاران: %d نفر</string>
     <string name="getting_user_info">دریافت مشخصات کاربری لطفا چند لحظه منتظر بمانید…</string>
     <string name="wrong_username_password">نام کاربری و یا رمز ورود اشتباه است!</string>
@@ -150,10 +102,7 @@
     <string name="workout_plan_list">فهرست برنامه های تمرینی:</string>
     <string name="remove">حذف</string>
     <string name="ask_remove_plan">برنامه حذف شود؟</string>
-    <string name="receiving_meal_plan_list">در حال دریافت لیست برنامه های غذایی...</string>
-    <string name="receiving_workout_plan_list">در حال دریافت لیست برنامه های تمرینی...</string>
     <string name="receiving_meal_plan">در حال دریافت برنامه غذایی...</string>
-    <string name="receiving_workout_plan">در حال دریافت برنامه تمرینی...</string>
     <string name="removing_meal_plan">در حال حذف برنامه غذایی...</string>
     <string name="removing_workout_plan">در حال حذف برنامه تمرینی...</string>
     <string name="sending_plan">در حال ارسال برنامه...</string>
@@ -191,15 +140,8 @@
     <string name="trainer_profile">پروفایل مربی</string>
     <string name="medals">مدال ها و مقام ها</string>
     <string name="gym_profile">پروفایل باشگاه</string>
-    <string name="general">عمومی</string>
-    <string name="home">خانه</string>
-    <string name="newsHead">اخبار ورزشی و تغذیه</string>
-    <string name="training_tutorial">آموزش حرکات</string>
     <string name="trainers">قهرمان ها</string>
-    <string name="gyms">باشگاه ها</string>
-    <string name="my_dashboard">داشبورد من</string>
     <string name="my_gym">باشگاه من</string>
-    <string name="my_trainer">مربی من</string>
     <string name="meal_plan">برنامه غذایی</string>
     <string name="workout_plan">برنامه تمرینی</string>
     <string name="messages">پیام ها</string>
@@ -208,7 +150,6 @@
     <string name="plans">برنامه ها</string>
     <string name="orders">سفارشات</string>
     <string name="transactions">تراکنش ها</string>
-    <string name="workout_list">لیست حرکات</string>
     <string name="complete_your_profile">لطفا مشخصات خود را از طریق منوی \"ویرایش نمایه کاربر\" تکمیل کنید</string>
     <string name="error_in_user_info">ایراد در مشخصات ورود!</string>
     <string name="cant_access_server">دسترسی به سرور امکان پذیر نیست. لطفا مجددا تلاش کنید!</string>
@@ -218,7 +159,6 @@
     <string name="trainer_incomplete_profile_dialog">حساب کاربری شما فعال نیست. لطفا از منو وارد \"پروفایل مربی\" شوید و موارد خواسته شده را تکمیل و ارسال نمایید و منتظر تایید مدیریت بمانید.</string>
     <string name="completing_profile">تکمیل اطلاعات</string>
     <string name="gym_incomplete_profile_dialog">حساب کاربری شما فعال نیست. لطفا از منو وارد \"پروفایل باشگاه\" شوید و موارد خواسته شده را تکمیل و ارسال نمایید و منتظر تایید مدیریت بمانید.</string>
-    <string name="meal_and_workout_news">اخبار ورزشی و تغذیه</string>
     <string name="tutorials">آموزش ها</string>
     <string name="txt_request_workout_plan_description">وزن:%dkg قد:%dcm دور شکم:%dcm گروه خونی:%s</string>
     <string name="BODYFA_EULA">شرایط و ضوابط
@@ -282,9 +222,6 @@
     <string name="gym_address_hint">آدرس باشگاه…</string>
     <string name="phone_1">تلفن 1</string>
     <string name="phone_2">تلفن 2</string>
-    <string name="monthly_fee">شهریه ماهیانه:</string>
-    <string name="in_rial">به ریال</string>
-    <string name="half_month_fee">شهریه یک روز در میان:</string>
     <string name="gym_feature">امکانات باشگاه:</string>
     <string name="extra_desctiption">توضیحات تکمیلی:</string>
     <string name="extra_description_hint">توضیحات باشگاه…</string>
@@ -302,18 +239,17 @@
     <string name="female">خانم</string>
     <string name="male">آقای</string>
     <string name="change_lang">تغییر زبان</string>
-    <string name="from">از</string>
     <string name="add_new_news">افزودن پست جدید</string>
     <string name="no_data_to_show">داده ای برای نمایش وجود ندارد!</string>
     <string name="submit">ارسال</string>
     <string name="send_to">ارسال به…</string>
     <string name="done">انجام</string>
-    <string name="price1">قیمت:</string>
     <string name="rial">ریال</string>
     <string name="order">سفارش</string>
     <string name="join">عضویت</string>
     <string name="order_join">سفارش عضویت…</string>
     <string name="priceInRial">%,d ریال</string>
+    <string name="medal_photo_is_empty">تصویر مقام رسمی فدراسیون خالی میباشد. لطفا تصویر مدرک خود را بارگذاری نمایید.</string>
 
     <string name="oneDayOrder">یک روز %,d ریال</string>
     <string name="orderOneWeek">یک هفته %,d ریال</string>
@@ -321,7 +257,6 @@
     <string name="orderHalfMonth">پانزده روز %,d ریال</string>
     <string name="orderMonthly">یک ماه %,d ریال</string>
     <string name="request_workout_plan">درخواست برنامه حرکتی</string>
-    <string name="field_cant_empty">این جایگاه نمی تواند خالی باشد.</string>
     <string name="balance_not_enough">موجودی کافی نیست</string>
     <string name="please_add_balance">لطفا اعتبار حساب خود را افزایش دهید.</string>
     <string name="your_balance_is">موجودی شما: %,d ریال</string>

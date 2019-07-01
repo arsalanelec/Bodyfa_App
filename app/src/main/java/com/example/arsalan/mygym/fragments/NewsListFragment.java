@@ -89,16 +89,13 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         newsListViewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel.class);
-        newsListViewModel.getNewsList().observe(this, new Observer<List<NewsHead>>() {
-            @Override
-            public void onChanged(@Nullable List<NewsHead> newNewsList) {
-                Log.d("NewsListViewModel", "observe: cnt:"+newNewsList.size());
-                newsList.clear();
-                newsList.addAll(newNewsList);
-                adapter.notifyDataSetChanged();
-                waitingFL.setVisibility(View.GONE);
-                mSwipeRefresh.setRefreshing(false);
-            }
+        newsListViewModel.getNewsList().observe(this, newNewsList -> {
+            Log.d("NewsListViewModel", "observe: cnt:"+newNewsList.size());
+            newsList.clear();
+            newsList.addAll(newNewsList);
+            adapter.notifyDataSetChanged();
+            waitingFL.setVisibility(View.GONE);
+            mSwipeRefresh.setRefreshing(false);
         });
         newsListViewModel.init(0,mNewsType);
 
@@ -115,7 +112,7 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
         /*for (int i = 0; i < 20; i++)
             newsList.add(new NewsHead());*/
 
-        adapter = new AdapterNews(newsList,this::onNewsHeadClick);
+        adapter = new AdapterNews(newsList, this);
         newsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         // newsRV.setLayoutAnimation(animation);
         newsRV.setAdapter(adapter);
@@ -128,28 +125,22 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
 
 
         //MyWebService.getNewsWeb(0, 1, newsList, adapter, getContext(), newsRV, NewsListFragment.this);
-        foodNewsTgl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                compoundButton.setEnabled(!b);
-                fitnessNewsTgl.setChecked(!b);
-                mNewsType=b ? 2 : 1;
-                newsListViewModel.init(0,mNewsType);
-                mSwipeRefresh.setRefreshing(true);
-                //waitingFL.setVisibility(View.VISIBLE);
+        foodNewsTgl.setOnCheckedChangeListener((compoundButton, b) -> {
+            compoundButton.setEnabled(!b);
+            fitnessNewsTgl.setChecked(!b);
+            mNewsType=b ? 2 : 1;
+            newsListViewModel.init(0,mNewsType);
+            mSwipeRefresh.setRefreshing(true);
+            //waitingFL.setVisibility(View.VISIBLE);
 
-                //   MyWebService.getNewsWeb(0, b ? 1 : 2, newsList, adapter, getContext(), newsRV, NewsListFragment.this);
-            }
+            //   MyWebService.getNewsWeb(0, b ? 1 : 2, newsList, adapter, getContext(), newsRV, NewsListFragment.this);
         });
          detailContainer=v.findViewById(R.id.container);
         detailContainer.setVisibility(View.GONE);
-        fitnessNewsTgl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                foodNewsTgl.setChecked(!b);
-                compoundButton.setEnabled(!b);
-                Log.d(TAG, "fitnessNewsTgl onCheckedChanged: ");
-            }
+        fitnessNewsTgl.setOnCheckedChangeListener((compoundButton, b) -> {
+            foodNewsTgl.setChecked(!b);
+            compoundButton.setEnabled(!b);
+            Log.d(TAG, "fitnessNewsTgl onCheckedChanged: ");
         });
          mSwipeRefresh = v.findViewById(R.id.swipeLay);
         mSwipeRefresh.setOnRefreshListener(this);
@@ -175,18 +166,15 @@ public class NewsListFragment extends Fragment implements WebServiceResultImplem
         super.onResume();
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        getView().setOnKeyListener((v, keyCode, event) -> {
 
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailContainer.getVisibility()==View.VISIBLE){
-                    detailContainer.setVisibility(View.GONE);
-                    //your code
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && detailContainer.getVisibility()==View.VISIBLE){
+                detailContainer.setVisibility(View.GONE);
+                //your code
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
     }
 

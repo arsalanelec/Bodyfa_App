@@ -13,10 +13,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TutorialListViewModel extends ViewModel {
-    private TutorialVideoListRepository tutorialVideoRepo;
-    private LiveData<List<TutorialVideo>> tutorialVideoList;
+    private final TutorialVideoListRepository tutorialVideoRepo;
+    private final LiveData<List<TutorialVideo>> tutorialVideoList;
 
-    private MutableLiveData<Long> tutorialVideoSubCat = new MutableLiveData<>();
+    private final MutableLiveData<Long> tutorialVideoSubCat = new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public TutorialListViewModel(TutorialVideoListRepository tutorialVideoRepo) {

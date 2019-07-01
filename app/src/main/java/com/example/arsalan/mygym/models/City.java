@@ -7,11 +7,11 @@ package com.example.arsalan.mygym.models;
 
 public class City {
 
-    int id;
+    private int id;
 
-    String name;
+    private String name;
 
-    String provinceId;
+    private String provinceId;
 
     public City() {
     }

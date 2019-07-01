@@ -18,24 +18,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.arsalan.interfaces.OnGetPlanFromWeb;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.models.MealPlan;
-import com.example.arsalan.mygym.models.MealPlanDay;
 import com.example.arsalan.mygym.models.RetMealPlan;
-import com.example.arsalan.mygym.models.RetMealPlanList;
-import com.example.arsalan.mygym.models.RetWorkoutPlan;
-import com.example.arsalan.mygym.models.RetWorkoutPlanList;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.WorkoutPlan;
@@ -52,10 +43,7 @@ import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerMealPlanListViewModel;
 import com.example.arsalan.mygym.viewModels.TrainerWorkoutListViewModel;
-import com.example.arsalan.mygym.webservice.MyWebService;
 import com.example.arsalan.room.MealPlanDao;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -137,96 +125,70 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_trainer_plans_tab, container, false);
         LinearLayout newPlaneBtn = v.findViewById(R.id.llNewPlane);
-        newPlaneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NewPlanDialog dialog = new NewPlanDialog();
-                dialog.show(getFragmentManager(), "");
-                // برو به صفحه ایجاد پلن
-            }
+        newPlaneBtn.setOnClickListener(view -> {
+            NewPlanDialog dialog = new NewPlanDialog();
+            dialog.show(getFragmentManager(), "");
+            // برو به صفحه ایجاد پلن
         });
 
         //باز کردن لیست کامل برنامه های غذایی
         LinearLayout mealPlanListLL = v.findViewById(R.id.llOrderMealPlane);
-        mealPlanListLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MealPlanListDialog dialog = MealPlanListDialog.newInstance(mealPlanList);
-                dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_MEAL_PLAN_LIST_DIALOG);
-                dialog.show(getFragmentManager(), "");
-            }
+        mealPlanListLL.setOnClickListener(view -> {
+            MealPlanListDialog dialog = MealPlanListDialog.newInstance(mealPlanList);
+            dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_MEAL_PLAN_LIST_DIALOG);
+            dialog.show(getFragmentManager(), "");
         });
 
         //باز کردن لیست کامل برنامه های تمرینی
         final LinearLayout workoutPlanLL = v.findViewById(R.id.llWokroutPlane);
-        workoutPlanLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TrainerWorkoutPlanListDialog dialog = TrainerWorkoutPlanListDialog.newInstance(workoutPlanList);
-                dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_WORKOUT_PLAN_LIST_DIALOG);
-                dialog.show(getFragmentManager(), "");
-            }
+        workoutPlanLL.setOnClickListener(view -> {
+            TrainerWorkoutPlanListDialog dialog = TrainerWorkoutPlanListDialog.newInstance(workoutPlanList);
+            dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_WORKOUT_PLAN_LIST_DIALOG);
+            dialog.show(getFragmentManager(), "");
         });
         mealPlanListLimited = new ArrayList<>();
         mealPlanList = new ArrayList<>();
 
         adapterMealLVLimited = new AdapterTrainerMealPlanList(getContext(), mealPlanListLimited, new AdapterTrainerMealPlanList.OnItemClickListener() {
             @Override
-            public void onItemEditClick(MealPlan mealPlan, int position) {
+            public void onItemEditClick(MealPlan mealPlan) {
   /*              mealPlanRepository.getMealPlan("Bearer " + ((MyApplication2) getActivity().getApplication()).getCurrentToken().getToken(), mealPlan.getTrainerMealPlanId())
                         .observe(TrainerPlansTabFragment.this, mealPlan1 -> {
                             mListener.addEditMealPlan(mealPlan1.getTrainerMealPlanId(), mealPlan1.getTitle(), mealPlan1.getDescription(), true);
 
                         });*/
-                getTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId(), new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        //ویرایش برنامه
-                        mListener.addEditMealPlan(id, title, body, true);
-                    }
+                getTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId(), (id, title, body) -> {
+                    //ویرایش برنامه
+                    mListener.addEditMealPlan(id, title, body, true);
                 });
             }
 
             @Override
             public void onItemDeleteClick(final MealPlan mealPlan, final int position) {
                 new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom).setMessage(getString(R.string.ask_remove_plan))
-                        .setPositiveButton(getString(R.string.remove), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int ii) {
-                                dialogInterface.dismiss();
-                                removeTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId());
-                                adapterMealLVLimited.removeItem(position);
-                            }
+                        .setPositiveButton(getString(R.string.remove), (dialogInterface, ii) -> {
+                            dialogInterface.dismiss();
+                            removeTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId());
+                            adapterMealLVLimited.removeItem(position);
                         })
-                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).show();
+                        .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel()).show();
             }
 
             @Override
-            public void onItemShowClick(MealPlan mealPlan, int position) {
-                getTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId(), new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        //ویرایش برنامه
-                        mListener.addEditMealPlan(id, title, body, false);
-                    }
+            public void onItemShowClick(MealPlan mealPlan) {
+                getTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId(), (id, title, body) -> {
+                    //ویرایش برنامه
+                    mListener.addEditMealPlan(id, title, body, false);
                 });
 
             }
 
             @Override
-            public void onItemSendClick(MealPlan mealPlan, int position) {
-                getTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId(), new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
-                        dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_MEAL_PLAN);
-                        dialog.show(getFragmentManager(), "");
-                    }
+            public void onItemSendClick(MealPlan mealPlan) {
+                getTrainerMealPlanWeb(mealPlan.getTrainerMealPlanId(), (id, title, body) -> {
+                    MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
+                    dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_MEAL_PLAN);
+                    dialog.show(getFragmentManager(), "");
                 });
 
             }
@@ -242,55 +204,32 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         adapterWorkoutLVLimited = new AdapterTrainerWorkoutPlanList(getContext(), workoutPlanListLimited, new AdapterTrainerWorkoutPlanList.OnItemClickListener() {
             @Override
             public void onItemEditClick(WorkoutPlan workoutPlan, int position) {
-                getTrainerWorkoutPlanWeb(getActivity(), workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        mListener.addEditWorkoutPlan(id, title, body, true);
-
-                    }
-                });
+                getTrainerWorkoutPlanWeb(getActivity(), workoutPlan.getTrainerWorkoutPlanId(), (id, title, body) -> mListener.addEditWorkoutPlan(id, title, body, true));
             }
 
             @Override
             public void onItemDeleteClick(final WorkoutPlan workoutPlan, final int position) {
                 new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom).setMessage(getString(R.string.ask_remove_plan))
-                        .setPositiveButton(getString(R.string.remove), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int ii) {
-                                dialogInterface.dismiss();
-                                removeTrainerWorkoutPlanWeb(workoutPlan.getTrainerWorkoutPlanId());
-                                adapterWorkoutLVLimited.removeItem(position);
-                            }
+                        .setPositiveButton(getString(R.string.remove), (dialogInterface, ii) -> {
+                            dialogInterface.dismiss();
+                            removeTrainerWorkoutPlanWeb(workoutPlan.getTrainerWorkoutPlanId());
+                            adapterWorkoutLVLimited.removeItem(position);
                         })
-                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).show();
+                        .setNegativeButton(getString(R.string.cancel), (dialogInterface, i) -> dialogInterface.cancel()).show();
             }
 
             @Override
             public void onItemShowClick(WorkoutPlan workoutPlan, int position) {
-                getTrainerWorkoutPlanWeb(getActivity(),workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        mListener.addEditWorkoutPlan(id, title, body, false);
-
-                    }
-                });
+                getTrainerWorkoutPlanWeb(getActivity(),workoutPlan.getTrainerWorkoutPlanId(), (id, title, body) -> mListener.addEditWorkoutPlan(id, title, body, false));
 
             }
 
             @Override
             public void onItemSendClick(WorkoutPlan workoutPlan, int position) {
-                getTrainerWorkoutPlanWeb(getActivity(),workoutPlan.getTrainerWorkoutPlanId(), new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
-                        dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_WORKOUT_PLAN);
-                        dialog.show(getFragmentManager(), "");
-                    }
+                getTrainerWorkoutPlanWeb(getActivity(),workoutPlan.getTrainerWorkoutPlanId(), (id, title, body) -> {
+                    MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
+                    dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_WORKOUT_PLAN);
+                    dialog.show(getFragmentManager(), "");
                 });
             }
         });
@@ -310,7 +249,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         mealPlanListViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentTrainer.getId());
         mealPlanListViewModel.getMealPlanItemList().observe(this, mealPlans -> {
             Log.d("onActivityCreated", "observe: ");
-            mealPlanListLimited.removeAll(mealPlanListLimited);
+            mealPlanListLimited.clear();
             int cnt = 0;
             for (MealPlan mealPlan : mealPlans) {
                 if (cnt >= 2) break;
@@ -318,7 +257,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
                 cnt++;
             }
             adapterMealLVLimited.notifyDataSetChanged();
-            mealPlanList.removeAll(mealPlanList);
+            mealPlanList.clear();
             mealPlanList.addAll(mealPlans);
             // waitingFL.setVisibility(View.GONE);
         });
@@ -327,7 +266,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         workoutListViewModel.init("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), mCurrentTrainer.getId());
         workoutListViewModel.getWorkoutPlanItemList().observe(this, newWorkoutPlans -> {
             Log.d("onActivityCreated", "observe: ");
-            workoutPlanListLimited.removeAll(workoutPlanListLimited);
+            workoutPlanListLimited.clear();
             int cnt = 0;
             for (WorkoutPlan plan : newWorkoutPlans) {
                 if (cnt >= 2) break;
@@ -335,7 +274,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
                 cnt++;
             }
             adapterWorkoutLVLimited.notifyDataSetChanged();
-            workoutPlanList.removeAll(workoutPlanList);
+            workoutPlanList.clear();
             workoutPlanList.addAll(newWorkoutPlans);
             // waitingFL.setVisibility(View.GONE);
         });
@@ -387,62 +326,59 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         waitingDialog.setMessage(getString(R.string.receiving_meal_plan));
         waitingDialog.show();
         Executor executor = Executors.newFixedThreadPool(3);
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Call<RetMealPlan> call = apiService.getTrainerMealPlan("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), planId);
-                try {
-                    Response<RetMealPlan> response = call.execute();
-                    if (response.isSuccessful()) {
-                        /*Gson gson = new Gson();
-                        List<MealPlanDay> mealPlanList = gson.fromJson(response.body().getRecord().getDescription(), new TypeToken<List<MealPlanDay>>() {
-                        }.getType());*/
-                        OnGetPlanFromWeb.onGetPlan(planId, response.body().getRecord().getTitle(), response.body().getRecord().getDescription());
-                        mealPlanDao.updateMealPlan(response.body().getRecord());
-                    } else {
-                        MealPlan mealPlan = mealPlanDao.getMealPlanById(planId);
-
-                        OnGetPlanFromWeb.onGetPlan(planId, mealPlan.getTitle(), mealPlan.getDescription());
-                    }
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+        executor.execute(() -> {
+            Call<RetMealPlan> call = apiService.getTrainerMealPlan("Bearer " + ((MyApplication) getActivity().getApplication()).getCurrentToken().getToken(), planId);
+            try {
+                Response<RetMealPlan> response = call.execute();
+                if (response.isSuccessful()) {
+                    /*Gson gson = new Gson();
+                    List<MealPlanDay> mealPlanList = gson.fromJson(response.body().getRecord().getDescription(), new TypeToken<List<MealPlanDay>>() {
+                    }.getType());*/
+                    OnGetPlanFromWeb.onGetPlan(planId, response.body().getRecord().getTitle(), response.body().getRecord().getDescription());
+                    mealPlanDao.updateMealPlan(response.body().getRecord());
+                } else {
                     MealPlan mealPlan = mealPlanDao.getMealPlanById(planId);
 
                     OnGetPlanFromWeb.onGetPlan(planId, mealPlan.getTitle(), mealPlan.getDescription());
-                } finally {
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                MealPlan mealPlan = mealPlanDao.getMealPlanById(planId);
+
+                OnGetPlanFromWeb.onGetPlan(planId, mealPlan.getTitle(), mealPlan.getDescription());
+            } finally {
+                if (waitingDialog.isShowing())
+                    waitingDialog.dismiss();
+            }
+            /*call.enqueue(new Callback<RetMealPlan>() {
+                @Override
+                public void onResponse(Call<RetMealPlan> call, Response<RetMealPlan> response) {
                     if (waitingDialog.isShowing())
                         waitingDialog.dismiss();
-                }
-                /*call.enqueue(new Callback<RetMealPlan>() {
-                    @Override
-                    public void onResponse(Call<RetMealPlan> call, Response<RetMealPlan> response) {
-                        if (waitingDialog.isShowing())
-                            waitingDialog.dismiss();
-                        if (response.isSuccessful()) {
-                            Log.d("getTrainerMealPlanWeb", "onResponse: desc:" + response.body().getRecord().getDescription());
+                    if (response.isSuccessful()) {
+                        Log.d("getTrainerMealPlanWeb", "onResponse: desc:" + response.body().getRecord().getDescription());
 
-                            try {
+                        try {
 
-                                Log.d("getTrainerMealPlanWeb", "onResponse: " + mealPlanList);
+                            Log.d("getTrainerMealPlanWeb", "onResponse: " + mealPlanList);
 
-                            } catch (Exception e) {
-                            }
-                            Log.d("getTrainerMealPlanWeb", "onResponse: planId:" + planId);
-                            //  mealPlanLiveData.setValue(response.body().getRecord());
-
+                        } catch (Exception e) {
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<RetMealPlan> call, Throwable t) {
-                        if (waitingDialog.isShowing())
-                            waitingDialog.dismiss();
+                        Log.d("getTrainerMealPlanWeb", "onResponse: planId:" + planId);
+                        //  mealPlanLiveData.setValue(response.body().getRecord());
 
                     }
-                });*/
-            }
+                }
+
+                @Override
+                public void onFailure(Call<RetMealPlan> call, Throwable t) {
+                    if (waitingDialog.isShowing())
+                        waitingDialog.dismiss();
+
+                }
+            });*/
         });
 
 
@@ -519,65 +455,42 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
         if (requestCode == REQ_MEAL_PLAN_LIST_DIALOG) {
             long planId = data.getLongExtra(MyKeys.EXTRA_PLAN_ID, 0);
             if (resultCode == MyKeys.RESULT_EDIT) {
-                getTrainerMealPlanWeb(planId, new OnGetPlanFromWeb() {
-                            @Override
-                            public void onGetPlan(long id, String title, String body) {
-                                //ویرایش برنامه
-                                mListener.addEditMealPlan(id, title, body, true);
-                            }
-                        }
+                getTrainerMealPlanWeb(planId, (id, title, body) -> {
+                    //ویرایش برنامه
+                    mListener.addEditMealPlan(id, title, body, true);
+                }
                 );
 
 
             } else if (resultCode == MyKeys.RESULT_DELETE) {
                 removeTrainerMealPlanWeb(planId);
             } else if (resultCode == MyKeys.RESULT_SHOW) {
-                getTrainerMealPlanWeb(planId, new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        //ویرایش برنامه
-                        mListener.addEditMealPlan(id, title, body, false);
-                    }
+                getTrainerMealPlanWeb(planId, (id, title, body) -> {
+                    //ویرایش برنامه
+                    mListener.addEditMealPlan(id, title, body, false);
                 });
             } else if (resultCode == MyKeys.RESULT_SEND) {
-                getTrainerMealPlanWeb(planId, new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
-                        dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_MEAL_PLAN);
-                        dialog.show(getFragmentManager(), "");
-                    }
+                getTrainerMealPlanWeb(planId, (id, title, body) -> {
+                    MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
+                    dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_MEAL_PLAN);
+                    dialog.show(getFragmentManager(), "");
                 });
 
             }
         } else if (requestCode == REQ_WORKOUT_PLAN_LIST_DIALOG) {
             long planId = data.getLongExtra(EXTRA_PLAN_ID, 0);
             if (resultCode == MyKeys.RESULT_EDIT) {
-                getTrainerWorkoutPlanWeb(getActivity(),planId, new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        mListener.addEditWorkoutPlan(id, title, body, true);
-
-                    }
-                });
+                getTrainerWorkoutPlanWeb(getActivity(),planId, (id, title, body) -> mListener.addEditWorkoutPlan(id, title, body, true));
             } else if (resultCode == MyKeys.RESULT_DELETE) {
                 removeTrainerWorkoutPlanWeb(planId);
             } else if (resultCode == MyKeys.RESULT_SHOW) {
-                getTrainerWorkoutPlanWeb(getActivity(),planId, new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        mListener.addEditWorkoutPlan(id, title, body, false);
-                    }
-                });
+                getTrainerWorkoutPlanWeb(getActivity(),planId, (id, title, body) -> mListener.addEditWorkoutPlan(id, title, body, false));
 
             } else if (resultCode == MyKeys.RESULT_SEND) {
-                getTrainerWorkoutPlanWeb(getActivity(),planId, new OnGetPlanFromWeb() {
-                    @Override
-                    public void onGetPlan(long id, String title, String body) {
-                        MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
-                        dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_WORKOUT_PLAN);
-                        dialog.show(getFragmentManager(), "");
-                    }
+                getTrainerWorkoutPlanWeb(getActivity(),planId, (id, title, body) -> {
+                    MyAthleteListDialog dialog = MyAthleteListDialog.newInstance(mCurrentTrainer, id, title, body);
+                    dialog.setTargetFragment(TrainerPlansTabFragment.this, REQ_SELECT_USER_WORKOUT_PLAN);
+                    dialog.show(getFragmentManager(), "");
                 });
 
             }

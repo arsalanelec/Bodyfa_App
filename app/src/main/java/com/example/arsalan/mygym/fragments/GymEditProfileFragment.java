@@ -68,7 +68,7 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
 
     private MultipartBody.Part thumbBody;
     private MultipartBody.Part imageBody;
-    private int REQ_ADD_LOCATION = 100;
+    private final int REQ_ADD_LOCATION = 100;
     private FragmentGymEditProfileBinding mBind;
 
     public GymEditProfileFragment() {
@@ -159,40 +159,32 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
             }
         });
 
-        mBind.btnAddLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddLocationDialog dialog;
-                if (mLatLong.latitude != 0.0) { //by lat lng
-                    Log.d(TAG, "add location by lat lng: " + mLatLong.latitude + " lng:" + mLatLong.longitude);
-                    dialog = AddLocationDialog.newInstance(mLatLong);
+        mBind.btnAddLocation.setOnClickListener(view -> {
+            AddLocationDialog dialog;
+            if (mLatLong.latitude != 0.0) { //by lat lng
+                Log.d(TAG, "add location by lat lng: " + mLatLong.latitude + " lng:" + mLatLong.longitude);
+                dialog = AddLocationDialog.newInstance(mLatLong);
 
-                } else { //by city name
-                    Log.d(TAG, "add location by city");
-                    dialog = AddLocationDialog.newInstance(((City) mBind.spnCity.getSelectedItem()).getName(), ((Province) mBind.spnProvince.getSelectedItem()).getName());
-                }
-                dialog.setTargetFragment(GymEditProfileFragment.this, REQ_ADD_LOCATION);
-                dialog.show(getFragmentManager(), "");
+            } else { //by city name
+                Log.d(TAG, "add location by city");
+                dialog = AddLocationDialog.newInstance(((City) mBind.spnCity.getSelectedItem()).getName(), ((Province) mBind.spnProvince.getSelectedItem()).getName());
             }
+            dialog.setTargetFragment(GymEditProfileFragment.this, REQ_ADD_LOCATION);
+            dialog.show(getFragmentManager(), "");
         });
 
         mBind.imgGym.setImageURI(BASE_CONTENT_URL + mCurrentGym.getPictureUrl());
 
-        mBind.btnEditImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setActivityTitle(getString(R.string.choose_gym_pic))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(false)
-                        .setAspectRatio(3, 2)
-                        .setFixAspectRatio(true)
-                        .setRequestedSize(1200, 800)
-                        .start(getContext(), GymEditProfileFragment.this);
-            }
-        });
+        mBind.btnEditImage.setOnClickListener(view -> CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setActivityTitle(getString(R.string.choose_gym_pic))
+                .setAllowFlipping(false)
+                .setAllowRotation(false)
+                .setAspectRatio(3, 2)
+                .setFixAspectRatio(true)
+                .setRequestedSize(1200, 800)
+                .start(getContext(), GymEditProfileFragment.this));
 
         mBind.btnSubmit.setOnClickListener(new View.OnClickListener() {
             public ProgressDialog waitingDialog;

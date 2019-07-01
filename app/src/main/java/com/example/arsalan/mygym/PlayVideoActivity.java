@@ -31,12 +31,7 @@ public class PlayVideoActivity extends AppCompatActivity {
         videoView.setVideoPath(filePath);//setVideoURI(Uri.parse(url));
 
         videoView.start();
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.setLooping(true);
-            }
-        });
+        videoView.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
 
     }
 }

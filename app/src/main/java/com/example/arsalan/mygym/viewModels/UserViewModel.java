@@ -2,11 +2,8 @@ package com.example.arsalan.mygym.viewModels;
 
 import android.net.Uri;
 
-import com.example.arsalan.mygym.models.RetResponseStatus;
 import com.example.arsalan.mygym.models.RetStatusProgress;
-import com.example.arsalan.mygym.models.Trainer;
 import com.example.arsalan.mygym.models.User;
-import com.example.arsalan.mygym.repository.TrainerListRepository;
 import com.example.arsalan.mygym.repository.UserRepository;
 
 import javax.inject.Inject;
@@ -17,11 +14,11 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 public class UserViewModel extends ViewModel {
-    private UserRepository repository;
-    private LiveData<User> userLiveData;
+    private final UserRepository repository;
+    private final LiveData<User> userLiveData;
     private LiveData<RetStatusProgress> statusLiveData;
 
-    private MutableLiveData<String> userName =new MutableLiveData<>();
+    private final MutableLiveData<String> userName =new MutableLiveData<>();
 
     @Inject //  parameter is provided by Dagger 2
     public UserViewModel(UserRepository repository) {

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class AdapterProvinceSp implements SpinnerAdapter {
 
-    List<Province> provinceList;
+    private final List<Province> provinceList;
 
     public AdapterProvinceSp() {
         provinceList = new ArrayList<>();

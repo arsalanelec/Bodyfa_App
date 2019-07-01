@@ -26,8 +26,8 @@ public class TransactionsRepository {
     private static final String TAG = "TransactionRepository";
     private final TransactionDao transactionDao;
     private final Executor executor;
-    private String mToken;
-    private Retrofit mRetrofit;
+    private final String mToken;
+    private final Retrofit mRetrofit;
 
     @Inject
     public TransactionsRepository(TransactionDao transactionDao, Executor executor, Retrofit retrofit, SharedPreferences sfp) {

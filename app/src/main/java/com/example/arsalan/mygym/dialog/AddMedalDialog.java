@@ -114,7 +114,7 @@ public class AddMedalDialog extends DialogFragment {
                 Log.d(TAG, "onClick: userId:" + mUser.getId() + " title:" + titleET.getText().toString() + " cat:" + categorySpn.getSelectedItemId());
                 Map<String, RequestBody> requestBodyMap = new HashMap<>();
                 requestBodyMap.put("UserId", RequestBody.create(MediaType.parse("text/plain"), String.valueOf(mUser.getId())));
-                requestBodyMap.put("Title", RequestBody.create(MediaType.parse("text/plain"), String.valueOf(titleET.getText().toString())));
+                requestBodyMap.put("Title", RequestBody.create(MediaType.parse("text/plain"), titleET.getText().toString()));
                 requestBodyMap.put("HonorCategory", RequestBody.create(MediaType.parse("text/plain"), String.valueOf(categorySpn.getSelectedItemId())));
                 requestBodyMap.put("GetDateFa", RequestBody.create(MediaType.parse("text/plain"), "1400/01/01"));
 
@@ -194,25 +194,16 @@ public class AddMedalDialog extends DialogFragment {
 
         });
         imgThumb = v.findViewById(R.id.img_thumb);
-        imgThumb.setOnClickListener(new View.OnClickListener()
-
-        {
-            @Override
-            public void onClick(View view) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setActivityTitle(getString(R.string.select_medal_pic))
-                        .setAllowFlipping(false)
-                        .setAllowRotation(false)
-                        .setAspectRatio(3, 2)
-                        .setFixAspectRatio(true)
-                        .setRequestedSize(1200, 800)
-                        .start(getContext(), AddMedalDialog.this);
-
-
-            }
-        });
+        imgThumb.setOnClickListener(view -> CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setActivityTitle(getString(R.string.select_medal_pic))
+                .setAllowFlipping(false)
+                .setAllowRotation(false)
+                .setAspectRatio(3, 2)
+                .setFixAspectRatio(true)
+                .setRequestedSize(1200, 800)
+                .start(getContext(), AddMedalDialog.this));
         return v;
     }
 
@@ -306,7 +297,7 @@ public class AddMedalDialog extends DialogFragment {
 
     private class AdapterMedalCategory implements SpinnerAdapter {
 
-        String[] titles = {getString(R.string.world_first_place)
+        final String[] titles = {getString(R.string.world_first_place)
                 , getString(R.string.world_second_place)
                 , getString(R.string.world_third_place)
                 , getString(R.string.national_first_place)

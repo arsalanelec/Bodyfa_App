@@ -167,18 +167,15 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
             planProp.setWaist(bind.npBelly.getValue());
             Gson gson=new Gson();
 
-            mListener.requestWorkoutPlanFromWeb(mTrainerId, bind.etTitle.getText().toString(), gson.toJson(planProp), mAmount).observe(this, new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer status) {
+            mListener.requestWorkoutPlanFromWeb(mTrainerId, bind.etTitle.getText().toString(), gson.toJson(planProp), mAmount).observe(this, status -> {
 
-                    if (status == MyWebService.STATUS_SUCCESS) {
-                        progress.dismiss();
-                        Toast.makeText(getContext(), R.string.done_successfully, Toast.LENGTH_SHORT).show();
-                        dismiss();
-                    } else if (status == MyWebService.STATUS_FAIL) {
-                        progress.dismiss();
-                        Toast.makeText(getContext(), R.string.error_accord_try_again, Toast.LENGTH_LONG).show();
-                    }
+                if (status == MyWebService.STATUS_SUCCESS) {
+                    progress.dismiss();
+                    Toast.makeText(getContext(), R.string.done_successfully, Toast.LENGTH_SHORT).show();
+                    dismiss();
+                } else if (status == MyWebService.STATUS_FAIL) {
+                    progress.dismiss();
+                    Toast.makeText(getContext(), R.string.error_accord_try_again, Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -211,8 +208,7 @@ public class RequestWorkoutPlanDialog extends DialogFragment implements Injectab
     }
     private void setNumPickerFormat(NumberPicker numberPicker) {
         try {
-            Field f = null;
-            f = NumberPicker.class.getDeclaredField("mInputText");
+            Field f  = NumberPicker.class.getDeclaredField("mInputText");
             f.setAccessible(true);
             EditText inputText = (EditText) f.get( numberPicker);
             inputText.setFilters(new InputFilter[0]);

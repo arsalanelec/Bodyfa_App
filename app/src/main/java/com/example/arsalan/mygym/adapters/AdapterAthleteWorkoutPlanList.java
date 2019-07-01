@@ -14,10 +14,10 @@ import com.example.arsalan.mygym.R;
 import java.util.List;
 
 public class AdapterAthleteWorkoutPlanList extends BaseAdapter {
-    List<WorkoutPlan> mWorkoutPlanList;
+    private final List<WorkoutPlan> mWorkoutPlanList;
 
-    Context mContext;
-    OnItemClickListener mListener;
+    private final Context mContext;
+    private final OnItemClickListener mListener;
 
     public AdapterAthleteWorkoutPlanList(Context context, List<WorkoutPlan> workoutPlanList, OnItemClickListener onItemClickListener) {
         this.mWorkoutPlanList = workoutPlanList;
@@ -62,12 +62,7 @@ public class AdapterAthleteWorkoutPlanList extends BaseAdapter {
       //  dateTV.setText(mWorkoutPlanList.get(i).getDate());
         TextView trainerNameTV = view.findViewById(R.id.txtTrainerName);
         trainerNameTV.setText(mWorkoutPlanList.get(i).getTrainerName());
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemShowClick(getItem(i), i);
-            }
-        });
+        view.setOnClickListener(view1 -> mListener.onItemShowClick(getItem(i)));
 
 
         return view;
@@ -76,7 +71,7 @@ public class AdapterAthleteWorkoutPlanList extends BaseAdapter {
     public interface OnItemClickListener {
 
 
-        void onItemShowClick(WorkoutPlan workoutPlan, int position);
+        void onItemShowClick(WorkoutPlan workoutPlan);
 
 
     }

@@ -86,12 +86,7 @@ public class SendActivationCodeFragment extends Fragment {
         final TextView errorTV = v.findViewById(R.id.txtError);
 
         TextView resendTV = v.findViewById(R.id.txtResend);
-        resendTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.resendActCode();
-            }
-        });
+        resendTV.setOnClickListener(view -> mListener.resendActCode());
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,10 +94,6 @@ public class SendActivationCodeFragment extends Fragment {
                 sendBtn.setEnabled(false);
                 sendBtn.setText(getString(R.string.sending));
                 mListener.checkActivation(mUserId, mMobile, activationCodeET.getText().toString(), new OnCheckActivation() {
-                    @Override
-                    public void activationSuccessful() {
-
-                    }
 
                     @Override
                     public void activationFailed() {
@@ -158,8 +149,6 @@ public class SendActivationCodeFragment extends Fragment {
     }
 
     public interface OnCheckActivation {
-        void activationSuccessful();
-
         void activationFailed();
     }
 

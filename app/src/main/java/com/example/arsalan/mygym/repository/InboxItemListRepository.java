@@ -42,31 +42,26 @@ public class InboxItemListRepository {
 
             Log.d("refreshInboxItemList", "!inboxItemExist");
 
-            executor.execute(new Runnable() {
+            executor.execute(() -> {
 
-                @Override
-                public void run() {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
+                Call<RetInboxList> call = apiService.getInboxList(token, userId, 0, 100);
+                try {
+                    Response<RetInboxList> response = call.execute();
+                    if (response.isSuccessful()) {
+                        Log.d("refreshInboxItemList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
+                        inboxItemDao.deleteAll();
+                        Log.d("refreshInboxItemList", "run: newDao save:" + inboxItemDao.saveList(response.body().getRecords()).length);
 
-                    ApiInterface apiService =
-                            ApiClient.getClient().create(ApiInterface.class);
-                    Call<RetInboxList> call = apiService.getInboxList(token, userId, 0, 100);
-                    try {
-                        Response<RetInboxList> response = call.execute();
-                        if (response.isSuccessful()) {
-                            Log.d("refreshInboxItemList", "run: response.isSuccessful cnt:" + response.body().getRecordsCount());
-                            inboxItemDao.deleteAll();
-                            Log.d("refreshInboxItemList", "run: newDao save:" + inboxItemDao.saveList(response.body().getRecords()).length);
+                    } else {
+                        Log.d("refreshInboxItemList", "run: response.error");
 
-                        } else {
-                            Log.d("refreshInboxItemList", "run: response.error");
-
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 

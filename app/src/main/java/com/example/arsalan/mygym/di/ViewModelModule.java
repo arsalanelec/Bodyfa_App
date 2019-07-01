@@ -23,7 +23,6 @@ import com.example.arsalan.mygym.viewModels.TransactionsViewModel;
 import com.example.arsalan.mygym.viewModels.TutorialListViewModel;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 import com.example.arsalan.mygym.viewModels.UserViewModel;
-import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
 
 import dagger.Binds;
 import dagger.Module;
