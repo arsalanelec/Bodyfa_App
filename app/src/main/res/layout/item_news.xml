@@ -6,7 +6,8 @@
     android:layout_marginBottom="4dp"
     android:layout_marginEnd="24dp"
     android:layout_marginStart="24dp"
-    android:background="@color/gray_light">
+    android:background="@color/gray_light"
+    android:layoutDirection="rtl">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/img_thumb"
@@ -58,83 +59,75 @@
         app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
         app:layout_constraintStart_toEndOf="@+id/img_thumb"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_send_to"
+<LinearLayout
+    android:id="@+id/layout1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintStart_toEndOf="@+id/img_thumb"
+    app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp">
+    <ImageView
+        android:id="@+id/img_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/iran_sans_mobile"
-        android:text="بازدید |"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/txtViewCnt"
-        app:layout_constraintTop_toTopOf="@+id/txtViewCnt" />
+        android:src="@drawable/ic_eye_black_12dp" />
 
     <TextView
         android:id="@+id/txtViewCnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:fontFamily="@font/iran_sans_mobile"
         android:text="33"
         android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/img_thumb"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+        android:textAlignment="center"
+ />
 
-    <TextView
-        android:id="@+id/txt2"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/iran_sans_mobile"
-        android:text="پسندیده شده |"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/txtLikeCnt"
-        app:layout_constraintTop_toTopOf="@+id/txtLikeCnt" />
+        android:src="@drawable/ic_favorite_border_black_12dp"
+        android:layout_marginStart="4dp"
+        />
 
     <TextView
         android:id="@+id/txtLikeCnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         android:fontFamily="@font/iran_sans_mobile"
         android:text="77"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/txt_send_to"
-        app:layout_constraintTop_toTopOf="@+id/txt_send_to" />
+        android:textSize="10sp" />
 
-    <TextView
+    <ImageView
         android:id="@+id/txt3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/iran_sans_mobile"
-        android:text="نظر "
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/txtCommentCnt"
-        app:layout_constraintTop_toTopOf="@+id/txtCommentCnt" />
+        android:src="@drawable/ic_bubble_outline_black_12dp"
+        android:layout_marginStart="4dp"
+        />
 
     <TextView
         android:id="@+id/txtCommentCnt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         android:fontFamily="@font/iran_sans_mobile"
         android:text="42"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/txt2"
-        app:layout_constraintTop_toTopOf="@+id/txt2" />
+        android:textSize="10sp" />
 
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_date_range_black_12dp"
+        android:layout_marginStart="4dp"
+        />
     <TextView
         android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:drawableStart="@drawable/ic_access_time_24dp"
         android:fontFamily="@font/iran_sans_mobile"
         android:text="2دی1396"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/txt3"
-        app:layout_constraintTop_toTopOf="@+id/txt3" />
+        android:textSize="10sp" />
+</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.arsalan.mygym;
 
 import android.app.Activity;
+import android.app.Service;
 
 import androidx.multidex.MultiDexApplication;
 
@@ -12,18 +13,22 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
+import dagger.android.HasServiceInjector;
 
 /**
  * Created by Arsalan on 10-02-2018.
  */
 
-public class MyApplication extends MultiDexApplication implements HasActivityInjector {
+public class MyApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector {
     private static final String DATABASE_NAME = "my_db";
     // private MyDatabase myDatabase;
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
+    @Inject
+    DispatchingAndroidInjector<Service> dispatchingAndroidServiceInjector;
     private Token currentToken;
     private User currentUser;
     private Trainer currentTrainer;
@@ -79,4 +84,8 @@ public class MyApplication extends MultiDexApplication implements HasActivityInj
     }
 
 
+    @Override
+    public AndroidInjector<Service> serviceInjector() {
+        return dispatchingAndroidServiceInjector;
+    }
 }

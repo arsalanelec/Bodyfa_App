@@ -37,6 +37,7 @@ import com.example.arsalan.mygym.fragments.NewsListFragment;
 import com.example.arsalan.mygym.fragments.TrainerListFragment;
 import com.example.arsalan.mygym.fragments.TrainerOrderListFragment;
 import com.example.arsalan.mygym.fragments.TrainerPlansTabFragment;
+import com.example.arsalan.mygym.fragments.TransactionFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -107,6 +108,9 @@ public abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract AthleteProfileFragment contributeAthleteProfileFragment();
+
+    @ContributesAndroidInjector
+    abstract TransactionFragment contributeTransactionFragment();
 
 
 }

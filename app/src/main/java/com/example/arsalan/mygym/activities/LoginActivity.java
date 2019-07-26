@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity implements
     @Inject
     Token mToken;
     @Inject
-    UserDao userDao;
+    UserDao mUserDao;
     @Inject
     TrainerDao trainerDao;
     @Inject
@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements
                 User user1=new User();
                 user1.setName("Test Name2");
                 user1.setId(10);
-                userDao.saveUser(user1);
+                mUserDao.saveUser(user1);
                 List<User> users = new ArrayList<>();
 
                 for(int i=0;i<10;i++){
@@ -161,8 +161,8 @@ public class LoginActivity extends AppCompatActivity implements
                     user.setId(i+1);
                     users.add(user);
                 }
-                userDao.saveList(users);
-                Log.d(TAG, "run: save:" + userDao.loadAllWaitingList().getValue() + " usename:" + user1.getName());
+                mUserDao.saveList(users);
+                Log.d(TAG, "run: save:" + mUserDao.loadAllWaitingList().getValue() + " usename:" + user1.getName());
             }
         });*/
         // Here, thisActivity is the current activity
@@ -360,7 +360,7 @@ public class LoginActivity extends AppCompatActivity implements
                                 Log.d(TAG, "webServiceOnSuccess: role:" + bundle.getString(MyKeys.KEY_BUNDLE_ROLE) + " userId:" + user.getId());
 
                                 spf.edit().putLong(KEY_USER_ID, user.getId()).apply();
-                                userDao.saveUser(user);
+                                mUserDao.saveUser(user);
 
                                 if (bundle.getString(MyKeys.KEY_BUNDLE_ROLE).equals(MyKeys.KEY_ROLE_NA)) { // پروفایل هنوز مشخص نشده
                                     splashImg.setVisibility(View.GONE);
@@ -398,7 +398,6 @@ public class LoginActivity extends AppCompatActivity implements
                                             Intent i = new Intent();
                                             i.setClass(mContext, MainActivity.class);
                                             i.putExtra(EXTRA_USER_NAME, user.getUserName());
-                                            i.putExtra(MyKeys.EXTRA_OBJ_TRAINER, trainer);
                                             i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
                                             startActivity(i);
                                             finish();
@@ -453,7 +452,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                             @Override
                             public void webServiceOnFail() {
-                                LiveData<User> userLiveData = userDao.getUserById(mUserId);
+                                LiveData<User> userLiveData = mUserDao.getUserById(mUserId);
                                 if (userLiveData != null) {
                                     Intent i = new Intent();
                                     i.setClass(mContext, MainActivity.class);
@@ -499,7 +498,7 @@ public class LoginActivity extends AppCompatActivity implements
                     } catch (Throwable t) {
                         Log.d(TAG, "onResponse: throws:" + t.getLocalizedMessage());
                         //LoginActivity.this.finish();
-                        LiveData<User> userLiveData = userDao.getUserById(mUserId);
+                        LiveData<User> userLiveData = mUserDao.getUserById(mUserId);
                         userLiveData.observe(LoginActivity.this, user -> {
                             if (user != null) {
                                 Intent i = new Intent();
@@ -548,7 +547,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void logingOffLine() {
-        LiveData<User> userLiveData = userDao.getUserById(mUserId);
+        LiveData<User> userLiveData = mUserDao.getUserById(mUserId);
         userLiveData.observe(LoginActivity.this, user -> {
             if (user != null) {
                 Intent i = new Intent();
@@ -561,7 +560,6 @@ public class LoginActivity extends AppCompatActivity implements
                     case MyKeys.KEY_ROLE_TRAINER:
                         Trainer trainer = trainerDao.getTrainerByIdMain(user.getId());
                         if (trainer != null) {
-                            i.putExtra(MyKeys.EXTRA_OBJ_TRAINER, trainer);
                             i.putExtra(MyKeys.EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
                         }
                         break;
@@ -576,7 +574,7 @@ public class LoginActivity extends AppCompatActivity implements
                 startActivity(i);
                 finish();
             } else {
-                Log.d(TAG, "onFailure: users:" + userDao.loadAllList());
+                Log.d(TAG, "onFailure: users:" + mUserDao.loadAllList());
             }
         });
     }

@@ -59,7 +59,7 @@ public class UserRepository {
     }
 
     public LiveData<RetStatusProgress> uploadUser(User user, Uri resultUri, String imagePath) {
-
+        Log.d(TAG, "uploadUser: ");
         RetStatusProgress statusProgress = new RetStatusProgress();
         MutableLiveData<RetStatusProgress> statusReturn = new MutableLiveData<>();
         MultipartBody.Part thumbBody = null;

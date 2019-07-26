@@ -57,76 +57,64 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_eye_white_12dp"
+                />
             <TextView
                 android:id="@+id/txtViewCnt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/iran_sans_mobile"
                 android:text="@{String.valueOf(news.visitcnt)}"
+                android:gravity="center"
                 android:textColor="@android:color/white"
                 android:textSize="10sp" />
-            <TextView
-                android:id="@+id/txt_send_to"
+
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/iran_sans_mobile"
-                android:text="بازدید |"
-                android:textColor="@android:color/white"
-                android:textSize="10sp"
-                app:layout_constraintStart_toEndOf="@+id/txtViewCnt"
-                app:layout_constraintTop_toTopOf="@+id/txtViewCnt" />
-
+                android:src="@drawable/ic_favorite_border_white_12dp"
+                android:layout_marginStart="4dp"/>
             <TextView
                 android:id="@+id/txtLikeCnt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:fontFamily="@font/iran_sans_mobile"
                 android:text="@{String.valueOf(news.likeCnt)}"
                 android:textColor="@android:color/white"
                 android:textSize="10sp" />
 
-
-            <TextView
-                android:id="@+id/txt2"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/iran_sans_mobile"
-                android:text="پسندیده شده |"
-                android:textColor="@android:color/white"
-                android:textSize="10sp" />
+                android:src="@drawable/ic_bubble_outline_white_12dp"
+                android:layout_marginStart="4dp"/>
 
             <TextView
                 android:id="@+id/txtCommentCnt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:fontFamily="@font/iran_sans_mobile"
                 android:text="@{String.valueOf(news.commentCnt)}"
                 android:textColor="@android:color/white"
                 android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/txt3"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/iran_sans_mobile"
-                android:text="نظر |"
-                android:textColor="@android:color/white"
-                android:textSize="10sp" />
-
+                android:src="@drawable/ic_date_range_white_12dp"
+                android:layout_marginStart="4dp"/>
 
             <TextView
                 android:id="@+id/txtDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:drawableStart="@drawable/ic_access_time_white_12dp"
                 android:fontFamily="@font/iran_sans_mobile"
                 android:text="@{news.persianDate}"
                 android:textColor="@android:color/white"
                 android:textSize="10sp"
-                android:drawablePadding="4dp"
                 android:gravity="center"
                  />
         </LinearLayout>

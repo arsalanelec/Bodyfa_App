@@ -86,6 +86,7 @@ import com.example.arsalan.mygym.models.WorkoutPlanReq;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
+import com.example.arsalan.mygym.viewModels.TrainerViewModel;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 import com.example.arsalan.mygym.viewModels.UserViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
@@ -105,8 +106,6 @@ import javax.inject.Inject;
 import co.ronash.pushe.Pushe;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -158,22 +157,20 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_ACT_MEALPLAN = 1;
     private static final int REQUEST_ACT_WORKOUTPLAN = 2;
     private static final int MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE = 1;
+    private final Context mContext;
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
     @Inject
     MyViewModelFactory mFactory;
-
     @Inject
     TrainerWorkoutPlanRequestDao mWorkoutReqDao;
     @Inject
     Token mToken;
-
     private boolean doubleBackToExitPressedOnce = false;
     private PagerAdapter mGeneratVpga;
     private User mCurrentUser;
     private Trainer mCurrentTrainer;
     private Gym mCurrentGym;
-    private final Context mContext;
     private int mThemeResId = R.style.AppTheme_NoActionBar;
     private boolean mPrivateView = false;
     private PagerAdapter mPrivateVpa;
@@ -182,6 +179,7 @@ public class MainActivity extends AppCompatActivity
     private UserCredit mCredit;
     private String mUserName;
     private String mDownloadLink;
+    private TrainerViewModel mTrainerViewModel;
 
     public MainActivity() {
         mContext = this;
@@ -197,7 +195,7 @@ public class MainActivity extends AppCompatActivity
 
             throw new RuntimeException("the intent bundle should not be empty!");
         }
-        final String roleName = eBundle.getString(EXTRA_ROLE_CHOICE);
+        final String roleName = eBundle.getString(EXTRA_ROLE_CHOICE, KEY_ROLE_ATHLETE);
         mPrivateView = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PIRVATE_VIEW, false);
         setTheme(PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_THEME_ID, R.style.AppTheme_NoActionBar));
 
@@ -235,21 +233,7 @@ public class MainActivity extends AppCompatActivity
         SwipeableButton switchBtn = toolbar.findViewById(R.id.btnSwitch);
         TextView userNameTV = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         ImageButton goToInboxBtn = findViewById(R.id.btnChatlist);
-
-        Calendar c = Calendar.getInstance();
-        Log.d(TAG, "onCreate: current time:" + c.getTimeInMillis());
-        Boolean expired = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("expired", false);
-        if (c.getTimeInMillis() > 1564297902000L || expired) {
-            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean("expired", true).apply();
-
-            new AlertDialog.Builder(this)
-                    .setTitle("اتمام دوره تست")
-                    .setMessage("این نسخه از اپلیکیشن جهت تست در اختیار شما قرار گرفته و اکنون دوره تست به اتمام رسیده.\n جهت دریافت نسخه اصلی به نشانی:\n www.BodyFa.ir مراجعه نمایید.\n با تشکر فراوان")
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.accept, (dialogInterface, i) -> MainActivity.this.finish())
-                    .create().show();
-        }
-
+        
         Pushe.initialize(this, true);
         mUserName = eBundle.getString(EXTRA_USER_NAME, "");
         //get current user
@@ -261,7 +245,6 @@ public class MainActivity extends AppCompatActivity
                 if (mCurrentUser != null && user.toString().equals(mCurrentUser.toString())) return;
                 mCurrentUser = user;
                 initPushe();
-                Log.d(TAG, "onCreate: birthday:" + user.getBirthdayDateFa());
                 //جاگذاری نام و تصویر کاربر در هدر
                 userNameTV.setText(mCurrentUser.getName());
                 Glide.with(this)
@@ -292,19 +275,16 @@ public class MainActivity extends AppCompatActivity
 
                     }
                     viewPager.setAdapter(mGeneratVpga);
-                } else if (roleName.equals(KEY_ROLE_ATHLETE)) {
-                    // switchBtn.setText(getText(R.string.general));
+                }
+                if (roleName.equals(KEY_ROLE_ATHLETE)) {
                     if (mPrivateVpa == null) {
                         mPrivateVpa = new ViewPagerVarzeshkarAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser);
                     }
                     viewPager.setAdapter(mPrivateVpa);
 
-                } else if (roleName.equals(KEY_ROLE_TRAINER)) {
-                    // switchBtn.setText(getText(R.string.general));
-                    if (mPrivateVpa == null) {
-                        mPrivateVpa = new ViewPagerTrainerAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser, mCurrentTrainer);
-                    }
-                    viewPager.setAdapter(mPrivateVpa);
+                } else if (roleName.equals(KEY_ROLE_TRAINER)) { //    current user is a Trainer
+                    mTrainerViewModel.init(mCurrentUser.getId());
+
                 }
 
                 TabLayout tabs = findViewById(R.id.tablayout);
@@ -312,31 +292,89 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+
         if (roleName.equals(KEY_ROLE_TRAINER)) {
-            mCurrentTrainer = eBundle.getParcelable(EXTRA_OBJ_TRAINER);
+            mTrainerViewModel = ViewModelProviders.of(this, mFactory).get(TrainerViewModel.class);
+            mTrainerViewModel.getTrainer().observe(this, trainer -> {
+                if (trainer != null) {
+                    Log.d(TAG, "onCreate: mTrainerViewModel:trainer is confirmed:" + trainer.isConfirmed());
+                    mCurrentTrainer = trainer;
+                    if (mPrivateView) {
+                        if (mPrivateVpa == null) {
+                            mPrivateVpa = new ViewPagerTrainerAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser, mCurrentTrainer);
+                        }
+                        viewPager.setAdapter(mPrivateVpa);
+                    }
+                }
+            });
+
         } else if (roleName.equals(KEY_ROLE_GYM)) {
             mCurrentGym = eBundle.getParcelable(EXTRA_OBJ_GYM);
         }
 
 
         if (mPrivateView) switchBtn.setChecked(true);
-        switchBtn.setOnSwipedListener(() -> {
-            switchBtn.setEnabled(false);
-            //swap view flag for private/general
-            if (!mPrivateView) {
-                mPrivateView = true;
-                mThemeResId = R.style.AppThemePrivate_NoActionBar;
-
-            } else {
-                mPrivateView = false;
-                mThemeResId = R.style.AppTheme_NoActionBar;
-
-            }
-            removeShortcut();
-            addShortcut(mPrivateView);
+        //when it's in general mode and switch to private mode
+        switchBtn.setOnSwipedOffListener(() -> {
+            if (!mPrivateView) return null;
             switch (mCurrentUser.getRoleName()) {
                 case KEY_ROLE_TRAINER: {
-                    if (!mCurrentTrainer.isConfirmed()) {
+
+                    switchThemeAndView(switchBtn);
+
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, MainActivity.class);
+                    intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
+                    intent.putExtra(EXTRA_USER_NAME, mUserName);
+                    finish();
+                    startActivity(intent);
+                    // overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    // overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+                }
+                break;
+                case KEY_ROLE_ATHLETE: {
+                    switchThemeAndView(switchBtn);
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, MainActivity.class);
+                    intent.putExtra(EXTRA_ROLE_CHOICE, mCurrentUser.getRoleName());
+                    intent.putExtra(EXTRA_USER_NAME, mUserName);
+                    finish();
+                    startActivity(intent);
+                }
+                break;
+
+                case KEY_ROLE_GYM: {
+                    switchThemeAndView(switchBtn);
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, MainActivity.class);
+                    intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_GYM);
+                    intent.putExtra(EXTRA_USER_NAME, mUserName);
+                    intent.putExtra(EXTRA_OBJ_GYM, mCurrentGym);
+                    finish();
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+                }
+                break;
+            }
+
+            return null;
+        });
+
+        switchBtn.setOnSwipedOnListener(() -> {
+            if (mPrivateView) return null;
+            switch (mCurrentUser.getRoleName()) {
+                case KEY_ROLE_TRAINER: {
+                    if (mCurrentTrainer == null || !mCurrentTrainer.isConfirmed() && !mPrivateView) {
+                        //dont switch to private view
+                        switchBtn.setCheckedAnimated(false);
                         final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
                         TextView title = titleView.findViewById(R.id.textView);
                         title.setText(getString(R.string.incomplete_profile));
@@ -358,14 +396,17 @@ public class MainActivity extends AppCompatActivity
                         dialog.setOnShowListener(dialog1 ->
                                 switchBtn.setEnabled(true));
                         dialog.show();
+
                     } else {
+                        switchThemeAndView(switchBtn);
+
                         PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
                         PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
+
                         Intent intent = new Intent();
                         intent.setClass(mContext, MainActivity.class);
                         intent.putExtra(EXTRA_ROLE_CHOICE, KEY_ROLE_TRAINER);
                         intent.putExtra(EXTRA_USER_NAME, mUserName);
-                        intent.putExtra(EXTRA_OBJ_TRAINER, mCurrentTrainer);
                         finish();
                         startActivity(intent);
                         // overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -374,6 +415,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
                 case KEY_ROLE_ATHLETE: {
+                    switchThemeAndView(switchBtn);
                     PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
                     PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
                     Intent intent = new Intent();
@@ -386,7 +428,9 @@ public class MainActivity extends AppCompatActivity
                 break;
 
                 case KEY_ROLE_GYM: {
-                    if (!mCurrentGym.isConfirmed()) {
+                    if (!mCurrentGym.isConfirmed() && !mPrivateView) {
+                        //prevent switch to private view
+                        switchBtn.setCheckedAnimated(false);
                         final View titleView = View.inflate(mContext, R.layout.dialog_title, null);
                         TextView title = titleView.findViewById(R.id.textView);
                         title.setText(R.string.incomplete_profile);
@@ -411,6 +455,7 @@ public class MainActivity extends AppCompatActivity
                                 switchBtn.setEnabled(true));
                         dialog.show();
                     } else {
+                        switchThemeAndView(switchBtn);
                         PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, mPrivateView).commit();
                         PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, mThemeResId).commit();
                         Intent intent = new Intent();
@@ -447,6 +492,28 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * switch to private or general view and theme
+     *
+     * @param switchBtn
+     */
+    private void switchThemeAndView(View switchBtn) {
+        switchBtn.setEnabled(false);
+        //swap view flag for private/general
+        if (!mPrivateView) {
+            mPrivateView = true;
+            mThemeResId = R.style.AppThemePrivate_NoActionBar;
+
+        } else {
+            mPrivateView = false;
+            mThemeResId = R.style.AppTheme_NoActionBar;
+
+        }
+        removeShortcut();
+        addShortcut(mPrivateView);
+
+    }
+
     private void checkUpdate(String token, long version) {
         final int STATUS_NO_UPDATE = 0;
         final int STATUS_NEW_UPDATE = 1;
@@ -459,13 +526,13 @@ public class MainActivity extends AppCompatActivity
         call.enqueue(new Callback<RetUpdate>() {
             @Override
             public void onResponse(Call<RetUpdate> call, Response<RetUpdate> response) {
-                if (response.isSuccessful() && response.body().getRecord()!=null) {
+                if (response.isSuccessful() && response.body().getRecord() != null) {
                     if (response.body().getRecord().getUpdateStatus() == STATUS_NEW_UPDATE) {
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.new_update_available)
                                 .setMessage(getString(R.string.here_some_changes) + response.body().getRecord().getAppDescription())
                                 .setPositiveButton(getString(R.string.update), (dialogInterface, i) -> {
-                                    mDownloadLink=BASE_CONTENT_URL + response.body().getRecord().getAppLink();
+                                    mDownloadLink = BASE_CONTENT_URL + response.body().getRecord().getAppLink();
                                     DownloadUpdate(mDownloadLink);
                                     dialogInterface.dismiss();
                                 })
@@ -525,7 +592,7 @@ public class MainActivity extends AppCompatActivity
                 // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
                         .setMessage(R.string.request_permission_again)
-                        .setPositiveButton(R.string.accept,(d,b)->{
+                        .setPositiveButton(R.string.accept, (d, b) -> {
                             ActivityCompat.requestPermissions(MainActivity.this,
                                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                     MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE);
@@ -586,7 +653,7 @@ public class MainActivity extends AppCompatActivity
                                 MainActivity.this.getApplicationContext()
                                         .getPackageName() + ".provider", file);
                         install.setDataAndType(apkURI, manager.getMimeTypeForDownloadedFile(downloadId));
-                    }else {
+                    } else {
                         install.setDataAndType(uri,
                                 manager.getMimeTypeForDownloadedFile(downloadId));
                     }
@@ -610,6 +677,7 @@ public class MainActivity extends AppCompatActivity
             Log.d(getClass().getSimpleName(), "onCreate: pushe initialized!:" + pushehId);
             Pushe.subscribe(this, "Trainer");
             Pushe.subscribe(this, "Gym");
+            Pushe.subscribe(this, "testPuche");
 //            Pushe.sendSimpleNotifToUser(this, pushehId, "Hi", "It is a notification from app to itself");
             try {
                 Pushe.sendCustomJsonToUser(this, pushehId, "{\"key\": \"It is a json from app to itself\"}");
@@ -771,6 +839,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_contact_us) {
 
         } else if (id == R.id.nav_exit_account) {
+            //reset and save the view to general and
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(KEY_PIRVATE_VIEW, false).apply();
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putInt(KEY_THEME_ID, R.style.AppTheme_NoActionBar).apply();
+
+
             Intent i = new Intent();
             i.putExtra(EXTRA_EXIT_ACCOUNT, true);
             i.setClass(mContext, LoginActivity.class);
@@ -959,6 +1032,29 @@ public class MainActivity extends AppCompatActivity
         startActivity(i);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    DownloadUpdate(mDownloadLink);
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
     /**
      * view pager adapter for general view
      */
@@ -998,29 +1094,6 @@ public class MainActivity extends AppCompatActivity
         @Override
         public int getCount() {
             return titles.length;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_EXTERNAL_WRITE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    DownloadUpdate(mDownloadLink);
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
 }

@@ -39,7 +39,8 @@ import dagger.android.AndroidInjectionModule;
         , EditProfileActivityModule.class
         , TrancastionListActivityModule.class
         , ProfileTrainerActivityModule.class
-        , ChatListActivityModule.class})
+        , ChatListActivityModule.class
+        , MyPushListenerModule.class})
 
 public interface AppComponent {
     void inject(MyApplication myApplication);

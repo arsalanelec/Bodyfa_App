@@ -101,7 +101,7 @@ public class MyAthleteListDialog extends DialogFragment implements Injectable {
         RecyclerView rv = v.findViewById(R.id.rv_trainers);
         mAdapter = new AdapterAthletesDialog(mAthleteList, athlete -> {
             Intent intent = new Intent();
-            intent.putExtra(MyKeys.EXTRA_ATHLETE_ID, athlete.getId());
+            intent.putExtra(MyKeys.EXTRA_ATHLETE_ID, athlete.getAthleteId());
             intent.putExtra(MyKeys.EXTRA_PLAN_ID, mPlanId);
             intent.putExtra(MyKeys.EXTRA_PLAN_TITLE, mPlanTitle);
             intent.putExtra(MyKeys.EXTRA_PLAN_BODY, mPlanBody);

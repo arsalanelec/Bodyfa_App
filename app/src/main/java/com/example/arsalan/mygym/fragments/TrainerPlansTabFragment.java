@@ -69,15 +69,14 @@ import static com.example.arsalan.mygym.webservice.MyWebService.sendWokroutPlanT
 
 
 public class TrainerPlansTabFragment extends Fragment implements Injectable {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final int REQ_MEAL_PLAN_LIST_DIALOG = 1000;
     private static final int REQ_WORKOUT_PLAN_LIST_DIALOG = 1001;
     private static final int REQ_SELECT_USER_MEAL_PLAN = 1002;
     private static final int REQ_SELECT_USER_WORKOUT_PLAN = 1003;
+    private static final String TAG = "TrainerPlansTabFragment";
 
-    // TODO: Rename and change types of parameters
     private Trainer mCurrentTrainer;
 
     private OnFragmentInteractionListener mListener;
@@ -513,6 +512,7 @@ public class TrainerPlansTabFragment extends Fragment implements Injectable {
 
     //ارسال برنام غذایی به ورزشکار
     private void sendMealPlanToAthleteWeb(long athleteId, long mealPlanId, String title, String body) {
+        Log.d(TAG, "sendMealPlanToAthleteWeb: athleteId:"+athleteId);
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
         final ProgressDialog waitingDialog = new ProgressDialog(getContext());
