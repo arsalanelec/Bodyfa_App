@@ -26,6 +26,7 @@ import com.example.arsalan.mygym.models.RetUpdate;
 import com.example.arsalan.mygym.models.RetUserProfile;
 import com.example.arsalan.mygym.models.RetWorkoutPlan;
 import com.example.arsalan.mygym.models.RetWorkoutPlanList;
+import com.example.arsalan.mygym.models.RetWorkoutPlanRequestList;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.RetroResultActivation;
 import com.example.arsalan.mygym.models.Token;
@@ -313,6 +314,10 @@ public interface ApiInterface {
     @Multipart
     @POST("api/Athletes/GetMyMembershipRequest")
     Call<RetTrainerAthleteList> getAthleteMembershipRequests(@Header("Authorization") String token, @PartMap Map<String, RequestBody> params);
+
+    @Multipart
+    @POST("api/Athletes/GetAthleteWorkoutPlanRequests")
+    Call<RetWorkoutPlanRequestList> getAthleteWorkoutPlanRequests(@Header("Authorization") String token, @Part("AthleteUserId") long athleteId);
 
 
     @Multipart

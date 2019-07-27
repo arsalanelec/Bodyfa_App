@@ -32,6 +32,7 @@ import com.example.arsalan.mygym.models.WorkoutPlanReq;
 import com.example.arsalan.mygym.retrofit.ApiClient;
 import com.example.arsalan.mygym.retrofit.ApiInterface;
 import com.example.arsalan.mygym.viewModels.AthleteWorkoutPlanListViewModel;
+import com.example.arsalan.mygym.viewModels.AthleteWorkoutRequestListViewModel;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerWorkoutPlanReqVm;
 import com.example.arsalan.room.WorkoutPlanDao;
@@ -71,7 +72,7 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
     private ArrayList<WorkoutPlan> mWorkoutPlanList;
     private AdapterAthleteWorkoutPlanList mAdapter;
     private View nothingToseeView;
-    private TrainerWorkoutPlanReqVm workoutPlanReqVm;
+    private AthleteWorkoutRequestListViewModel workoutPlanReqVm;
     private List<WorkoutPlanReq> mRequestList;
     private WorkoutPlanRequestAdapter mWorkoutReqAdapter;
 
@@ -144,12 +145,12 @@ public class AthleteWorkoutPlanListFragment extends Fragment implements Injectab
             // waitingFL.setVisibility(View.GONE);
         });
 
-        workoutPlanReqVm = ViewModelProviders.of(this, mFactory).get(TrainerWorkoutPlanReqVm.class);
-        workoutPlanReqVm.initAll(mUser.getId());
-        workoutPlanReqVm.getWorkoutPlanListLv().observe(this, workoutPlanReqs -> {
+        workoutPlanReqVm = ViewModelProviders.of(this, mFactory).get(AthleteWorkoutRequestListViewModel.class);
+        workoutPlanReqVm.init(mUser.getId());
+        workoutPlanReqVm.getWorkoutPlanItemList().observe(this, workoutPlanReqs -> {
             Log.d(TAG, "onActivityCreated: workoutPlanReqs.size:"+workoutPlanReqs.size());
             mRequestList.clear();
-            if (workoutPlanReqs != null && workoutPlanReqs.size() > 0) {
+            if ( workoutPlanReqs.size() > 0) {
                 mRequestList.addAll(workoutPlanReqs);
             }
             mWorkoutReqAdapter.notifyDataSetChanged();

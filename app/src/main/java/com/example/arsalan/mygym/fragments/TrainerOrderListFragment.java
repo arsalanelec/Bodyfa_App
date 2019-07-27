@@ -54,14 +54,12 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "TrainerOrderListFragmen";
-    @Inject
-    MyViewModelFactory mFactory;
-
-    private long mTrainerId;
-
-    private OnFragmentInteractionListener mListener;
     private final List<WorkoutPlanReq> mRequestList;
     private final List<TrainerAthlete> mAthletes;
+    @Inject
+    MyViewModelFactory mFactory;
+    private long mTrainerId;
+    private OnFragmentInteractionListener mListener;
     private ExtendViewAdapter mAdapter;
     private FragmentTrainerOrderListBinding mBind;
     private TrainerWorkoutPlanReqVm workoutPlanReqVm;
@@ -70,7 +68,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
     public TrainerOrderListFragment() {
         // Required empty public constructor
         mRequestList = new ArrayList<>();
-        mAthletes=new ArrayList<>();
+        mAthletes = new ArrayList<>();
     }
 
     /**
@@ -101,9 +99,8 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_trainer_order_list, container, false);
-
-
-        mAdapter = new ExtendViewAdapter(mRequestList,mAthletes);
+        mBind.containerAthleteProfile.setVisibility(View.GONE);
+        mAdapter = new ExtendViewAdapter(mRequestList, mAthletes);
         mBind.exListView.setAdapter(mAdapter);
         mBind.swipeLay.setOnRefreshListener(this);
         mBind.swipeLay.setRefreshing(true);
@@ -130,7 +127,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         });
 
         athletesViewModel = ViewModelProviders.of(this, mFactory).get(AthleteListViewModel.class);
-        athletesViewModel.init(mTrainerId,false);
+        athletesViewModel.init(mTrainerId, false);
         athletesViewModel.getAthleteList().observe(this, athletes -> {
             Log.d(TAG, "onActivityCreated: athletesViewModel Changed listSize:" + athletes.size());
             mAthletes.clear();
@@ -167,9 +164,28 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         workoutPlanReqVm.initWaiting(mTrainerId);
     }
 
+    @Override
+    //Pressed return button - returns to the results menu
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            Log.d(TAG, "onKey: back presssed!");
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mBind.containerAthleteProfile.getVisibility() == View.VISIBLE) {
+                mBind.containerAthleteProfile.setVisibility(View.GONE);
+                //your code
+                return true;
+            }
+            return false;
+        });
+    }
+
     public interface OnRequestRowClickListener {
         void onCancelClick(long requestId, int type);
-        void onItemClick(long athleteId,String athleteName);
+
+        void onItemClick(long athleteId, String athleteName);
+
         void onSubmitClick(long requestId, long trainerId, long athleteId, String athleteName, String athleteThumbUrl, int type);
     }
 
@@ -197,7 +213,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         public ExtendViewAdapter(List<WorkoutPlanReq> workoutPlanReqList, List<TrainerAthlete> athleteList) {
             this.workoutPlanReqList = workoutPlanReqList;
-            athletes=athleteList;
+            athletes = athleteList;
         }
 
         @Override
@@ -207,11 +223,11 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         @Override
         public int getChildrenCount(int groupPosition) {
-           switch (groupPosition) {
-               case 0:    //workout
-                return workoutPlanReqList.size();
-               case 2:    //membership
-                   return athletes.size();
+            switch (groupPosition) {
+                case 0:    //workout
+                    return workoutPlanReqList.size();
+                case 2:    //membership
+                    return athletes.size();
             }
             return 0;
         }
@@ -223,11 +239,11 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-           switch (groupPosition) {
-               case 0:    //workout plan
-                return workoutPlanReqList.get(childPosition);
-               case 2:    //membership
-                   return athletes.get(childPosition);
+            switch (groupPosition) {
+                case 0:    //workout plan
+                    return workoutPlanReqList.get(childPosition);
+                case 2:    //membership
+                    return athletes.get(childPosition);
 
             }
             return null;
@@ -240,11 +256,11 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
 
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-           switch (groupPosition ) {
-               case 0:    //workout
-                   return workoutPlanReqList.get(childPosition).getId();
-               case 2:    //membership
-                   return athletes.get(childPosition).getId();
+            switch (groupPosition) {
+                case 0:    //workout
+                    return workoutPlanReqList.get(childPosition).getId();
+                case 2:    //membership
+                    return athletes.get(childPosition).getId();
             }
             return 0;
         }
@@ -282,11 +298,11 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                     }
                     WorkoutPlanReq temp = (WorkoutPlanReq) getChild(groupPosition, childPosition);
                     Log.d(TAG, "getChildView: id:" + temp.getId() + " date" + temp.getRequestDateEnTs());
-                    Gson gson=new Gson();
-                    PlanProp planProp=new PlanProp();
+                    Gson gson = new Gson();
+                    PlanProp planProp = new PlanProp();
                     try {
-                        planProp=gson.fromJson(temp.getDescriptions(), PlanProp.class);
-                    }catch (JsonParseException e){
+                        planProp = gson.fromJson(temp.getDescriptions(), PlanProp.class);
+                    } catch (JsonParseException e) {
                         e.printStackTrace();
                     }
                     //mBind data
@@ -308,7 +324,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                 case 2:    //Membership Request
                 {
                     RowTrainerMembershipReqBinding bind;
-                    if (convertView == null  || !(convertView.getTag() instanceof RowTrainerMembershipReqBinding)) {
+                    if (convertView == null || !(convertView.getTag() instanceof RowTrainerMembershipReqBinding)) {
                         bind = DataBindingUtil.inflate(getLayoutInflater(), R.layout.row_trainer_membership_req, parent, false);
                         convertView = bind.getRoot();
                     } else {
@@ -361,7 +377,7 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
                     });
                     break;
                 case TYPE_MEMBERSHIP:
-                    athletesViewModel.cancelRequest(requestId).observe(TrainerOrderListFragment.this,status->{
+                    athletesViewModel.cancelRequest(requestId).observe(TrainerOrderListFragment.this, status -> {
                         if (status == 1) {
                             Toast.makeText(getContext(), "حذف انجام شد!", Toast.LENGTH_LONG).show();
                         }
@@ -372,11 +388,11 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         }
 
         @Override
-        public void onItemClick(long athleteId,String athleteName) {
-            Fragment athleteProfileFragment= AthleteProfileFragment.newInstance(athleteId,athleteName);
+        public void onItemClick(long athleteId, String athleteName) {
+            Fragment athleteProfileFragment = AthleteProfileFragment.newInstance(athleteId, athleteName);
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container_athlete_profile,athleteProfileFragment)
+                    .replace(R.id.container_athlete_profile, athleteProfileFragment)
                     .commit();
             mBind.containerAthleteProfile.setVisibility(View.VISIBLE);
         }
@@ -403,23 +419,6 @@ public class TrainerOrderListFragment extends Fragment implements Injectable, Sw
         }
 
 
-    }
-
-    @Override
-    //Pressed return button - returns to the results menu
-    public void onResume() {
-        super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener((v, keyCode, event) -> {
-            Log.d(TAG, "onKey: back presssed!");
-            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK && mBind.containerAthleteProfile.getVisibility()==View.VISIBLE){
-                mBind.containerAthleteProfile.setVisibility(View.GONE);
-                //your code
-                return true;
-            }
-            return false;
-        });
     }
 
 }

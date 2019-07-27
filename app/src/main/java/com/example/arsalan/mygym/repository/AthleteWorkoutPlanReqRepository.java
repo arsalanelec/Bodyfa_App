@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.arsalan.mygym.models.RetTrainerWorkoutPlanReqList;
+import com.example.arsalan.mygym.models.RetWorkoutPlanRequestList;
 import com.example.arsalan.mygym.models.RetroResult;
 import com.example.arsalan.mygym.models.Token;
 import com.example.arsalan.mygym.models.WorkoutPlanReq;
@@ -25,25 +26,19 @@ import retrofit2.Response;
 
 
 @Singleton  // informs Dagger that this class should be constructed once
-public class TrainerWorkoutPlanReqRepository {
+public class AthleteWorkoutPlanReqRepository {
     private final WorkoutPlanRequestDao planRequestDao;
     private final Executor executor;
     private final Token mToken;
     private final MutableLiveData<Integer> cancelStatus=new MutableLiveData<>();
-    private static final String TAG = "TrainerWorkoutPlanReqRe";
-
+    private static final String TAG = "AthleteWorkoutPlanReqRe";
     @Inject
-    public TrainerWorkoutPlanReqRepository(WorkoutPlanRequestDao planRequestDao, Token token, Executor executor) {
+    public AthleteWorkoutPlanReqRepository(WorkoutPlanRequestDao planRequestDao, Token token, Executor executor) {
         this.planRequestDao = planRequestDao;
         this.executor = executor;
         mToken=token;
     }
 
-    public LiveData<List<WorkoutPlanReq>> getWaitingListLive(long  parentId) {
-        refreshList(mToken.getTokenBearer(),parentId);
-        // return a LiveData directly from the database.
-        return planRequestDao.loadAllWaitingList();
-    }
 
     public LiveData<List<WorkoutPlanReq>> getAllListLive(long  parentId) {
         refreshList(mToken.getTokenBearer(),parentId);
@@ -51,23 +46,19 @@ public class TrainerWorkoutPlanReqRepository {
         return planRequestDao.loadAll();
     }
 
-    public LiveData<Integer> cancelWorkoutRequest(long planId){
-        cancelWorkoutRequest(mToken.getToken(),planId);
-        return cancelStatus;
-    }
+
     private void refreshList(String token, long id) {
             executor.execute(() -> {
 
                 ApiInterface apiService =
                         ApiClient.getClient().create(ApiInterface.class);
-                Call<RetTrainerWorkoutPlanReqList> call = apiService.getTrainerWorkoutPlanRequests(token, id);
+                Call<RetWorkoutPlanRequestList> call = apiService.getAthleteWorkoutPlanRequests(token, id);
                 try {
-                    Response<RetTrainerWorkoutPlanReqList> response = call.execute();
+                    Response<RetWorkoutPlanRequestList> response = call.execute();
                     if (response.isSuccessful()) {
                         planRequestDao.deleteAll();
-                        Log.d(TAG, "run: response.isSuccessful cnt:"+response.body().getRecordsCount());
+                        Log.d(TAG, "run: response.isSuccessful cnt:"+response.body().getCount());
                         Log.d(TAG, "run: newDao save:"+ planRequestDao.saveList(response.body().getRecords()).length);
-
                     } else {
                         Log.d(TAG, "run: response.error");
 
@@ -79,27 +70,5 @@ public class TrainerWorkoutPlanReqRepository {
             });
     }
 
-    private void cancelWorkoutRequest(String token, long planId){
-        executor.execute(() -> {
 
-            ApiInterface apiService =
-                    ApiClient.getClient().create(ApiInterface.class);
-            Call<RetroResult> call = apiService.trainerCancelWorkoutPlanRequest("Bearer "+token, planId);
-            try {
-                Response<RetroResult> response = call.execute();
-                if (response.isSuccessful()) {
-                    cancelStatus.postValue(1);
-
-                    Log.d(TAG, "cancelWorkoutRequest: response.isSuccessful:"+planRequestDao.deleteById(planId));
-                } else {
-                    Log.d(TAG, "cancelWorkoutRequest: response.error:"+response.raw().toString());
-                    cancelStatus.postValue(-1);
-                }
-
-            } catch (IOException e) {
-                cancelStatus.postValue(-1);
-                e.printStackTrace();
-            }
-        });
-    }
 }

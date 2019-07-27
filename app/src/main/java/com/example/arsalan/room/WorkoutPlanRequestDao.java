@@ -13,7 +13,7 @@ import static androidx.room.OnConflictStrategy.IGNORE;
 import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
-public interface TrainerWorkoutPlanRequestDao {
+public interface WorkoutPlanRequestDao {
     @Insert(onConflict = IGNORE)
     long[] saveList(List<WorkoutPlanReq> workoutPlanReqs);
 

@@ -90,13 +90,12 @@ import com.example.arsalan.mygym.viewModels.TrainerViewModel;
 import com.example.arsalan.mygym.viewModels.UserCreditViewModel;
 import com.example.arsalan.mygym.viewModels.UserViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
-import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
+import com.example.arsalan.room.WorkoutPlanRequestDao;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.stfalcon.swipeablebutton.SwipeableButton;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity
     @Inject
     MyViewModelFactory mFactory;
     @Inject
-    TrainerWorkoutPlanRequestDao mWorkoutReqDao;
+    WorkoutPlanRequestDao mWorkoutReqDao;
     @Inject
     Token mToken;
     private boolean doubleBackToExitPressedOnce = false;
@@ -233,7 +232,7 @@ public class MainActivity extends AppCompatActivity
         SwipeableButton switchBtn = toolbar.findViewById(R.id.btnSwitch);
         TextView userNameTV = navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         ImageButton goToInboxBtn = findViewById(R.id.btnChatlist);
-        
+
         Pushe.initialize(this, true);
         mUserName = eBundle.getString(EXTRA_USER_NAME, "");
         //get current user
@@ -276,13 +275,14 @@ public class MainActivity extends AppCompatActivity
                     }
                     viewPager.setAdapter(mGeneratVpga);
                 }
-                if (roleName.equals(KEY_ROLE_ATHLETE)) {
+                if (roleName.equals(KEY_ROLE_ATHLETE) && mPrivateView) {
                     if (mPrivateVpa == null) {
                         mPrivateVpa = new ViewPagerVarzeshkarAdapter(getSupportFragmentManager(), MainActivity.this, mCurrentUser);
                     }
                     viewPager.setAdapter(mPrivateVpa);
 
-                } else if (roleName.equals(KEY_ROLE_TRAINER)) { //    current user is a Trainer
+                }
+                if (roleName.equals(KEY_ROLE_TRAINER)) { //    current user is a Trainer
                     mTrainerViewModel.init(mCurrentUser.getId());
 
                 }

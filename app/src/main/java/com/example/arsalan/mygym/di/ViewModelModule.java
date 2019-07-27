@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.arsalan.mygym.viewModels.AthleteListViewModel;
 import com.example.arsalan.mygym.viewModels.AthleteMealPlanListViewModel;
 import com.example.arsalan.mygym.viewModels.AthleteWorkoutPlanListViewModel;
+import com.example.arsalan.mygym.viewModels.AthleteWorkoutRequestListViewModel;
 import com.example.arsalan.mygym.viewModels.GalleryViewModel;
 import com.example.arsalan.mygym.viewModels.GymListViewModel;
 import com.example.arsalan.mygym.viewModels.HonorViewModel;
@@ -125,6 +126,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserViewModel.class)
     abstract ViewModel bindUserViewModel(UserViewModel userViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AthleteWorkoutRequestListViewModel.class)
+    abstract ViewModel bindAthleteWorkoutRequestListViewModel(AthleteWorkoutRequestListViewModel athleteWorkoutRequestListViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(MyViewModelFactory factory);

@@ -16,7 +16,7 @@
             <ExpandableListView
                 android:id="@+id/exListView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:choiceMode="multipleChoice"
                 android:headerDividersEnabled="false"
                 android:layoutDirection="ltr" />
@@ -26,8 +26,8 @@
             android:id="@+id/container_athlete_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:rotation="180"
             android:background="@color/gray_light"
-            />
+            android:rotation="180"
+            tools:visibility="gone" />
     </FrameLayout>
 </layout>

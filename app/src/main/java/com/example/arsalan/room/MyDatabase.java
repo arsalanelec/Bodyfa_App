@@ -66,7 +66,7 @@ public abstract class MyDatabase extends RoomDatabase {
 
     abstract public TransactionDao transactionDao();
 
-    abstract public TrainerWorkoutPlanRequestDao trainerWorkoutPlanRequestDao();
+    abstract public WorkoutPlanRequestDao trainerWorkoutPlanRequestDao();
 
     abstract public TrainerAthleteDao trainerAthleteDao();
 

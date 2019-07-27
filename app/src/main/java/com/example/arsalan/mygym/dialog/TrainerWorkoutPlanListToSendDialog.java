@@ -22,7 +22,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.arsalan.interfaces.OnGetPlanFromWeb;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.R;
 import com.example.arsalan.mygym.adapters.AdapterTrainerWorkoutPlanListSimple;
@@ -31,7 +30,7 @@ import com.example.arsalan.mygym.models.WorkoutPlan;
 import com.example.arsalan.mygym.viewModels.MyViewModelFactory;
 import com.example.arsalan.mygym.viewModels.TrainerWorkoutListViewModel;
 import com.example.arsalan.mygym.webservice.MyWebService;
-import com.example.arsalan.room.TrainerWorkoutPlanRequestDao;
+import com.example.arsalan.room.WorkoutPlanRequestDao;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class TrainerWorkoutPlanListToSendDialog extends DialogFragment implement
     @Inject
     MyViewModelFactory factory;
     @Inject
-    TrainerWorkoutPlanRequestDao mPlanRequestDao;
+    WorkoutPlanRequestDao mPlanRequestDao;
     private long mTrainerId;
     private long mRequestId;
     private long mAthleteId;
