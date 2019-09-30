@@ -1,85 +1,85 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
 	package
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:3:5-41
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:3:5-41
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
 	android:versionName
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:1:1-35:12
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
 	xmlns:android
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:2:5-63
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:2:5-63
 uses-permission#android.permission.CAMERA
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:5:5-65
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:5:5-65
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:5:22-62
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:5:22-62
 uses-permission#android.permission.RECORD_AUDIO
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:6:5-71
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:6:5-71
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:6:22-68
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:6:22-68
 uses-permission#android.permission.WAKE_LOCK
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:7:5-68
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:7:5-68
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:7:22-65
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:7:22-65
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:8:5-81
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:8:5-81
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:8:22-78
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:8:22-78
 permission#android.permission.FLASHLIGHT
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:10:5-13:44
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:10:5-13:44
 	android:protectionLevel
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:13:9-41
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:13:9-41
 	android:permissionGroup
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:12:9-77
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:12:9-77
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:11:9-53
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:11:9-53
 uses-feature#android.hardware.camera
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:15:5-60
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:15:5-60
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:15:19-57
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:15:19-57
 uses-feature#android.hardware.camera.front
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:16:5-18:36
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:16:5-18:36
 	android:required
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:18:9-33
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:18:9-33
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:17:9-53
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:17:9-53
 application
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:20:5-33:19
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:20:5-33:19
 	android:largeHeap
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:21:9-33
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:21:9-33
 activity#com.amosyuen.videorecorder.activity.FFmpegRecorderActivity
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:23:9-27:20
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:23:9-27:20
 	android:configChanges
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:26:13-59
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:26:13-59
 	android:theme
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:25:13-49
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:25:13-49
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:24:13-60
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:24:13-60
 activity#com.amosyuen.videorecorder.activity.FFmpegPreviewActivity
-ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:28:9-32:20
+ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:28:9-32:20
 	android:configChanges
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:31:13-59
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:31:13-59
 	android:theme
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:30:13-49
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:30:13-49
 	android:name
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:29:13-59
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml:29:13-59
 uses-sdk
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-		ADDED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
-		INJECTED from /Volumes/Software/Android Projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		ADDED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/Software/android-projects/Bodyfa/MyGym/ffmpeg-video-recorder/src/main/AndroidManifest.xml

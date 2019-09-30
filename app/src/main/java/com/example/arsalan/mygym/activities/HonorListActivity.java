@@ -153,7 +153,7 @@ public class HonorListActivity extends AppCompatActivity implements SwipeRefresh
 
             Button removeBtn = view.findViewById(R.id.btnRemove);
             removeBtn.setOnClickListener(view1 -> {
-                AlertDialog removeDialog = new AlertDialog.Builder(mContext,R.style.AlertDialogCustomPrivate)
+                AlertDialog removeDialog = new AlertDialog.Builder(mContext)
                         .setMessage(R.string.ask_remove_medal)
                         .setPositiveButton(R.string.ok, (dialogInterface, ii) -> removeHonorWeb(getItemId(i), i))
                         .setNegativeButton(getString(R.string.cancel), (dialogInterface, i1) -> dialogInterface.dismiss())

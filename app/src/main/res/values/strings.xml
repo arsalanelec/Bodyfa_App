@@ -287,5 +287,6 @@
     <string name="exit">Exit</string>
     <string name="waiting_for_update">Waiting for Update…</string>
     <string name="request_permission_again">To download the update we need your permission to use expternal storage. Please grant this permission on next dialog.</string>
+    <string name="please_enter_amount">Please enter your desired amount:</string>
 
 </resources>

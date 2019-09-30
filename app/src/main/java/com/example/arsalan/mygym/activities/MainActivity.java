@@ -50,6 +50,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.arsalan.mygym.BuildConfig;
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
@@ -214,6 +215,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
+
+        //change version name text in navigation
+        TextView versionNameTv = navigationView.getHeaderView(0).findViewById(R.id.txt_version_name);
+        versionNameTv.setText(String.format("v%s", BuildConfig.VERSION_NAME));
 
         if (((MyApplication) getApplication()).getCurrentUser().getRoleId() == 2) { //مربی
             MenuItem item1 = menu.add(R.id.menuGroup1, nav_trainer_account, 3, getString(R.string.trainer_profile));
@@ -381,7 +386,7 @@ public class MainActivity extends AppCompatActivity
                         final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
                         TextView bodyText = bodyView.findViewById(R.id.textView);
                         bodyText.setText(getString(R.string.trainer_incomplete_profile_dialog));
-                        final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
+                        final Dialog dialog = new AlertDialog.Builder(mContext)
                                 .setView(bodyView)
                                 .setCustomTitle(titleView)
                                 .setPositiveButton(getString(R.string.completing_profile), (dialogInterface, ii) -> {
@@ -437,7 +442,7 @@ public class MainActivity extends AppCompatActivity
                         final View bodyView = View.inflate(mContext, R.layout.dialog_text, null);
                         TextView bodyText = bodyView.findViewById(R.id.textView);
                         bodyText.setText(getString(R.string.gym_incomplete_profile_dialog));
-                        final Dialog dialog = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
+                        final Dialog dialog = new AlertDialog.Builder(mContext)
                                 .setView(bodyView)
                                 .setCustomTitle(titleView)
                                 .setPositiveButton(R.string.completing_profile, (dialogInterface, ii) -> {
@@ -830,7 +835,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_change_lang) {
 
-            new AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            new AlertDialog.Builder(this)
                     .setMessage("لطفا زبان خود را انتخاب نمایید.\nPlease Choose Your Language.")
                     .setPositiveButton("فارسی", (dialogInterface, i) -> setLocale("fa"))
                     .setNegativeButton("English", (dialogInterface, i) -> setLocale("en"))
@@ -850,7 +855,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
             finish();
         } else if (id == R.id.nav_eula) {
-            new AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            new AlertDialog.Builder(this)
                     .setMessage(R.string.BODYFA_EULA)
                     .setPositiveButton(R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
                     .create()

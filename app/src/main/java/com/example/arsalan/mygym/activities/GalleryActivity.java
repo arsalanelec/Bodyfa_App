@@ -98,7 +98,7 @@ public class GalleryActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_remove) {
-            new AlertDialog.Builder(this, R.style.AlertDialogCustom)
+            new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.remove_photo))
                     .setMessage(getString(R.string.ask_remove_photo))
                     .setPositiveButton(R.string.ok, (dialogInterface, i) -> {

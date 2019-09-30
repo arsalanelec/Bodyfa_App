@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ریال"
+        android:text="@string/rial"
         android:textColor="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/tlAmount"
         app:layout_constraintEnd_toStartOf="@+id/tlAmount"
@@ -68,7 +68,7 @@
         android:background="@drawable/button_blue_rect"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="ادامه"
+        android:text="@string/next"
         android:textColor="?attr/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +81,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:text="مبلغ مورد نظر خود را به ریال وارد نمایید:"
+        android:text="@string/please_enter_amount"
         app:layout_constraintBottom_toTopOf="@+id/tlAmount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtCurrentBalance" />

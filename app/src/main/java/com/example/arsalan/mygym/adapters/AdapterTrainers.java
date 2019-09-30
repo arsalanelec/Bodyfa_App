@@ -175,10 +175,10 @@ public class AdapterTrainers extends Adapter<AdapterTrainers.VH> {
                     priceTv.setVisibility(View.GONE);
                     break;
                 case SHOW_PRICE_MEMBERSHIP_PLAN:
-                    priceTv.setText(itemView.getContext().getString( R.string.priceInRial,t.getOneDayFee()));
+                    priceTv.setText(itemView.getContext().getString(R.string.priceInRial, t.getOneDayFee()));
                     break;
-                    case SHOW_PRICE_WORKOUT_PLAN:
-                    priceTv.setText(itemView.getContext().getString( R.string.priceInRial,t.getWorkoutPlanPrice()));
+                case SHOW_PRICE_WORKOUT_PLAN:
+                    priceTv.setText(itemView.getContext().getString(R.string.priceInRial, t.getWorkoutPlanPrice()));
                     break;
             }
         }

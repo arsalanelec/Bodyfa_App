@@ -290,7 +290,7 @@ public class PostTutorialActivity extends AppCompatActivity {
 
 
     private void sendVideo() {
-        final ProgressDialog waitingDialog = new ProgressDialog(PostTutorialActivity.this, R.style.AlertDialogCustom);
+        final ProgressDialog waitingDialog = new ProgressDialog(PostTutorialActivity.this);
         waitingDialog.setMessage(getString(R.string.uploading_video_wait));
         waitingDialog.setProgress(0);
         waitingDialog.setMax(100);

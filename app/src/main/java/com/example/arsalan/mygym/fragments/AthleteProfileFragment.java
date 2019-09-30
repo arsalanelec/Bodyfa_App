@@ -289,7 +289,7 @@ public class AthleteProfileFragment extends Fragment implements WebServiceResult
                 Log.d(getClass().getSimpleName(), "onClick: mediatype:" + MimeTypeMap.getFileExtensionFromUrl(resultUri.getPath()));
 
 
-                waitingDialog = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
+                waitingDialog = new ProgressDialog(getContext());
                 waitingDialog.setMessage(getString(R.string.uploading_picture_wait));
                 waitingDialog.setProgress(0);
                 waitingDialog.setMax(100);

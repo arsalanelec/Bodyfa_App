@@ -292,5 +292,6 @@
     <string name="exit">خروج</string>
     <string name="waiting_for_update">در انتظار بروز رسانی…</string>
     <string name="request_permission_again">جهت دانلود فایل بروز رسانی ما نیاز به مجوز شما برای دسترسی به حافظه خارجی داریم.\nلطفا در دیالوگ بعدی این مجوز را تایید نمایید.</string>
+    <string name="please_enter_amount">مبلغ مورد نظر خود را وارد نمایید:</string>
 
 </resources>

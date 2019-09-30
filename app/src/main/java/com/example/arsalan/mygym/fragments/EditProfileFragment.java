@@ -237,7 +237,7 @@ public class EditProfileFragment extends Fragment implements WebServiceResultImp
                 }
             });
         });
-        waitingDialog = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
+        waitingDialog = new ProgressDialog(getContext());
         waitingDialog.setMessage(getString(R.string.uploading_picture_wait));
         waitingDialog.setProgress(0);
         waitingDialog.setMax(100);

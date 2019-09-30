@@ -14,18 +14,20 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import com.example.arsalan.mygym.R;
-import com.google.android.material.textfield.TextInputLayout;
-
-import java.text.DecimalFormat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+
+import com.example.arsalan.mygym.R;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,11 +42,11 @@ public class AddCreditDialog extends DialogFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "AddCreditDialog";
     private String current;
     // TODO: Rename and change types of parameters
     private long mUserId;
     private int mCreditSt;
-    private static final String TAG = "AddCreditDialog";
     private OnFragmentInteractionListener mListener;
 
     public AddCreditDialog() {
@@ -83,7 +85,7 @@ public class AddCreditDialog extends DialogFragment {
         current = "";
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.dialog_add_credit, container, false);
-        EditText amountEt = v.findViewById(R.id.etAmount);
+        TextInputEditText amountEt = v.findViewById(R.id.etAmount);
         amountEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -97,37 +99,45 @@ public class AddCreditDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length()>0 && !s.toString().equals(current)) {
+                if (s.length() > 0 && !s.toString().equals(current)) {
                     amountEt.removeTextChangedListener(this);
 
                     String cleanString = s.toString().replaceAll("[$,.]", "");
-                    double parsed = Double.parseDouble(cleanString);
+                    Log.d(TAG, "afterTextChanged: cleanString:" + cleanString);
+                    try {
+                        double parsed = Double.parseDouble(cleanString);
+                        DecimalFormat formatter = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+                        formatter.applyPattern("###,###");
+                        String formatted = formatter.format(parsed);// NumberFormat.getCurrencyInstance().format(parsed);
+                        current = formatted;
+                        Log.d(TAG, "afterTextChanged: formatted:" + formatted);
 
-                    DecimalFormat formatter = new DecimalFormat("###,###");
-                    String formatted =formatter.format(parsed);// NumberFormat.getCurrencyInstance().format(parsed);
-                    current = formatted;
-                    amountEt.setText(formatted);
-                    amountEt.setSelection(formatted.length());
+                        amountEt.setText(formatted);
+                        amountEt.setSelection(formatted.length());
 
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
                     amountEt.addTextChangedListener(this);
+
                 }
             }
         });
-        TextView currentBalanceTv=v.findViewById(R.id.txtCurrentBalance);
-        currentBalanceTv.setText(getString(R.string.your_balance_is,mCreditSt));
-        TextInputLayout tl=v.findViewById(R.id.tlAmount);
-        Button submitBtn=v.findViewById(R.id.btnSubmit);
-        submitBtn.setOnClickListener(b->{
-           int amount = 0;
+        TextView currentBalanceTv = v.findViewById(R.id.txtCurrentBalance);
+        currentBalanceTv.setText(getString(R.string.your_balance_is, mCreditSt));
+        TextInputLayout tl = v.findViewById(R.id.tlAmount);
+        Button submitBtn = v.findViewById(R.id.btnSubmit);
+        submitBtn.setOnClickListener(b -> {
+            int amount = 0;
             try {
                 amount = Integer.parseInt(current.replaceAll("[$,.]", ""));
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 Log.d(TAG, "onCreateView: Amount is not an integer!");
                 tl.setError(getString(R.string.AMOUNT_IS_WRONG));
                 amountEt.requestFocus();
                 return;
             }
-            if(amount<1000){
+            if (amount < 1000) {
 
                 tl.setError(getString(R.string.AMOUNT_IS_WRONG));
                 amountEt.requestFocus();
@@ -159,7 +169,7 @@ public class AddCreditDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Dialog dialog= super.onCreateDialog(savedInstanceState);
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }

@@ -65,7 +65,7 @@ public class TrainerWorkoutPlanListDialog extends DialogFragment {
 
                 @Override
                 public void onItemDeleteClick(final WorkoutPlan workoutPlan, final int position) {
-                    new AlertDialog.Builder(getContext(), R.style.AlertDialogCustom).setMessage(getString(R.string.ask_remove_plan))
+                    new AlertDialog.Builder(getContext()).setMessage(getString(R.string.ask_remove_plan))
                             .setPositiveButton(getString(R.string.remove), (dialogInterface, ii) -> {
                                 dialogInterface.dismiss();
                                 Intent intent = new Intent();

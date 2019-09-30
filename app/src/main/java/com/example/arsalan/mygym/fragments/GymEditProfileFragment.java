@@ -16,6 +16,8 @@ import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.arsalan.mygym.MyApplication;
 import com.example.arsalan.mygym.MyKeys;
 import com.example.arsalan.mygym.R;
@@ -42,8 +44,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -60,15 +60,13 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_GYM = "param1";
     private static final String TAG = "GymEditProfileFragment";
+    private final int REQ_ADD_LOCATION = 100;
     private Gym mCurrentGym;
     private OnFragmentInteractionListener mListener;
     private Uri resultUri;
-
     private LatLng mLatLong;
-
     private MultipartBody.Part thumbBody;
     private MultipartBody.Part imageBody;
-    private final int REQ_ADD_LOCATION = 100;
     private FragmentGymEditProfileBinding mBind;
 
     public GymEditProfileFragment() {
@@ -91,9 +89,9 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
             mCurrentGym = getArguments().getParcelable(ARG_GYM);
             if (mCurrentGym == null) {
                 Log.d(TAG, "onCreate: Current Gym is Null!");
-                mCurrentGym=new Gym();
-            }else {
-                Log.d(TAG, "onCreate: GYM ins Not Null Title:"+mCurrentGym.getTitle());
+                mCurrentGym = new Gym();
+            } else {
+                Log.d(TAG, "onCreate: GYM ins Not Null Title:" + mCurrentGym.getTitle());
             }
             /*if(mCurrentGym.getLat()!=0 && mCurrentGym.getLng()!=0) {
                 mLatLong = new LatLng(
@@ -112,10 +110,8 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-         mBind = DataBindingUtil.inflate(inflater, R.layout.fragment_gym_edit_profile, container, false);
-       mBind.setGym(mCurrentGym);
-
-
+        mBind = FragmentGymEditProfileBinding.inflate(inflater, container, false);
+        mBind.setGym(mCurrentGym);
 
         //استانها
         mBind.spnProvince.setAdapter(new AdapterProvinceSp());
@@ -124,8 +120,8 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
                 if (mBind.spnProvince.getItemIdAtPosition(i) == CityNState.getProvinceByCityId(mCurrentGym.getCityId()).getId()) {
                     mBind.spnProvince.setSelection(i);
                     mBind.spnCity.setAdapter(new AdapterCitySp(CityNState.getProvinceByCityId(mCurrentGym.getCityId()).getId()));
-                    for (int j = 0; j <  mBind.spnCity.getAdapter().getCount(); j++) {
-                        if ( mBind.spnCity.getItemIdAtPosition(j) == mCurrentGym.getCityId()) {
+                    for (int j = 0; j < mBind.spnCity.getAdapter().getCount(); j++) {
+                        if (mBind.spnCity.getItemIdAtPosition(j) == mCurrentGym.getCityId()) {
                             mBind.spnCity.setSelection(j);
                             break;
                         }
@@ -149,7 +145,7 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
         mBind.spnProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (((AdapterCitySp)  mBind.spnCity.getAdapter()).getProvinceId() != l)
+                if (((AdapterCitySp) mBind.spnCity.getAdapter()).getProvinceId() != l)
                     mBind.spnCity.setAdapter(new AdapterCitySp(l));
             }
 
@@ -248,7 +244,7 @@ public class GymEditProfileFragment extends Fragment implements AddLocationDialo
                         Log.d(TAG, "onClick: mediatype:" + MimeTypeMap.getFileExtensionFromUrl(resultUri.getPath()));
 
 
-                        waitingDialog = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
+                        waitingDialog = new ProgressDialog(getContext());
                         waitingDialog.setMessage(getString(R.string.uploading_picture_wait));
                         waitingDialog.setProgress(0);
                         waitingDialog.setMax(100);

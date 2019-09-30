@@ -198,7 +198,7 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
                         // create RequestBody instance from file
                         Log.d(TAG, "onClick: mediatype:" + MimeTypeMap.getFileExtensionFromUrl(resultDocUri.getPath()));
 
-                        final ProgressDialog waitingDialog2 = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
+                        final ProgressDialog waitingDialog2 = new ProgressDialog(getContext());
                         waitingDialog2.setMessage(getString(R.string.uploading_picture_wait));
                         waitingDialog2.setProgress(0);
                         waitingDialog2.setMax(100);
@@ -262,7 +262,7 @@ public class TrainerEditProfileFragment extends Fragment implements WebServiceRe
                         // create RequestBody instance from file
                         Log.d(TAG, "onClick: mediatype:" + MimeTypeMap.getFileExtensionFromUrl(resultNatCardUri.getPath()));
 
-                        waitingDialog = new ProgressDialog(getContext(), R.style.AlertDialogCustom);
+                        waitingDialog = new ProgressDialog(getContext());
                         waitingDialog.setMessage(getString(R.string.uploading_picture_wait));
                         waitingDialog.setProgress(0);
                         waitingDialog.setMax(100);
